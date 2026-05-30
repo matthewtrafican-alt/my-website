@@ -1,1644 +1,1281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Workforce Intelligence Platform — AeroDefend Group</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="prompt-data.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *{font-family:'Inter',sans-serif;box-sizing:border-box;}
-body{background:#0a0f1e;color:#e2e8f0;}
-.nav-btn{transition:all .15s;cursor:pointer;}
-.nav-btn.active{background:#1d4ed8;color:#fff;}
-.nav-btn:not(.active):hover{background:#1e2d4f;}
+body{background:#080d1a;color:#e2e8f0;}
+.card{background:#0f1629;border:1px solid #1e2d4f;border-radius:.75rem;}
+.pill{font-size:.6rem;padding:1px 7px;border-radius:999px;font-weight:700;white-space:nowrap;}
+.risk-c{background:#7f1d1d;color:#fca5a5;}
+.risk-h{background:#78350f;color:#fcd34d;}
+.risk-m{background:#713f12;color:#fde68a;}
+.risk-l{background:#064e3b;color:#6ee7b7;}
+.view-btn{transition:all .15s;cursor:pointer;padding:6px 16px;border-radius:8px;font-size:.75rem;font-weight:600;}
+.view-btn.active{background:#1d4ed8;color:#fff;}
+.view-btn:not(.active){background:#1e2d4f;color:#94a3b8;}
+.view-btn:not(.active):hover{background:#243555;}
+.nav-item{cursor:pointer;padding:5px 12px;border-radius:6px;font-size:.75rem;color:#94a3b8;transition:all .12s;display:flex;align-items:center;gap:6px;}
+.nav-item:hover{background:#1e2d4f;color:#e2e8f0;}
+.nav-item.active{background:#1d4ed8;color:#fff;}
+.hmap-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;cursor:default;transition:transform .1s;}
+.hmap-cell:hover{transform:scale(1.05);z-index:10;}
+.chat-ai{background:#0f1629;border:1px solid #1e2d4f;border-radius:12px 12px 12px 4px;}
+.chat-user{background:#1d4ed8;border-radius:12px 12px 4px 12px;}
+.prompt-chip{cursor:pointer;background:#0f1629;border:1px solid #1e2d4f;border-radius:6px;padding:5px 10px;font-size:.7rem;color:#94a3b8;transition:all .12s;text-align:left;}
+.prompt-chip:hover{border-color:#3b82f6;color:#e2e8f0;background:#152040;}
+.plib-cat{cursor:pointer;padding:6px 10px;border-radius:6px;font-size:.72rem;font-weight:600;display:flex;align-items:center;justify-content:space-between;}
+.plib-cat:hover{background:#1e2d4f;}
+.temp-bar{height:6px;border-radius:3px;transition:width .6s;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1e2d4f;border-radius:2px;}
+.floating-ask{position:fixed;bottom:24px;right:24px;z-index:200;background:#1d4ed8;color:#fff;border:none;border-radius:50px;padding:10px 18px;font-size:.8rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(29,78,216,.5);transition:all .15s;}
+.floating-ask:hover{background:#2563eb;transform:translateY(-2px);}
 .section{display:none;}
 .section.active{display:block;}
-.card{background:#111827;border:1px solid #1f2937;border-radius:.75rem;}
-.card:hover{border-color:#374151;box-shadow:0 4px 20px rgba(0,0,0,.4);}
-.road-r{color:#f59e0b;border-color:#92400e;}
-.road-o{color:#8b5cf6;border-color:#5b21b6;}
-.road-a{color:#3b82f6;border-color:#1d4ed8;}
-.road-d{color:#10b981;border-color:#065f46;}
-.pill{font-size:.65rem;padding:2px 8px;border-radius:999px;font-weight:700;}
-.risk-critical{background:#7f1d1d;color:#fca5a5;}
-.risk-high{background:#78350f;color:#fcd34d;}
-.risk-medium{background:#713f12;color:#fde68a;}
-.risk-low{background:#064e3b;color:#6ee7b7;}
-.vuca-v{border-left:3px solid #3b82f6;}
-.vuca-u{border-left:3px solid #8b5cf6;}
-.vuca-c{border-left:3px solid #10b981;}
-.vuca-a{border-left:3px solid #f59e0b;}
-.bar{transition:width .8s ease;height:6px;border-radius:3px;}
-input[type=text]:focus{outline:none;border-color:#3b82f6;}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:#0a0f1e;}
-::-webkit-scrollbar-thumb{background:#374151;border-radius:2px;}
-.chat-ai{background:#111827;border:1px solid #1f2937;border-radius:12px 12px 12px 4px;}
-.chat-user{background:#1d4ed8;border-radius:12px 12px 4px 12px;}
-.ahead-bar{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:.7rem;font-weight:600;transition:width .6s;}
 </style>
 </head>
 <body class="min-h-screen">
 
-<!-- ── Header ─────────────────────────────────────────────────────────── -->
-<header class="bg-gray-900 border-b border-gray-800 px-5 py-3 flex items-center justify-between sticky top-0 z-50">
-  <div class="flex items-center gap-3">
-    <div class="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center font-bold text-sm">WI</div>
+<!-- ── Header ── -->
+<header class="bg-gray-900 border-b border-gray-800 px-4 py-2.5 flex items-center gap-3 sticky top-0 z-50">
+  <div class="flex items-center gap-2 mr-2">
+    <div class="w-7 h-7 rounded-md bg-blue-700 flex items-center justify-center font-bold text-xs">WI</div>
     <div>
-      <div class="font-bold text-white text-sm tracking-tight">Workforce Intelligence Platform</div>
-      <div class="text-gray-400 text-xs">AeroDefend Group · Illustrative Demo · Data refreshed 00:47</div>
+      <div class="font-bold text-white text-xs">Workforce Intelligence</div>
+      <div class="text-gray-500 text-xs">AeroDefend Group · 54,500 FTEs</div>
     </div>
   </div>
-  <div class="flex items-center gap-3">
+  <!-- View toggle -->
+  <div class="flex gap-1 bg-gray-800 rounded-lg p-1">
+    <button class="view-btn active" id="vbtn-functional" onclick="setViewMode('functional')">Functional View</button>
+    <button class="view-btn" id="vbtn-program"    onclick="setViewMode('program')">Program View</button>
+  </div>
+  <!-- Scope selector -->
+  <select id="scopeSel" onchange="onScopeChange()" class="bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-1.5 rounded-lg ml-1">
+    <option value="">All Functions</option>
+  </select>
+  <div class="ml-auto flex items-center gap-2">
     <div id="ownerToggle" class="flex gap-1 bg-gray-800 rounded-lg p-1">
-      <button onclick="setOwner('action')" id="btn-action" class="owner-btn active text-xs px-3 py-1 rounded-md bg-blue-700 text-white font-medium transition-all">Action Owner</button>
-      <button onclick="setOwner('bp')"     id="btn-bp"     class="owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all">Business Partner</button>
-      <button onclick="setOwner('leader')" id="btn-leader" class="owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all">Leader</button>
+      <button onclick="setOwner('action')"  id="ob-action"  class="owner-btn text-xs px-2.5 py-1 rounded-md bg-blue-700 text-white font-medium">Action Owner</button>
+      <button onclick="setOwner('bp')"      id="ob-bp"      class="owner-btn text-xs px-2.5 py-1 rounded-md text-gray-400 hover:text-white">Business Partner</button>
+      <button onclick="setOwner('leader')"  id="ob-leader"  class="owner-btn text-xs px-2.5 py-1 rounded-md text-gray-400 hover:text-white">Leader</button>
     </div>
-    <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-xs font-bold">MT</div>
   </div>
 </header>
 
-<div class="flex" style="height:calc(100vh - 53px)">
+<div class="flex" style="height:calc(100vh - 49px)">
 
-<!-- ── Sidebar ────────────────────────────────────────────────────────── -->
-<nav class="w-52 bg-gray-900 border-r border-gray-800 py-3 overflow-y-auto flex-shrink-0">
-  <div class="px-3 mb-1">
-    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Platform</p>
-    <button onclick="show('overview')"  class="nav-btn active w-full text-left px-3 py-2 rounded-lg text-sm text-gray-200 flex items-center gap-2 mb-1">
-      <span class="text-base">&#9689;</span> Overview
-    </button>
-    <button onclick="show('delivery')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center justify-between mb-1">
-      <span class="flex items-center gap-2"><span class="text-base">&#9650;</span> Program Delivery</span>
-      <span class="text-xs text-blue-400 font-semibold">Risk</span>
+<!-- ── Sidebar ── -->
+<nav class="w-48 bg-gray-900 border-r border-gray-800 py-2 overflow-y-auto flex-shrink-0" id="sidebar">
+  <div class="px-2 mb-1">
+    <button onclick="showSection('agent')" id="snav-agent" class="nav-item active w-full justify-start mb-0.5">
+      <span>&#129302;</span> AI Workspace
     </button>
   </div>
-  <div class="px-3 mb-1 mt-2">
-    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">ROAD Framework</p>
-    <button onclick="show('retain')"   class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span> Retain
-    </button>
-    <button onclick="show('optimize')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"></span> Optimize
-    </button>
-    <button onclick="show('acquire')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span> Acquire
-    </button>
-    <button onclick="show('develop')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span> Develop
-    </button>
+  <div class="px-2 mb-1 mt-1">
+    <p class="text-xs text-gray-600 uppercase tracking-widest px-2 mb-1 font-semibold">Analytics</p>
+    <button onclick="showSection('overview')" id="snav-overview" class="nav-item w-full justify-start mb-0.5"><span>&#9689;</span> Overview</button>
+    <button onclick="showSection('roadmap')"  id="snav-roadmap"  class="nav-item w-full justify-start mb-0.5"><span>&#9650;</span> ROAD Health</button>
+    <button onclick="showSection('temporal')" id="snav-temporal" class="nav-item w-full justify-start mb-0.5"><span>&#9202;</span> Temporal View</button>
+    <button onclick="showSection('alloc')"    id="snav-alloc"    class="nav-item w-full justify-start mb-0.5"><span>&#9783;</span> Allocation Matrix</button>
+    <button onclick="showSection('actions')"  id="snav-actions"  class="nav-item w-full justify-start mb-0.5"><span>&#9889;</span> Action Plans</button>
   </div>
-  <div class="px-3 mb-1 mt-2">
-    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Intelligence</p>
-    <button onclick="show('actions')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="text-base">&#9889;</span> Action Plans
-    </button>
-    <button onclick="show('people')"   class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="text-base">&#128101;</span> People Data
-    </button>
-    <button onclick="show('agent')"    class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="text-base">&#129302;</span> AI Agent
-    </button>
+  <div class="px-2 mb-1 mt-1">
+    <p class="text-xs text-gray-600 uppercase tracking-widest px-2 mb-1 font-semibold" id="sidebar-list-label">Functions</p>
+    <div id="sidebar-list"></div>
   </div>
-  <div class="px-3 mt-2">
-    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Platform</p>
-    <button onclick="show('arch')"     class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
-      <span class="text-base">&#127959;</span> Architecture
-    </button>
+  <div class="px-2 mt-1">
+    <p class="text-xs text-gray-600 uppercase tracking-widest px-2 mb-1 font-semibold">Reference</p>
+    <button onclick="showSection('prompts')" id="snav-prompts" class="nav-item w-full justify-start mb-0.5"><span>&#128218;</span> Prompt Library</button>
+    <button onclick="showSection('arch')"    id="snav-arch"    class="nav-item w-full justify-start mb-0.5"><span>&#127959;</span> Architecture</button>
   </div>
 </nav>
 
-<!-- ── Main ───────────────────────────────────────────────────────────── -->
-<main class="flex-1 overflow-y-auto p-5" id="main">
+<!-- ── Main ── -->
+<main class="flex-1 overflow-y-auto" id="main">
 
-<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
-<div id="section-overview" class="section active">
-  <div class="mb-5">
-    <h1 class="text-xl font-bold text-white">Workforce Overview</h1>
-    <p class="text-gray-400 text-sm mt-1" id="ownerTagline">Showing your active cases and team — Action Owner view</p>
-  </div>
-
-  <!-- VUCA Prime strip -->
-  <div class="grid grid-cols-4 gap-3 mb-5">
-    <div class="vuca-v bg-gray-900 rounded-lg p-3">
-      <p class="text-xs text-blue-400 font-semibold mb-1">VISION — Where we're going</p>
-      <p class="text-xs text-gray-300">3-year capability plan active. 14 gaps identified. Recommended actions defined.</p>
+<!-- ═══ AI WORKSPACE (default) ═══ -->
+<div id="section-agent" class="section active flex" style="height:100%">
+  <!-- Prompt library panel -->
+  <div class="w-64 flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col" style="height:100%">
+    <div class="p-3 border-b border-gray-800">
+      <p class="text-xs font-bold text-white mb-2">Prompt Library <span class="text-gray-500 font-normal">(280)</span></p>
+      <input type="text" id="plibSearch" placeholder="Search prompts..." onkeyup="filterPrompts()"
+        class="w-full bg-gray-800 border border-gray-700 text-gray-300 text-xs px-2.5 py-1.5 rounded-lg">
     </div>
-    <div class="vuca-u bg-gray-900 rounded-lg p-3">
-      <p class="text-xs text-purple-400 font-semibold mb-1">UNDERSTANDING — Why it's happening</p>
-      <p class="text-xs text-gray-300">Compa-ratio drift + manager overload driving flight risk in R&M Engineering.</p>
-    </div>
-    <div class="vuca-c bg-gray-900 rounded-lg p-3">
-      <p class="text-xs text-emerald-400 font-semibold mb-1">CLARITY — What to do</p>
-      <p class="text-xs text-gray-300">3 critical actions required this week. Plain-English plans below.</p>
-    </div>
-    <div class="vuca-a bg-gray-900 rounded-lg p-3">
-      <p class="text-xs text-amber-400 font-semibold mb-1">AGILITY — How fast we can move</p>
-      <p class="text-xs text-gray-300">ROAD framework active. 9 actions in progress. 4 cascade breaks flagged.</p>
-    </div>
-  </div>
-
-  <!-- KPI row -->
-  <div class="grid grid-cols-5 gap-3 mb-5" id="kpiRow"></div>
-
-  <!-- ROAD health + Delivery risk -->
-  <div class="grid grid-cols-2 gap-4 mb-5">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">ROAD Framework Health</h3>
-      <div class="space-y-3" id="roadHealth"></div>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Program Delivery Risk — This Week</h3>
-      <div id="deliverySnapshot" class="space-y-2"></div>
-    </div>
-  </div>
-
-  <!-- Top priority actions -->
-  <div class="card p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="font-semibold text-white text-sm">Priority Actions — Generated from driving indicators</h3>
-      <button onclick="show('actions')" class="text-xs text-blue-400 hover:text-blue-300">View all with return on impact &rarr;</button>
-    </div>
-    <div id="topActions" class="space-y-2"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════ PROGRAM DELIVERY ═══════════════════ -->
-<div id="section-delivery" class="section">
-  <div class="mb-5 flex items-center justify-between">
-    <div>
-      <h1 class="text-xl font-bold text-white">Program Delivery Risk</h1>
-      <p class="text-gray-400 text-sm mt-1">Right talent · Right place · Right time · Right skills · Right cost — across all active programs</p>
-    </div>
-  </div>
-
-  <!-- Ahead of Ready view -->
-  <div class="card p-4 mb-4">
-    <div class="flex items-center justify-between mb-3">
-      <div>
-        <h3 class="font-semibold text-white text-sm">"Ahead of Ready" — Talent Supply vs. Program Demand</h3>
-        <p class="text-xs text-gray-400 mt-0.5">Green = supply meets demand with time to spare. Red = we needed to start acquiring sooner.</p>
-      </div>
-      <div class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded">Lead times: Cleared roles 9-18 months &nbsp;|&nbsp; Standard roles 3-6 months</div>
-    </div>
-    <div id="aheadOfReady" class="space-y-4 mt-3"></div>
-  </div>
-
-  <!-- TOC Bottlenecks -->
-  <div class="grid grid-cols-3 gap-4 mb-4">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-1">Constraint #1 — Process</h3>
-      <p class="text-xs text-gray-400 mb-3">Where is the H2R process slowing throughput?</p>
-      <div id="tocProcess" class="space-y-2"></div>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-1">Constraint #2 — Skills</h3>
-      <p class="text-xs text-gray-400 mb-3">Which scarce competency limits program delivery?</p>
-      <div id="tocSkills" class="space-y-2"></div>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-1">Constraint #3 — Capacity</h3>
-      <p class="text-xs text-gray-400 mb-3">Which managers are overloaded?</p>
-      <div id="tocCapacity" class="space-y-2"></div>
-    </div>
-  </div>
-
-  <!-- Milestone status -->
-  <div class="card p-4">
-    <h3 class="font-semibold text-white text-sm mb-3">Program Milestones — Workforce Risk Assessment</h3>
-    <div id="milestoneTable"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════ RETAIN ═══════════════════ -->
-<div id="section-retain" class="section">
-  <div class="mb-5">
-    <div class="flex items-center gap-2 mb-1">
-      <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-      <h1 class="text-xl font-bold text-white">Retain</h1>
-    </div>
-    <p class="text-gray-400 text-sm">Stabilize critical skills and foster a positive work environment — attrition classified by program execution impact</p>
-  </div>
-
-  <div class="grid grid-cols-4 gap-3 mb-5" id="retainKpis"></div>
-
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Attrition Classification — Last 18 Months</h3>
-      <p class="text-xs text-gray-400 mb-3">Regrettable = departure that introduces risk into program execution. Non-regrettable = departure with no material impact on delivery.</p>
-      <canvas id="attritionChart" height="180"></canvas>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-1">Turnover Contagion — Team Risk</h3>
-      <p class="text-xs text-gray-400 mb-3">When one person leaves, their teammates' likelihood of leaving increases by 40-80% within 6 months. Teams shown where a regrettable departure triggered elevated risk.</p>
-      <div id="contagionView" class="space-y-2"></div>
-    </div>
-  </div>
-
-  <!-- Scoring model -->
-  <div class="card p-4 mb-4">
-    <div class="flex items-center justify-between mb-3">
-      <div>
-        <h3 class="font-semibold text-white text-sm">Flight Risk Scoring Model</h3>
-        <p class="text-xs text-gray-400 mt-0.5">Additive factor model — each condition contributes points to a 0–100 scale. Calibrated quarterly against actual attrition outcomes.</p>
-      </div>
-      <span class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded">Max score: 92 &nbsp;·&nbsp; Min: 5 &nbsp;·&nbsp; Threshold for action: 60</span>
-    </div>
-    <div id="riskModelGrid" class="grid grid-cols-4 gap-2 mb-3"></div>
-    <div class="border-t border-gray-800 pt-3">
-      <p class="text-xs text-gray-500">Regrettability is assessed separately — a high flight risk score does not automatically mean regrettable. Regrettable = departure introduces programme execution risk (critical path + scarce clearance, key person dependency, or succession nominee at high performance). <span class="text-amber-400">These are independent assessments.</span></p>
-    </div>
-  </div>
-
-  <div class="card p-4">
-    <h3 class="font-semibold text-white text-sm mb-3">High Flight Risk — People Who Would Be Regrettable to Lose</h3>
-    <div id="flightRiskTable"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════ OPTIMIZE ═══════════════════ -->
-<div id="section-optimize" class="section">
-  <div class="mb-5">
-    <div class="flex items-center gap-2 mb-1">
-      <span class="w-3 h-3 rounded-full bg-purple-400"></span>
-      <h1 class="text-xl font-bold text-white">Optimize</h1>
-    </div>
-    <p class="text-gray-400 text-sm">Accelerate organizational performance and maximize productivity — Galbraith STAR Model analysis</p>
-  </div>
-
-  <div class="grid grid-cols-5 gap-3 mb-5" id="starCards"></div>
-
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Span of Control Distribution</h3>
-      <p class="text-xs text-gray-400 mb-3">Ideal: 5-9 direct reports for operational managers. Under 4 = over-managed. Over 12 = stretched.</p>
-      <canvas id="spanChart" height="180"></canvas>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">STAR Model — Where to Focus</h3>
-      <div id="starInsights" class="space-y-2"></div>
-    </div>
-  </div>
-
-  <div class="card p-4">
-    <h3 class="font-semibold text-white text-sm mb-3">Organizational Layer Analysis</h3>
-    <div id="layerAnalysis" class="space-y-2"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════ ACQUIRE ═══════════════════ -->
-<div id="section-acquire" class="section">
-  <div class="mb-5">
-    <div class="flex items-center gap-2 mb-1">
-      <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-      <h1 class="text-xl font-bold text-white">Acquire</h1>
-    </div>
-    <p class="text-gray-400 text-sm">Deliver talent at the right place, on time, at the right cost — pipeline health and lead time analysis</p>
-  </div>
-
-  <div class="grid grid-cols-4 gap-3 mb-5" id="acquireKpis"></div>
-
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Active Hiring Pipeline — Risk by Case</h3>
-      <div id="pipelineTable" class="overflow-x-auto"></div>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Lead Time by Role Type</h3>
-      <p class="text-xs text-gray-400 mb-3">Time from need identified to person in seat and productive. Lead time is the TOC constraint on program delivery.</p>
-      <div id="leadTimeView" class="space-y-3"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ DEVELOP ═══════════════════ -->
-<div id="section-develop" class="section">
-  <div class="mb-5">
-    <div class="flex items-center gap-2 mb-1">
-      <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-      <h1 class="text-xl font-bold text-white">Develop</h1>
-    </div>
-    <p class="text-gray-400 text-sm">Build skills and empower leaders to sustain growth — competency gaps, succession depth, learning investment</p>
-  </div>
-
-  <div class="grid grid-cols-4 gap-3 mb-5" id="developKpis"></div>
-
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Competency Match Distribution</h3>
-      <p class="text-xs text-gray-400 mb-3">What percentage of employees are well-matched to their role requirements? Below 70% indicates a development need.</p>
-      <canvas id="matchChart" height="180"></canvas>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Succession Depth by Department</h3>
-      <p class="text-xs text-gray-400 mb-3">Percentage of critical roles with at least one identified successor at any readiness level.</p>
-      <div id="successionView" class="space-y-2 mt-2"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ ACTION PLANS ═══════════════════ -->
-<div id="section-actions" class="section">
-  <div class="mb-5 flex items-center justify-between">
-    <div>
-      <h1 class="text-xl font-bold text-white">Proactive Action Plans</h1>
-      <p class="text-gray-400 text-sm mt-1">Synthesized from driving indicators — with return on impact, owner, and urgency</p>
-    </div>
-    <div class="flex gap-2">
-      <button onclick="filterActions('all')"      id="af-all"      class="action-filter active text-xs px-3 py-1.5 rounded-lg bg-blue-700 text-white">All ROAD</button>
-      <button onclick="filterActions('Retain')"   id="af-Retain"   class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Retain</button>
-      <button onclick="filterActions('Optimize')" id="af-Optimize" class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Optimize</button>
-      <button onclick="filterActions('Acquire')"  id="af-Acquire"  class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Acquire</button>
-      <button onclick="filterActions('Develop')"  id="af-Develop"  class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Develop</button>
-    </div>
-  </div>
-  <div id="actionPlansList" class="space-y-3"></div>
-</div>
-
-<!-- ═══════════════════ PEOPLE DATA ═══════════════════ -->
-<div id="section-people" class="section">
-  <div class="mb-4 flex items-center justify-between">
-    <div>
-      <h1 class="text-xl font-bold text-white">People & Org Data</h1>
-      <p class="text-gray-400 text-sm mt-1">95 employees · Synthetic data · Search and filter by any attribute</p>
-    </div>
-    <div class="flex gap-2 items-center">
-      <select id="deptFilter" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-2 rounded-lg" onchange="filterPeople()">
-        <option value="">All Departments</option>
+    <div class="p-2 border-b border-gray-800">
+      <p class="text-xs text-gray-500 px-1 mb-1">Scope</p>
+      <select id="agentScope" onchange="updateAgentScope()" class="w-full bg-gray-800 border border-gray-700 text-gray-300 text-xs px-2 py-1.5 rounded-lg">
+        <option value="">Enterprise (54,500 FTEs)</option>
       </select>
-      <input type="text" id="peopleSearch" placeholder="Search name, role, program..." onkeyup="filterPeople()"
-        class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-2 rounded-lg w-56">
     </div>
+    <div class="flex-1 overflow-y-auto p-2 space-y-0.5" id="plibTree"></div>
   </div>
-  <div class="card overflow-x-auto">
-    <table class="w-full text-xs" id="peopleTable">
-      <thead class="bg-gray-800 sticky top-0">
-        <tr class="text-gray-400 text-left">
-          <th class="px-3 py-2">Name</th>
-          <th class="px-3 py-2">Department</th>
-          <th class="px-3 py-2">Grade</th>
-          <th class="px-3 py-2">Location</th>
-          <th class="px-3 py-2">Clearance</th>
-          <th class="px-3 py-2 text-center">Compa-ratio</th>
-          <th class="px-3 py-2 text-center">Flight Risk</th>
-          <th class="px-3 py-2 text-center">Perf</th>
-          <th class="px-3 py-2">Succession</th>
-          <th class="px-3 py-2 text-center">Regrettable?</th>
-        </tr>
-      </thead>
-      <tbody id="peopleTbody"></tbody>
-    </table>
-  </div>
-  <p class="text-xs text-gray-500 mt-2" id="peopleCount"></p>
-</div>
-
-<!-- ═══════════════════ AI AGENT ═══════════════════ -->
-<div id="section-agent" class="section flex flex-col" style="height:calc(100vh - 110px)">
-  <div class="mb-3">
-    <h1 class="text-xl font-bold text-white">Workforce AI Agent</h1>
-    <p class="text-gray-400 text-sm">Ask anything about delivery risk, workforce planning, or people decisions — responses grounded in today's data</p>
-  </div>
-  <div class="card flex-1 flex flex-col overflow-hidden">
+  <!-- Chat panel -->
+  <div class="flex-1 flex flex-col" style="height:100%">
     <div class="flex-1 overflow-y-auto p-4 space-y-3" id="chatMsgs">
       <div class="flex gap-2">
         <div class="w-6 h-6 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div>
         <div class="chat-ai p-3 max-w-2xl">
-          <p class="text-sm text-gray-200">Good morning. I'm grounded on today's workforce data — 95 employees, 5 active programs, 22 attrition records from the last 18 months.</p>
-          <p class="text-sm text-gray-300 mt-2">I can help with: <span class="text-blue-300">program delivery risk</span> · <span class="text-amber-300">retention decisions</span> · <span class="text-blue-300">talent pipeline gaps</span> · <span class="text-emerald-300">competency development</span> · <span class="text-purple-300">org design</span> · <span class="text-gray-300">return on impact calculations</span></p>
+          <p class="text-sm text-gray-200 font-semibold">Workforce Intelligence Platform — ready.</p>
+          <p class="text-sm text-gray-300 mt-1">I analyse all 274 sample employees across 12 functions, 9 programmes, and 3 portfolios representing <strong>54,500 FTEs</strong>.</p>
+          <p class="text-sm text-gray-400 mt-2">Select a scope and prompt from the library, or type any question. I answer for the selected function or programme — or enterprise-wide if no scope is set.</p>
         </div>
       </div>
     </div>
-    <div class="p-3 border-t border-gray-800">
-      <div class="flex flex-wrap gap-2 mb-2">
-        <button onclick="preset(0)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Assess the Engineering organisation</button>
-        <button onclick="preset(1)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Who in Cybersecurity is at risk of leaving?</button>
-        <button onclick="preset(2)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Typhoon programme delivery risk</button>
-        <button onclick="preset(3)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Return on impact for all actions</button>
-      </div>
+    <div class="p-3 border-t border-gray-800 bg-gray-900">
+      <div class="flex flex-wrap gap-1.5 mb-2" id="quickChips"></div>
       <div class="flex gap-2">
-        <input id="chatIn" type="text" placeholder="e.g. assess engineering org · who is leaving · R&M pay gap · Typhoon delivery risk..."
+        <input id="chatIn" type="text" placeholder="Ask about delivery risk, workforce health, supply gaps, temporal analysis..."
           class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-500"
           onkeydown="if(event.key==='Enter')sendChat()">
-        <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Send</button>
+        <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">Send</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════ ARCHITECTURE ═══════════════════ -->
-<div id="section-arch" class="section">
-  <div class="mb-5">
-    <h1 class="text-xl font-bold text-white">Platform Architecture</h1>
-    <p class="text-gray-400 text-sm mt-1">WIP-SRNA-001 v2.0 · Nine-layer stack · Phase 1: flat files + vector stores · Phase 2: live IT integration</p>
+<!-- ═══ OVERVIEW ═══ -->
+<div id="section-overview" class="section p-5">
+  <div class="mb-4"><h1 class="text-xl font-bold text-white">Portfolio Overview</h1>
+    <p class="text-gray-400 text-sm mt-0.5">3 portfolios · 9 programmes · 12 functions · 54,500 FTEs</p></div>
+  <div class="grid grid-cols-3 gap-3 mb-4" id="portfolioCards"></div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-3">Programme Risk Map</h3><div id="progRiskMap" class="space-y-2"></div></div>
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-3">Enterprise KPIs</h3><div id="enterpriseKpis" class="space-y-2"></div></div>
   </div>
+</div>
 
+<!-- ═══ ROAD HEALTH HEATMAP ═══ -->
+<div id="section-roadmap" class="section p-5">
+  <div class="mb-4"><h1 class="text-xl font-bold text-white">ROAD Framework Health</h1>
+    <p class="text-gray-400 text-sm mt-0.5">Functions × ROAD pillars — score 0–100 · Green ≥75 · Amber 55–74 · Red &lt;55</p></div>
+  <div class="card p-4 mb-4 overflow-x-auto"><div id="roadHeatmap"></div></div>
+  <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-3">ROAD Insights — Where to Focus</h3><div id="roadInsights" class="space-y-2"></div></div>
+</div>
+
+<!-- ═══ TEMPORAL VIEW ═══ -->
+<div id="section-temporal" class="section p-5">
+  <div class="mb-4 flex items-center justify-between">
+    <div><h1 class="text-xl font-bold text-white">Temporal Analysis</h1>
+    <p class="text-gray-400 text-sm mt-0.5">Time in role · Time in level · Time on programme · Acquisition lifecycle experience</p></div>
+    <select id="tempFnSel" onchange="renderTemporal()" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-lg">
+      <option value="">All Functions</option>
+    </select>
+  </div>
+  <div class="grid grid-cols-4 gap-3 mb-4" id="temporalKpis"></div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-1">Time in Role Distribution</h3>
+      <p class="text-xs text-gray-400 mb-3">&lt;1yr = Ramping · 1–3yr = Optimal · 3–5yr = Consider rotation · 5yr+ = Stale</p>
+      <div id="timeRoleView" class="space-y-1.5"></div></div>
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-1">Time in Level Distribution</h3>
+      <p class="text-xs text-gray-400 mb-3">&lt;2yr = On track · 2–4yr = Promotion window · 4yr+ = Overdue — retention risk</p>
+      <div id="timeLevelView" class="space-y-1.5"></div></div>
+  </div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-1">Time on Programme Distribution</h3>
+      <p class="text-xs text-gray-400 mb-3">&lt;1yr = New · 1–3yr = Building · 3–5yr = Deep knowledge · 5yr+ = Rotation risk</p>
+      <div id="timeProgView" class="space-y-1.5"></div></div>
+    <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-1">Acquisition Lifecycle Experience</h3>
+      <p class="text-xs text-gray-400 mb-3">Which phases has each function worked in? Red = no one with experience in current programme phase.</p>
+      <div id="lifecycleView" class="space-y-1.5"></div></div>
+  </div>
+  <div class="card p-4"><h3 class="font-semibold text-white text-sm mb-3">Individual Temporal Risk — Priority List</h3><div id="temporalTable" class="overflow-x-auto"></div></div>
+</div>
+
+<!-- ═══ ALLOCATION MATRIX ═══ -->
+<div id="section-alloc" class="section p-5">
+  <div class="mb-4"><h1 class="text-xl font-bold text-white">Resource Allocation Matrix</h1>
+    <p class="text-gray-400 text-sm mt-0.5">Functions supply resources to programmes — headcount required · % of function · flight risk · phase match</p></div>
+  <div class="flex gap-3 mb-4">
+    <div class="flex gap-2 text-xs items-center"><span class="w-3 h-3 rounded bg-red-900 inline-block"></span>Critical</div>
+    <div class="flex gap-2 text-xs items-center"><span class="w-3 h-3 rounded bg-amber-900 inline-block"></span>High</div>
+    <div class="flex gap-2 text-xs items-center"><span class="w-3 h-3 rounded bg-blue-900 inline-block"></span>Medium</div>
+    <div class="flex gap-2 text-xs items-center"><span class="w-3 h-3 rounded bg-gray-800 inline-block"></span>Low / not allocated</div>
+    <div class="ml-4 flex gap-3">
+      <button onclick="setAllocUnit('headcount')" id="au-hc" class="text-xs px-2.5 py-1 rounded bg-blue-700 text-white">Headcount</button>
+      <button onclick="setAllocUnit('pct')"       id="au-pc" class="text-xs px-2.5 py-1 rounded bg-gray-800 text-gray-300">% of Function</button>
+      <button onclick="setAllocUnit('risk')"      id="au-rs" class="text-xs px-2.5 py-1 rounded bg-gray-800 text-gray-300">Flight Risk</button>
+    </div>
+  </div>
+  <div class="card p-4 overflow-x-auto"><div id="allocMatrix"></div></div>
+</div>
+
+<!-- ═══ ACTION PLANS ═══ -->
+<div id="section-actions" class="section p-5">
+  <div class="mb-4 flex items-center justify-between">
+    <div><h1 class="text-xl font-bold text-white">Action Plans</h1>
+    <p class="text-gray-400 text-sm mt-0.5">Generated from driving indicators · with return on impact</p></div>
+    <div class="flex gap-1" id="actionFilters"></div>
+  </div>
+  <div id="actionsList" class="space-y-3"></div>
+</div>
+
+<!-- ═══ PROMPT LIBRARY (full page) ═══ -->
+<div id="section-prompts" class="section p-5">
+  <div class="mb-4 flex items-center justify-between">
+    <div><h1 class="text-xl font-bold text-white">Prompt Library</h1>
+    <p class="text-gray-400 text-sm mt-0.5">280 prompts across 5 capability areas — click any to run in the AI Workspace</p></div>
+    <input type="text" id="fullPlibSearch" placeholder="Search all prompts..." onkeyup="filterFullPlib()"
+      class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-lg w-64">
+  </div>
+  <div id="fullPlibContent" class="space-y-6"></div>
+</div>
+
+<!-- ═══ ARCHITECTURE ═══ -->
+<div id="section-arch" class="section p-5">
+  <div class="mb-4"><h1 class="text-xl font-bold text-white">Platform Architecture</h1>
+    <p class="text-gray-400 text-sm mt-0.5">WIP-SRNA-001 v2.0 · Nine-layer stack · Phase 1: flat files · Phase 2: live SAP integration</p></div>
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Phase 1 — Demo & Proof of Concept (Now)</h3>
+      <h3 class="font-semibold text-white text-sm mb-3">Phase 1 — Active Now</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Synthetic flat files (CSV/JSON) → pre-processed into vector store</span></div>
-        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">ChromaDB vector store — framework backbone + employee profiles embedded</span></div>
-        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Claude API (claude-sonnet-4) with RAG — AI agent grounded on workforce data</span></div>
-        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Static React dashboard — deployed to GitHub Pages, no backend required</span></div>
+        <div class="flex gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-16">Active</span><span class="text-xs text-gray-300">Synthetic flat files (12 functions · 9 programmes · 274 sample employees → 54,500 FTEs)</span></div>
+        <div class="flex gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-16">Active</span><span class="text-xs text-gray-300">ChromaDB vector store — framework backbone + employee profiles embedded</span></div>
+        <div class="flex gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-16">Active</span><span class="text-xs text-gray-300">Claude API — AI agent grounded on workforce data via RAG</span></div>
+        <div class="flex gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-16">Active</span><span class="text-xs text-gray-300">Static GitHub Pages — dual-view Functional/Program platform</span></div>
       </div>
     </div>
     <div class="card p-4">
-      <h3 class="font-semibold text-white text-sm mb-3">Phase 2 — IT Integration (Next)</h3>
+      <h3 class="font-semibold text-white text-sm mb-3">Phase 2 — IT Integration</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">SAP SuccessFactors OData API → employee master data, H2R event log</span></div>
-        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">SAP HCM/ECC → position data, org hierarchy, payroll</span></div>
-        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Databricks Delta Lake (Bronze/Silver/Gold) · Unity Catalog governance</span></div>
-        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Near-real-time pipeline — nightly batch Phase 2 · event-driven Phase 3</span></div>
-        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Tableau Server — strategic analytics for leadership</span></div>
+        <div class="flex gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-16">Planned</span><span class="text-xs text-gray-300">SAP SuccessFactors OData API → employee master, H2R event log</span></div>
+        <div class="flex gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-16">Planned</span><span class="text-xs text-gray-300">SAP PS / Project System → programme allocation, critical path</span></div>
+        <div class="flex gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-16">Planned</span><span class="text-xs text-gray-300">Databricks Delta Lake — Bronze/Silver/Gold · Unity Catalog</span></div>
+        <div class="flex gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-16">Planned</span><span class="text-xs text-gray-300">Near-real-time pipeline → event-driven in Phase 3</span></div>
       </div>
     </div>
   </div>
-
   <div class="card p-4">
-    <img src="assets/architecture.png" alt="Platform Architecture Diagram" class="w-full rounded-lg"
-      onerror="this.parentElement.innerHTML='<p class=\'text-gray-400 text-center py-6 text-sm\'>Run generate_diagram.py to generate the architecture diagram</p>'">
+    <img src="assets/architecture.png" alt="Architecture" class="w-full rounded-lg"
+      onerror="this.parentElement.innerHTML='<p class=\'text-gray-500 text-center py-8 text-sm\'>Run generate_diagram.py to generate architecture diagram</p>'">
   </div>
 </div>
 
 </main>
 </div>
 
+<!-- Floating Ask button (visible on non-agent sections) -->
+<button class="floating-ask" id="floatBtn" style="display:none" onclick="showSection('agent')">&#129302; Ask AI</button>
+
 <script>
+// ── State ─────────────────────────────────────────────────────────────────
+let VIEW='functional', SCOPE_FN='', SCOPE_PG='', OWNER='action';
+let PORTS=[], FUNCS=[], PROGS=[], EMPS=[], ALLOC=[];
+let ACTIONS_LIST=[];
+let ALLOC_UNIT='headcount';
+let CURRENT_SECTION='agent';
+
 // ── Data loading ──────────────────────────────────────────────────────────
-let EMP=[], PROG=[], ATT=[], LOG=[], ACTIONS=[];
-let currentOwner = 'action';
-
-async function loadData() {
-  try {
-    const [e,p,a,l] = await Promise.all([
-      fetch('assets/employees.json').then(r=>r.json()),
-      fetch('assets/programs.json').then(r=>r.json()),
-      fetch('assets/attrition.json').then(r=>r.json()),
-      fetch('assets/action_log.json').then(r=>r.json()),
+async function loadData(){
+  try{
+    const [po,fu,pr,em,al]=await Promise.all([
+      fetch('assets/portfolios.json').then(r=>r.json()),
+      fetch('assets/functions.json').then(r=>r.json()),
+      fetch('assets/programs_v2.json').then(r=>r.json()),
+      fetch('assets/employees_v2.json').then(r=>r.json()),
+      fetch('assets/allocation_matrix.json').then(r=>r.json()),
     ]);
-    EMP=e; PROG=p; ATT=a; LOG=l;
-    generateActions();
-    renderAll();
-  } catch(err) {
-    console.error('Data load error:',err);
-    // Use minimal inline fallback so demo still works
-    EMP=[]; PROG=[]; ATT=[]; LOG=[];
-    generateActions();
-    renderAll();
-  }
-}
-
-// ── Navigation ────────────────────────────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('section-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
-}
-
-function setOwner(type) {
-  currentOwner = type;
-  document.querySelectorAll('.owner-btn').forEach(b=>{
-    b.className = 'owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all';
-  });
-  document.getElementById('btn-'+type).className = 'owner-btn text-xs px-3 py-1 rounded-md bg-blue-700 text-white font-medium transition-all';
-  const tags = {
-    action: 'Showing your active cases and team — Action Owner view',
-    bp:     'Showing your department portfolio — Business Partner view',
-    leader: 'Showing enterprise-wide workforce health — Leader view',
-  };
-  const el = document.getElementById('ownerTagline');
-  if(el) el.textContent = tags[type];
+    PORTS=po; FUNCS=fu; PROGS=pr; EMPS=em; ALLOC=al;
+  }catch(e){ console.error('Data load error',e); }
+  buildScopeSelectors();
+  generateActions();
+  buildSidebarList();
   renderAll();
+  buildPromptLibrary();
+  buildFullPlib();
+  buildQuickChips();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-const fmt = n => n?.toLocaleString('en-GB') ?? '—';
-const pct = n => Math.round(n)+'%';
-const riskColor = s => s>65?'risk-critical':s>45?'risk-high':s>25?'risk-medium':'risk-low';
-const riskLabel = s => s>65?'Critical':s>45?'High':s>25?'Medium':'Low';
-const roadColor = r => ({Retain:'text-amber-400',Optimize:'text-purple-400',Acquire:'text-blue-400',Develop:'text-emerald-400'}[r]||'text-gray-400');
-const roadBg    = r => ({Retain:'bg-amber-950 border-amber-900',Optimize:'bg-purple-950 border-purple-900',Acquire:'bg-blue-950 border-blue-900',Develop:'bg-emerald-950 border-emerald-900'}[r]||'bg-gray-800');
+const fmt   = n => n?.toLocaleString('en-GB')??'—';
+const pct   = n => Math.round(n)+'%';
+const rc    = s => s>=75?'#065f46':s>=55?'#713f12':'#7f1d1d';
+const rcTxt = s => s>=75?'#6ee7b7':s>=55?'#fde68a':'#fca5a5';
+const riskPill = s => {
+  if(s>65) return '<span class="pill risk-c">Critical</span>';
+  if(s>50) return '<span class="pill risk-h">High</span>';
+  if(s>30) return '<span class="pill risk-m">Medium</span>';
+  return '<span class="pill risk-l">Low</span>';
+};
 
-function kpiCard(label, value, sub, color='text-white') {
-  return `<div class="card p-4"><p class="text-xs text-gray-400 mb-1">${label}</p><p class="text-2xl font-bold ${color}">${value}</p><p class="text-xs text-gray-500 mt-1">${sub}</p></div>`;
+function scopedEmps(){
+  if(VIEW==='functional' && SCOPE_FN) return EMPS.filter(e=>e.function_id===SCOPE_FN);
+  if(VIEW==='program'    && SCOPE_PG) return EMPS.filter(e=>e.programs?.includes(SCOPE_PG));
+  return EMPS;
+}
+function scopedLabel(){
+  if(VIEW==='functional' && SCOPE_FN){
+    const f=FUNCS.find(f=>f.id===SCOPE_FN);
+    return f?`${f.name} (${fmt(f.headcount_actual)} FTEs)`:'Selected Function';
+  }
+  if(VIEW==='program' && SCOPE_PG){
+    const p=PROGS.find(p=>p.id===SCOPE_PG);
+    return p?`${p.name} — ${p.phase}`:'Selected Programme';
+  }
+  return 'Enterprise (54,500 FTEs)';
 }
 
-function bar(val, max, color) {
-  const w = Math.round(Math.min(100,(val/max)*100));
-  return `<div class="w-full bg-gray-800 rounded-full h-1.5 mt-1"><div class="bar rounded-full ${color}" style="width:${w}%"></div></div>`;
+// ── Navigation ────────────────────────────────────────────────────────────
+function showSection(id){
+  CURRENT_SECTION=id;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item[id^="snav-"]').forEach(b=>b.classList.remove('active'));
+  const sec=document.getElementById('section-'+id);
+  if(sec) sec.classList.add('active');
+  const nav=document.getElementById('snav-'+id);
+  if(nav) nav.classList.add('active');
+  const fb=document.getElementById('floatBtn');
+  if(fb) fb.style.display = id==='agent'?'none':'flex';
+  if(id==='temporal') renderTemporal();
+  if(id==='alloc')    renderAllocMatrix();
+  if(id==='roadmap')  renderROADHeatmap();
+  if(id==='overview') renderOverview();
+  if(id==='actions')  renderActions();
 }
 
-// ── Action plan generator ─────────────────────────────────────────────────
-function generateActions() {
-  ACTIONS = [];
-
-  // RETAIN actions from high flight risk + regrettable
-  const atRisk = EMP.filter(e=>e.flight_risk_score>=60 && e.would_be_regrettable).slice(0,4);
-  atRisk.forEach(e => {
-    const replCost = Math.round(e.base_salary_gbp * 1.4);
-    const actCost  = Math.round(e.base_salary_gbp * 0.08);
-    const roi      = Math.round(replCost / actCost);
-    ACTIONS.push({
-      road:'Retain', priority:'Critical',
-      title:`Retention risk: ${e.name} — ${e.role}`,
-      driver:`Flight risk ${e.flight_risk_score}% driven by: compa-ratio ${e.compa_ratio} (${e.compa_ratio<0.95?'below peers':'at market'}), ${e.months_since_promotion} months without promotion, ${e.engagement_score<65?'low engagement score '+e.engagement_score:''}`,
-      impact:`If ${e.name.split(' ')[0]} leaves: programme delivery risk${e.on_critical_path?' — currently on critical path':''}. Estimated replacement cost £${fmt(replCost)}. Lead time to replace: 6-12 months.`,
-      action:`1. Schedule career development conversation this week. 2. ${e.compa_ratio<0.92?'Submit for compensation review — currently '+Math.round(e.compa_ratio*100)+'% of peer midpoint.':''} 3. ${e.succession_status.includes('Not')?"Nominate for succession pool — role is "+e.grade+".":'Confirm development plan milestones.'} 4. HR Business Partner to review team engagement.`,
-      cost_action: actCost, cost_inaction: replCost, roi,
-      owner:'Action Owner — Line Manager',
-      dept: e.department, program: e.programs[0]||'',
-    });
+// ── View mode & scope ────────────────────────────────────────────────────
+function setViewMode(v){
+  VIEW=v;
+  ['functional','program'].forEach(m=>{
+    const b=document.getElementById('vbtn-'+m);
+    if(b){ b.classList.toggle('active',m===v); }
   });
-
-  // RETAIN — contagion warning
-  const regAtt = ATT.filter(a=>a.regrettability==='Regrettable' && a.contagion_team_members_at_risk>0);
-  if(regAtt.length>0) {
-    const a = regAtt[0];
-    ACTIONS.push({
-      road:'Retain', priority:'High',
-      title:`Turnover contagion risk — ${a.department} team`,
-      driver:`${a.name} departed ${a.departure_date} (regrettable — ${a.departure_reason}). ${a.contagion_team_members_at_risk} remaining teammate(s) show elevated flight risk (${a.contagion_risk_uplift_pct}% increase).`,
-      impact:`Research shows 40-80% risk uplift for direct teammates within 6 months. Team is on ${a.program==='Corporate / Internal'?'internal work':a.program}. Knowledge documented: ${a.knowledge_documented}.`,
-      action:`1. HR Business Partner to schedule team pulse check this month. 2. Line Manager to review workload redistribution. 3. Prioritise career conversations with team members showing flight risk. 4. Assess if team restructure is needed.`,
-      cost_action: 5000, cost_inaction: Math.round(65000 * a.contagion_team_members_at_risk * 0.4), roi: Math.round((65000 * a.contagion_team_members_at_risk * 0.4)/5000),
-      owner:'Business Partner — HR Business Partner',
-      dept: a.department, program: a.program,
-    });
-  }
-
-  // ACQUIRE actions from program headcount gaps
-  PROG.forEach(p => {
-    const totalGap = Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0);
-    if(totalGap>0 && p.delivery_risk_score>40) {
-      const biggestGapRole = Object.entries(p.headcount_gap||{}).sort((a,b)=>b[1]-a[1])[0];
-      if(biggestGapRole) {
-        const leadMonths = p.lead_time_months[biggestGapRole[0]]||6;
-        const actCost = biggestGapRole[1] * 45000;
-        const delayCost = Math.round(p.value_gbp * 0.05 * 1000000);
-        ACTIONS.push({
-          road:'Acquire', priority: p.delivery_risk_score>65?'Critical':'High',
-          title:`Pipeline gap — ${biggestGapRole[0]} on ${p.name}`,
-          driver:`${biggestGapRole[1]} ${biggestGapRole[0]} positions unfilled. Programme phase: ${p.phase_short}. Delivery risk score: ${p.delivery_risk_score}. Lead time for this role type: ${leadMonths} months.`,
-          impact:`${p.milestones?.filter(m=>m.status==='At Risk'||m.status==='Delayed').length||0} milestones currently at risk on this programme. Late delivery risk to £${p.value_gbp}M contract.`,
-          action:`1. Open ${biggestGapRole[1]} requisition(s) immediately — need in seat by ${leadMonths} months. 2. Engage cleared contractor pool as bridge while permanent hire progresses. 3. Review scope of roles requiring SC/DV clearance — plan clearance initiation now. 4. Report to Programme Director this week.`,
-          cost_action: actCost, cost_inaction: delayCost, roi: Math.round(delayCost/actCost),
-          owner:'Action Owner — Talent Acquisition', dept: biggestGapRole[0], program: p.id,
-        });
-      }
-    }
-  });
-
-  // OPTIMIZE — span of control
-  const overloaded = EMP.filter(e=>e.direct_reports>=12);
-  if(overloaded.length>0) {
-    ACTIONS.push({
-      road:'Optimize', priority:'High',
-      title:`${overloaded.length} manager(s) exceed optimal span of control`,
-      driver:`${overloaded.map(e=>e.name.split(' ')[0]).join(', ')} each manage 12+ direct reports. Research shows productivity declines and manager effectiveness drops above 12 reports. Average engagement in over-managed teams: ${Math.round(overloaded.reduce((s,e)=>s+e.engagement_score,0)/overloaded.length)}.`,
-      impact:`Over-managed teams show 20-35% lower decision velocity. Manager burnout risk elevated. Talent development quality declines when managers cannot give adequate attention to each person.`,
-      action:`1. Review team structures for ${overloaded.map(e=>e.department).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}. 2. Identify team lead candidates who could take 3-4 reports. 3. Present restructure options to relevant Leader. 4. Target: no manager above 10 direct reports within 2 quarters.`,
-      cost_action: 8000, cost_inaction: Math.round(overloaded.length * 45000 * 0.2), roi: Math.round((overloaded.length*45000*0.2)/8000),
-      owner:'Business Partner — HR Business Partner', dept:'Multiple', program:'',
-    });
-  }
-
-  // DEVELOP — succession gaps
-  const noSucc = EMP.filter(e=>e.succession_status==='Not Nominated' && e.direct_reports>0 && e.key_person_dependency).slice(0,3);
-  if(noSucc.length>0) {
-    ACTIONS.push({
-      road:'Develop', priority:'High',
-      title:`${noSucc.length} key person(s) with no succession plan`,
-      driver:`${noSucc.map(e=>e.name.split(' ')[0]+' ('+e.role+')').join(', ')} — identified as key person dependencies with no successor nominated. Departure would leave a critical gap.`,
-      impact:`Combined replacement cost if all departed: £${fmt(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0))}. Lead time to fill senior roles: 12-18 months. Programme risk: HIGH.`,
-      action:`1. HR Business Partner to schedule succession conversation with each Line Manager within 30 days. 2. Identify 2 internal candidates per role for development pipeline. 3. Create individual development plans aligned to next grade competency requirements. 4. Report succession coverage to Leader quarterly.`,
-      cost_action: 12000, cost_inaction: noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0), roi: Math.round(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0)/12000),
-      owner:'Business Partner — HR Business Partner', dept:'Multiple', program:'',
-    });
-  }
-
-  // Sort by priority
-  const pOrder = {Critical:0,High:1,Medium:2,Low:3};
-  ACTIONS.sort((a,b)=>pOrder[a.priority]-pOrder[b.priority]);
+  SCOPE_FN=''; SCOPE_PG='';
+  buildScopeSelectors();
+  buildSidebarList();
+  renderAll();
 }
 
-// ── Render all sections ────────────────────────────────────────────────────
-function renderAll() {
+function buildScopeSelectors(){
+  const sel=document.getElementById('scopeSel');
+  const asel=document.getElementById('agentScope');
+  if(!sel||!asel) return;
+  if(VIEW==='functional'){
+    const opts='<option value="">All Functions</option>'+FUNCS.map(f=>`<option value="${f.id}">${f.name} (${fmt(f.headcount_actual)})</option>`).join('');
+    sel.innerHTML=opts; asel.innerHTML=opts;
+  } else {
+    const opts='<option value="">All Programmes</option>'+PROGS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+    sel.innerHTML=opts; asel.innerHTML=opts;
+  }
+}
+
+function onScopeChange(){
+  const v=document.getElementById('scopeSel').value;
+  if(VIEW==='functional') SCOPE_FN=v; else SCOPE_PG=v;
+  document.getElementById('agentScope').value=v;
+  renderAll();
+}
+
+function updateAgentScope(){
+  const v=document.getElementById('agentScope').value;
+  document.getElementById('scopeSel').value=v;
+  if(VIEW==='functional') SCOPE_FN=v; else SCOPE_PG=v;
+}
+
+function buildSidebarList(){
+  const el=document.getElementById('sidebar-list');
+  const lb=document.getElementById('sidebar-list-label');
+  if(!el||!lb) return;
+  if(VIEW==='functional'){
+    lb.textContent='Functions';
+    el.innerHTML=FUNCS.map(f=>`<button onclick="drillFn('${f.id}')" class="nav-item w-full justify-start mb-0.5 text-left">
+      <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:${riskScoreColor(f.road_health.overall)}"></span>
+      <span class="truncate">${f.name}</span>
+    </button>`).join('');
+  } else {
+    lb.textContent='Portfolios / Programmes';
+    el.innerHTML=PORTS.map(pt=>`
+      <div class="mb-1">
+        <p class="text-xs font-bold px-2 mb-0.5" style="color:${pt.color}">${pt.short}</p>
+        ${PROGS.filter(p=>p.portfolio_id===pt.id).map(p=>`
+          <button onclick="drillProg('${p.id}')" class="nav-item w-full justify-start mb-0.5 text-left pl-4">
+            <span class="truncate">${p.short}</span>
+          </button>`).join('')}
+      </div>`).join('');
+  }
+}
+
+function riskScoreColor(s){ return s>=75?'#10b981':s>=55?'#f59e0b':'#ef4444'; }
+
+function drillFn(id){
+  VIEW='functional'; SCOPE_FN=id; SCOPE_PG='';
+  document.getElementById('scopeSel').value=id;
+  document.getElementById('agentScope').value=id;
+  document.getElementById('vbtn-functional').classList.add('active');
+  document.getElementById('vbtn-program').classList.remove('active');
+  renderAll();
+  // Go to temporal view as default drill-in
+  showSection('temporal');
+  document.getElementById('tempFnSel').value=id;
+  renderTemporal();
+}
+
+function drillProg(id){
+  VIEW='program'; SCOPE_PG=id; SCOPE_FN='';
+  document.getElementById('scopeSel').value=id;
+  document.getElementById('agentScope').value=id;
+  document.getElementById('vbtn-program').classList.add('active');
+  document.getElementById('vbtn-functional').classList.remove('active');
+  renderAll();
+  showSection('alloc');
+}
+
+function setOwner(o){
+  OWNER=o;
+  document.querySelectorAll('.owner-btn').forEach(b=>{
+    b.className='owner-btn text-xs px-2.5 py-1 rounded-md text-gray-400 hover:text-white';
+  });
+  const b=document.getElementById('ob-'+o);
+  if(b) b.className='owner-btn text-xs px-2.5 py-1 rounded-md bg-blue-700 text-white font-medium';
+}
+
+function setAllocUnit(u){
+  ALLOC_UNIT=u;
+  ['hc','pc','rs'].forEach(x=>{
+    const b=document.getElementById('au-'+x);
+    if(b) b.className='text-xs px-2.5 py-1 rounded '+(u===({hc:'headcount',pc:'pct',rs:'risk'}[x])?'bg-blue-700 text-white':'bg-gray-800 text-gray-300');
+  });
+  renderAllocMatrix();
+}
+
+// ── renderAll ────────────────────────────────────────────────────────────
+function renderAll(){
   renderOverview();
-  renderDelivery();
-  renderRetain();
-  renderOptimize();
-  renderAcquire();
-  renderDevelop();
-  renderActions('all');
-  renderPeople();
-  populateDeptFilter();
+  renderROADHeatmap();
+  renderActions();
 }
 
-// ── OVERVIEW ───────────────────────────────────────────────────────────────
-function renderOverview() {
-  const highFR = EMP.filter(e=>e.flight_risk_score>=60).length;
-  const regret = EMP.filter(e=>e.would_be_regrettable).length;
-  const regAtt = ATT.filter(a=>a.regrettability==='Regrettable').length;
-  const critMiles = PROG.reduce((s,p)=>(p.milestones||[]).filter(m=>m.status!='On Track').length+s,0);
-  const avgEngage = Math.round(EMP.reduce((s,e)=>s+e.engagement_score,0)/Math.max(1,EMP.length));
-
-  const kpiEl = document.getElementById('kpiRow');
-  if(kpiEl) kpiEl.innerHTML = [
-    kpiCard('Workforce Readiness Score','67<span class="text-lg text-gray-400">/100</span>','Down 3 points this quarter','text-white'),
-    kpiCard('High Flight Risk',highFR,'Would be regrettable to lose','text-red-400'),
-    kpiCard('Milestones at Risk',critMiles,'Across all active programmes','text-amber-400'),
-    kpiCard('Regrettable Attrition<br>(Last 18mo)',regAtt+' of '+ATT.length,''+Math.round(regAtt/Math.max(1,ATT.length)*100)+'% regrettability rate','text-amber-400'),
-    kpiCard('Team Engagement',avgEngage+'<span class="text-lg text-gray-400">/100</span>','Average across all departments','text-emerald-400'),
-  ].join('');
-
-  // ROAD health bars
-  const roadEl = document.getElementById('roadHealth');
-  if(roadEl) {
-    const avgFR = Math.round(EMP.reduce((s,e)=>s+e.flight_risk_score,0)/Math.max(1,EMP.length));
-    const starOvr= Math.round(EMP.reduce((s,e)=>s+e.star_overall,0)/Math.max(1,EMP.length));
-    const pipeHealth = Math.round((LOG.filter(l=>l.risk_label==='Low').length/Math.max(1,LOG.length))*100);
-    const compMatch  = Math.round(EMP.reduce((s,e)=>s+e.competency_match_pct,0)/Math.max(1,EMP.length));
-    roadEl.innerHTML = [
-      ['Retain — Stabilize critical skills',100-avgFR,'bg-amber-400'],
-      ['Optimize — Org performance & productivity',starOvr,'bg-purple-400'],
-      ['Acquire — Talent on time at right cost',pipeHealth,'bg-blue-400'],
-      ['Develop — Build skills, empower leaders',compMatch,'bg-emerald-400'],
-    ].map(([label,val,col])=>`<div>
-      <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">${label}</span><span class="${col.replace('bg-','text-')}">${val}</span></div>
-      ${bar(val,100,col)}
-    </div>`).join('');
-  }
-
-  // Delivery snapshot
-  const delEl = document.getElementById('deliverySnapshot');
-  if(delEl) delEl.innerHTML = PROG.map(p=>`
-    <div class="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
-      <div class="flex-1 min-w-0"><p class="text-xs font-medium text-white truncate">${p.name}</p><p class="text-xs text-gray-400">${p.phase_short} · £${p.value_gbp}M</p></div>
-      <span class="pill ${riskColor(p.delivery_risk_score)} ml-2 flex-shrink-0">${riskLabel(p.delivery_risk_score)}</span>
-    </div>`).join('');
-
-  // Top actions
-  const topEl = document.getElementById('topActions');
-  if(topEl) topEl.innerHTML = ACTIONS.slice(0,3).map(a=>`
-    <div class="flex items-start gap-3 p-3 ${roadBg(a.road)} border rounded-lg">
-      <span class="pill ${a.priority==='Critical'?'risk-critical':'risk-high'} flex-shrink-0 mt-0.5">${a.priority}</span>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium text-white">${a.title}</p>
-        <p class="text-xs text-gray-400 mt-0.5">${a.driver.substring(0,120)}...</p>
+// ── OVERVIEW ─────────────────────────────────────────────────────────────
+function renderOverview(){
+  // Portfolio cards
+  const pc=document.getElementById('portfolioCards');
+  if(pc) pc.innerHTML=PORTS.map(pt=>{
+    const progs=PROGS.filter(p=>p.portfolio_id===pt.id);
+    const avgRisk=Math.round(progs.reduce((s,p)=>s+p.delivery_risk_score,0)/Math.max(1,progs.length));
+    return `<div class="card p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-2 h-2 rounded-full" style="background:${pt.color}"></div>
+        <p class="text-sm font-bold text-white">${pt.short}</p>
+        ${riskPill(avgRisk)}
       </div>
-      <div class="flex-shrink-0 text-right">
-        <p class="text-xs font-bold ${roadColor(a.road)}">${a.road}</p>
-        <p class="text-xs text-gray-400">${a.owner.split(' — ')[0]}</p>
-      </div>
-    </div>`).join('');
-}
-
-// ── PROGRAM DELIVERY ───────────────────────────────────────────────────────
-function renderDelivery() {
-  // Ahead of Ready
-  const aheadEl = document.getElementById('aheadOfReady');
-  if(aheadEl && PROG.length>0) {
-    aheadEl.innerHTML = PROG.map(p=>{
-      const roles = Object.keys(p.headcount_needed||{});
-      const rows = roles.map(r=>{
-        const needed = p.headcount_needed[r];
-        const current= p.headcount_current[r];
-        const gap    = p.headcount_gap[r];
-        const lead   = p.lead_time_months[r];
-        const pct    = Math.round((current/needed)*100);
-        const status = gap<=0?'Ahead of Ready':lead>9?'Behind — Start Now':'At Risk';
-        const col    = gap<=0?'bg-emerald-700':'bg-red-800';
-        return `<div class="flex items-center gap-3 mb-1">
-          <span class="text-xs text-gray-400 w-40">${r}</span>
-          <div class="flex-1 bg-gray-800 rounded h-7 overflow-hidden">
-            <div class="ahead-bar ${col}" style="width:${pct}%">${current}/${needed}</div>
-          </div>
-          <span class="text-xs w-24 text-right ${gap<=0?'text-emerald-400':lead>9?'text-red-400':'text-amber-400'}">${status}</span>
-          <span class="text-xs text-gray-500 w-28">Lead time: ${lead}mo</span>
-        </div>`;
-      }).join('');
-      return `<div class="bg-gray-800 rounded-lg p-3">
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-sm font-semibold text-white">${p.name}</p>
-          <span class="pill ${riskColor(p.delivery_risk_score)}">${riskLabel(p.delivery_risk_score)} delivery risk</span>
-        </div>${rows}
-      </div>`;
-    }).join('');
-  }
-
-  // TOC Constraints
-  const bottleneck = LOG.sort((a,b)=>b.days_open-a.days_open).slice(0,3);
-  const tocP = document.getElementById('tocProcess');
-  if(tocP) tocP.innerHTML = [
-    {label:'Security Clearance Initiated → Cleared',days:65,bench:20,note:'DV clearance average 14 months'},
-    {label:'Requisition Raised → Job Posted',days:18,bench:5,note:'Hiring Manager approval delays'},
-    {label:'Final Interview → Offer Extended',days:12,bench:3,note:'Internal approval chain too long'},
-  ].map(b=>`<div class="p-2 bg-gray-800 rounded-lg">
-    <p class="text-xs font-medium text-white">${b.label}</p>
-    <div class="flex items-center gap-2 mt-1">
-      <span class="text-xs text-red-400 font-bold">${b.days} days avg</span>
-      <span class="text-xs text-gray-500">vs ${b.bench} day target</span>
-    </div>
-    <p class="text-xs text-gray-400 mt-0.5">${b.note}</p>
-  </div>`).join('');
-
-  const scarce = [
-    {skill:'Developed Vetting (DV) Cleared Engineers',avail:'6 in market',demand:'14 needed',score:91},
-    {skill:'R&M Engineering — Lead Practitioner',avail:'12 in market',demand:'8 needed',score:74},
-    {skill:'Mission Systems Architecture',avail:'22 in market',demand:'11 needed',score:58},
-  ];
-  const tocS = document.getElementById('tocSkills');
-  if(tocS) tocS.innerHTML = scarce.map(s=>`<div class="p-2 bg-gray-800 rounded-lg">
-    <p class="text-xs font-medium text-white">${s.skill}</p>
-    <div class="flex items-center gap-2 mt-1">
-      <span class="pill ${riskColor(s.score)}">${riskLabel(s.score)}</span>
-      <span class="text-xs text-gray-400">${s.avail} · ${s.demand}</span>
-    </div>
-  </div>`).join('');
-
-  const tocC = document.getElementById('tocCapacity');
-  if(tocC) {
-    const over = EMP.filter(e=>e.direct_reports>=10).slice(0,3);
-    tocC.innerHTML = over.length>0 ? over.map(e=>`<div class="p-2 bg-gray-800 rounded-lg">
-      <p class="text-xs font-medium text-white">${e.name}</p>
-      <p class="text-xs text-gray-400">${e.role} · ${e.direct_reports} direct reports</p>
-      <p class="text-xs text-amber-400 mt-0.5">Engagement: ${e.engagement_score}/100</p>
-    </div>`).join('') : '<p class="text-xs text-gray-400">No managers above threshold.</p>';
-  }
-
-  // Milestones
-  const msEl = document.getElementById('milestoneTable');
-  if(msEl) {
-    const rows = PROG.flatMap(p=>(p.milestones||[]).map(m=>({prog:p.name,short:p.phase_short,...m})));
-    msEl.innerHTML = `<table class="w-full text-xs"><thead class="bg-gray-800"><tr class="text-gray-400 text-left">
-      <th class="px-3 py-2">Programme</th><th class="px-3 py-2">Milestone</th><th class="px-3 py-2">Date</th><th class="px-3 py-2 text-center">Status</th><th class="px-3 py-2">Workforce Risk</th>
-    </tr></thead><tbody>${rows.map(m=>{
-      const col = m.status==='On Track'?'text-emerald-400':m.status==='Delayed'?'text-red-400':'text-amber-400';
-      const risk= m.status==='Delayed'?'HIGH — talent gap contributing to delay':m.status==='At Risk'?'MEDIUM — talent pipeline needs immediate action':'LOW — on track';
-      return `<tr class="border-b border-gray-800 hover:bg-gray-800">
-        <td class="px-3 py-2 text-white font-medium">${m.prog.substring(0,30)}</td>
-        <td class="px-3 py-2 text-gray-300">${m.name}</td>
-        <td class="px-3 py-2 text-gray-300">${m.date}</td>
-        <td class="px-3 py-2 text-center"><span class="${col} font-semibold">${m.status}</span></td>
-        <td class="px-3 py-2 text-gray-400">${risk}</td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
-  }
-}
-
-// ── RETAIN ─────────────────────────────────────────────────────────────────
-
-// Factor definitions — mirrors the scoring model in generate_data.py
-const RISK_FACTORS = [
-  { id:'base',     label:'Base rate',                  desc:'Applied to every employee',                          pts:28,  maxPts:28,  color:'bg-gray-600',   active: ()=>true },
-  { id:'pay_gap',  label:'Pay gap >10% below peers',   desc:'Compa-ratio < 0.90 — salary below peer midpoint',    pts:20,  maxPts:20,  color:'bg-red-600',    active: e=>e.compa_ratio<0.90 },
-  { id:'pay_sev',  label:'Pay gap >15% below peers',   desc:'Compa-ratio < 0.85 — additional penalty',            pts:12,  maxPts:12,  color:'bg-red-700',    active: e=>e.compa_ratio<0.85 },
-  { id:'perf',     label:'High performer / marketable', desc:'Performance ≥ 4 — high demand in external market',  pts:10,  maxPts:10,  color:'bg-amber-600',  active: e=>e.performance_current>=4 },
-  { id:'ceiling',  label:'Career ceiling',             desc:'9+ years tenure — risk of stagnation',               pts:8,   maxPts:8,   color:'bg-orange-600', active: e=>e.org_tenure_yrs>8 },
-  { id:'demand',   label:'High market demand (Cyber)', desc:'Cybersecurity discipline — scarce, competed for',    pts:14,  maxPts:14,  color:'bg-purple-600', active: e=>e.department==='Cybersecurity' },
-  { id:'newjoin',  label:'New joiner (sticky period)', desc:'< 2 years tenure — less likely to leave yet',        pts:-15, maxPts:-15, color:'bg-emerald-700',active: e=>e.org_tenure_yrs<2 },
-  { id:'noise',    label:'Individual variation band',  desc:'Model uncertainty ± 10 points per person',           pts:0,   maxPts:10,  color:'bg-gray-700',   active: ()=>false },
-];
-
-function getActiveFactors(e) {
-  return RISK_FACTORS.filter(f=>f.active(e));
-}
-
-function computeModelScore(e) {
-  return Math.max(5, Math.min(92, RISK_FACTORS.reduce((s,f)=>s+(f.active(e)?f.pts:0),0)));
-}
-
-function renderRetain() {
-  const highFR   = EMP.filter(e=>e.flight_risk_score>=60).length;
-  const regretFR = EMP.filter(e=>e.flight_risk_score>=60 && e.would_be_regrettable).length;
-  const regAtt   = ATT.filter(a=>a.regrettability==='Regrettable').length;
-  const avgEng   = Math.round(EMP.reduce((s,e)=>s+e.engagement_score,0)/Math.max(1,EMP.length));
-
-  const el = document.getElementById('retainKpis');
-  if(el) el.innerHTML = [
-    kpiCard('High Flight Risk',highFR,'Employees with >60% flight risk score','text-red-400'),
-    kpiCard('Would Be Regrettable',regretFR,'High risk AND programme-critical','text-red-400'),
-    kpiCard('Regrettable Attrition<br>(18 months)',regAtt,'Departures that impacted delivery','text-amber-400'),
-    kpiCard('Average Engagement',avgEng+'/100','Across all departments','text-emerald-400'),
-  ].join('');
-
-  // ── Scoring model grid ──────────────────────────────────────────────────
-  const mdlEl = document.getElementById('riskModelGrid');
-  if(mdlEl) {
-    const maxTotal = RISK_FACTORS.filter(f=>f.pts>0).reduce((s,f)=>s+f.pts,0);
-    mdlEl.innerHTML = RISK_FACTORS.map(f=>{
-      const w = Math.abs(f.pts)/maxTotal*100;
-      const ptsLabel = f.pts===0?'±10':f.pts>0?'+'+f.pts:f.pts;
-      const ptsColor = f.pts<0?'text-emerald-400':f.pts===0?'text-gray-400':'text-red-300';
-      const prevalence = f.id==='base'?95:f.id==='noise'?100:
-        Math.round(EMP.filter(e=>f.active(e)).length/Math.max(1,EMP.length)*100);
-      return `<div class="bg-gray-800 rounded-lg p-3">
-        <div class="flex items-start justify-between mb-1.5">
-          <p class="text-xs font-semibold text-white leading-tight">${f.label}</p>
-          <span class="text-sm font-bold ${ptsColor} ml-2 flex-shrink-0">${ptsLabel}</span>
-        </div>
-        <p class="text-xs text-gray-400 mb-2">${f.desc}</p>
-        <div class="w-full bg-gray-700 rounded-full h-1.5 mb-1">
-          <div class="${f.color} h-1.5 rounded-full" style="width:${Math.round(w)}%"></div>
-        </div>
-        <p class="text-xs text-gray-500">${f.id==='base'?'Always active':f.id==='noise'?'Applied to all':'Active for '+prevalence+'% of workforce'}</p>
-      </div>`;
-    }).join('');
-  }
-
-  // ── Attrition chart ─────────────────────────────────────────────────────
-  const months    = [...new Set(ATT.map(a=>a.departure_date))].sort().slice(-12);
-  const regByMonth= months.map(m=>ATT.filter(a=>a.departure_date===m&&a.regrettability==='Regrettable').length);
-  const nonByMonth= months.map(m=>ATT.filter(a=>a.departure_date===m&&a.regrettability!=='Regrettable').length);
-
-  const ctx = document.getElementById('attritionChart');
-  if(ctx && !ctx._chartInst) {
-    ctx._chartInst = new Chart(ctx,{
-      type:'bar',
-      data:{
-        labels: months.length>0 ? months : ['No data'],
-        datasets:[
-          {label:'Regrettable',   data:regByMonth, backgroundColor:'#ef4444',borderRadius:3},
-          {label:'Non-regrettable',data:nonByMonth,backgroundColor:'#374151',borderRadius:3},
-        ]
-      },
-      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'},stacked:true},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'},stacked:true}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
-    });
-  }
-
-  // ── Contagion ───────────────────────────────────────────────────────────
-  const cEl = document.getElementById('contagionView');
-  if(cEl) {
-    const contagion = ATT.filter(a=>a.contagion_team_members_at_risk>0 && a.regrettability==='Regrettable');
-    cEl.innerHTML = contagion.length>0 ? contagion.map(a=>`
-      <div class="p-3 bg-red-950 border border-red-900 rounded-lg">
-        <p class="text-xs font-medium text-white">${a.name} left ${a.departure_date} — ${a.department}</p>
-        <p class="text-xs text-gray-300 mt-1">Reason: ${a.departure_reason}</p>
-        <div class="flex items-center gap-3 mt-2">
-          <span class="text-xs text-red-400 font-bold">${a.contagion_team_members_at_risk} teammate(s) at elevated risk</span>
-          <span class="text-xs text-gray-400">+${a.contagion_risk_uplift_pct}% flight risk uplift</span>
-        </div>
-        <p class="text-xs text-amber-300 mt-1">Action: Team pulse check + workload review</p>
-      </div>`).join('') : '<p class="text-xs text-gray-400 p-3">No active contagion events detected.</p>';
-  }
-
-  // ── Flight risk table with per-person factor breakdown ──────────────────
-  const frEl = document.getElementById('flightRiskTable');
-  if(frEl) {
-    const ranked = EMP.filter(e=>e.would_be_regrettable || e.flight_risk_score>=45)
-                      .sort((a,b)=>b.flight_risk_score-a.flight_risk_score).slice(0,12);
-
-    const rows = ranked.map(e=>{
-      const active   = getActiveFactors(e).filter(f=>f.id!=='base'&&f.id!=='noise');
-      const modScore = computeModelScore(e);
-      const diff     = e.flight_risk_score - modScore;
-      const factorPills = active.map(f=>
-        `<span class="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded ${
-          f.pts<0?'bg-emerald-900 text-emerald-300':'bg-red-900 text-red-300'
-        }">${f.pts>0?'+'+f.pts:f.pts} ${f.label.split(' ')[0]}</span>`
-      ).join(' ');
-
-      const barWidth = Math.round(e.flight_risk_score/100*100);
-      const barColor = e.flight_risk_score>=65?'bg-red-500':e.flight_risk_score>=45?'bg-amber-500':'bg-yellow-500';
-
-      return `<tr class="border-b border-gray-800">
-        <td class="px-3 py-3">
-          <p class="text-xs font-semibold text-white">${e.name}</p>
-          <p class="text-xs text-gray-400">${e.role.substring(0,28)}</p>
-        </td>
-        <td class="px-3 py-3 text-xs text-gray-400">${(e.programs||['—'])[0]}</td>
-        <td class="px-3 py-3 text-xs ${e.compa_ratio<0.90?'text-red-400 font-semibold':'text-gray-300'}">${e.compa_ratio}<br><span class="text-gray-500">${e.compa_ratio<0.85?'Severe gap':e.compa_ratio<0.90?'Below peers':e.compa_ratio<0.95?'Slightly below':'At market'}</span></td>
-        <td class="px-3 py-3">
-          <div class="flex items-center gap-2 mb-1">
-            <div class="flex-1 bg-gray-800 rounded-full h-2 w-20">
-              <div class="${barColor} h-2 rounded-full" style="width:${barWidth}%"></div>
-            </div>
-            <span class="text-xs font-bold ${e.flight_risk_score>=65?'text-red-400':e.flight_risk_score>=45?'text-amber-400':'text-yellow-400'}">${e.flight_risk_score}</span>
-          </div>
-          <div class="text-xs text-gray-500">Model: ${modScore}${diff!==0?' (±'+Math.abs(diff)+' variation)':''}</div>
-        </td>
-        <td class="px-3 py-3">
-          <div class="flex flex-wrap gap-1">${factorPills||'<span class="text-xs text-gray-500">Base only</span>'}</div>
-        </td>
-        <td class="px-3 py-3 text-center text-xs ${e.would_be_regrettable?'text-red-400 font-bold':'text-gray-500'}">${e.would_be_regrettable?'Yes — delivery risk':'No'}</td>
-      </tr>`;
-    }).join('');
-
-    frEl.innerHTML = `<table class="w-full">
-      <thead class="bg-gray-800 sticky top-0">
-        <tr class="text-gray-400 text-left text-xs">
-          <th class="px-3 py-2">Person</th>
-          <th class="px-3 py-2">Programme</th>
-          <th class="px-3 py-2">Pay position</th>
-          <th class="px-3 py-2">Score (0–100)</th>
-          <th class="px-3 py-2">Active risk factors</th>
-          <th class="px-3 py-2 text-center">Regrettable?</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>`;
-  }
-}
-
-// ── OPTIMIZE ───────────────────────────────────────────────────────────────
-function renderOptimize() {
-  const starDims = ['Strategy','Structure','Processes','Rewards','People'];
-  const starAvgs = starDims.map(d=>{
-    const key = 'star_'+d.toLowerCase();
-    return Math.round(EMP.reduce((s,e)=>s+(e[key]||0),0)/Math.max(1,EMP.length));
-  });
-  const colors = ['text-blue-400','text-purple-400','text-emerald-400','text-amber-400','text-cyan-400'];
-  const descs  = [
-    'Are workforce capabilities aligned to strategic programme objectives?',
-    'Is the organisational structure right-sized — span of control, layers, reporting?',
-    'Are information flows and decision rights supporting efficient delivery?',
-    'Is compensation and recognition driving the right behaviours and retaining talent?',
-    'Is development, succession, and hiring building the capability needed?',
-  ];
-  const sc = document.getElementById('starCards');
-  if(sc) sc.innerHTML = starDims.map((d,i)=>`
-    <div class="card p-4">
-      <p class="text-xs ${colors[i]} font-semibold mb-1">${d}</p>
-      <p class="text-2xl font-bold text-white">${starAvgs[i]}<span class="text-base text-gray-400">/100</span></p>
-      <p class="text-xs text-gray-400 mt-1">${descs[i]}</p>
-    </div>`).join('');
-
-  // Span chart
-  const ctx2 = document.getElementById('spanChart');
-  const spans = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
-  const spanCounts = spans.map(s=>EMP.filter(e=>e.direct_reports===s).length);
-  if(ctx2 && !ctx2._chartInst) {
-    ctx2._chartInst = new Chart(ctx2,{
-      type:'bar',
-      data:{labels:spans.map(s=>s===0?'IC':s+''),datasets:[{
-        label:'Number of managers',data:spanCounts,
-        backgroundColor:spans.map(s=>s>12?'#ef4444':s<4&&s>0?'#f59e0b':'#3b82f6'),borderRadius:3,
-      }]},
-      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}}},plugins:{legend:{display:false}}}
-    });
-  }
-
-  const siEl = document.getElementById('starInsights');
-  if(siEl) siEl.innerHTML = starDims.map((d,i)=>{
-    const score = starAvgs[i];
-    const action = score<55?'Immediate attention needed':score<70?'Improvement opportunity':score<85?'Monitor and maintain':'Strong — share practices';
-    const urgency = score<55?'text-red-400':score<70?'text-amber-400':'text-emerald-400';
-    return `<div class="flex items-start gap-3 p-2 bg-gray-800 rounded-lg">
-      <span class="text-sm font-bold ${urgency} w-8 flex-shrink-0">${score}</span>
-      <div><p class="text-xs font-medium text-white">${d}</p><p class="text-xs ${urgency}">${action}</p></div>
+      <p class="text-2xl font-bold text-white mb-1">£${fmt(pt.value_gbp)}M</p>
+      <p class="text-xs text-gray-400">${progs.length} programmes · Avg delivery risk: ${avgRisk}</p>
+      <div class="mt-2 space-y-1">${progs.map(p=>`
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-gray-400 truncate">${p.short}</span>
+          ${riskPill(p.delivery_risk_score)}
+        </div>`).join('')}</div>
     </div>`;
   }).join('');
 
-  const laEl = document.getElementById('layerAnalysis');
-  if(laEl) {
-    const layers = [1,2,3,4,5];
-    const labels = ['Executive','Senior Manager','Manager / Lead','Professional','Junior'];
-    const counts = layers.map(l=>EMP.filter(e=>e.org_layer===l).length);
-    laEl.innerHTML = layers.map((l,i)=>`
-      <div class="flex items-center gap-3">
-        <span class="text-xs text-gray-400 w-24">Layer ${l} — ${labels[i]}</span>
-        <div class="flex-1 bg-gray-800 rounded-full h-4 overflow-hidden">
-          <div class="h-4 bg-blue-600 rounded-full flex items-center justify-end pr-2" style="width:${Math.round(counts[i]/Math.max(1,...counts)*100)}%">
-            <span class="text-xs text-white font-bold">${counts[i]}</span>
-          </div>
-        </div>
-        <span class="text-xs text-gray-400 w-8">${pct(counts[i]/Math.max(1,EMP.length)*100)}</span>
-      </div>`).join('');
-  }
-}
+  // Programme risk map
+  const pm=document.getElementById('progRiskMap');
+  if(pm) pm.innerHTML=PROGS.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score).map(p=>`
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-gray-300 w-36 truncate">${p.short}</span>
+      <div class="flex-1 bg-gray-800 rounded-full h-2">
+        <div class="h-2 rounded-full" style="width:${p.delivery_risk_score}%;background:${riskScoreColor(100-p.delivery_risk_score)}"></div>
+      </div>
+      <span class="text-xs text-gray-400 w-6">${p.delivery_risk_score}</span>
+      <span class="text-xs text-gray-500 w-12">${p.phase}</span>
+    </div>`).join('');
 
-// ── ACQUIRE ────────────────────────────────────────────────────────────────
-function renderAcquire() {
-  const active = LOG.filter(l=>l.status==='Active');
-  const high   = active.filter(l=>l.risk_label==='High');
-  const breach  = LOG.filter(l=>l.sla_breach).length;
-  const compBr  = LOG.filter(l=>l.compliance_breach).length;
-  const avgDays = Math.round(active.reduce((s,l)=>s+l.days_open,0)/Math.max(1,active.length));
-
-  const el = document.getElementById('acquireKpis');
-  if(el) el.innerHTML = [
-    kpiCard('Active Requisitions',active.length,'Across all programmes and roles','text-white'),
-    kpiCard('Average Days Open',avgDays,'Target: 40 days',avgDays>40?'text-amber-400':'text-emerald-400'),
-    kpiCard('High Risk Cases',high.length,'Likely to miss SLA target','text-red-400'),
-    kpiCard('Compliance Gaps',compBr,'Missing required steps','text-red-400'),
-  ].join('');
-
-  const ptEl = document.getElementById('pipelineTable');
-  if(ptEl) {
-    const sorted = [...LOG].sort((a,b)=>b.risk_score-a.risk_score).slice(0,8);
-    ptEl.innerHTML = `<table class="w-full text-xs"><thead class="bg-gray-800"><tr class="text-gray-400 text-left">
-      <th class="px-3 py-2">Role</th><th class="px-3 py-2">Dept</th><th class="px-3 py-2 text-center">Days Open</th>
-      <th class="px-3 py-2 text-center">Risk</th><th class="px-3 py-2">Compliance</th>
-    </tr></thead><tbody>${sorted.map(l=>`<tr class="border-b border-gray-800 hover:bg-gray-800">
-      <td class="px-3 py-2 font-medium text-white">${l.role}</td>
-      <td class="px-3 py-2 text-gray-400">${l.department}</td>
-      <td class="px-3 py-2 text-center ${l.days_open>40?'text-amber-400':'text-gray-300'}">${l.days_open}</td>
-      <td class="px-3 py-2 text-center"><span class="pill ${riskColor(l.risk_score)}">${l.risk_label}</span></td>
-      <td class="px-3 py-2 ${l.compliance_breach?'text-red-400':'text-gray-500'}">${l.compliance_breach||'OK'}</td>
-    </tr>`).join('')}</tbody></table>`;
-  }
-
-  const ltEl = document.getElementById('leadTimeView');
-  if(ltEl) {
-    const leadTimes = [
-      {role:'Developed Vetting (DV) Cleared Engineer',actual:16,target:12,note:'Clearance process is the constraint — start earlier'},
-      {role:'Security Check (SC) Cleared Specialist',actual:11,target:8,note:'Pre-screening cleared candidates reduces time'},
-      {role:'Baseline Cleared Professional',actual:6,target:5,note:'On track — standard pipeline'},
-      {role:'Contractor (immediate need)',actual:2,target:2,note:'Use as bridge while permanent hire progresses'},
+  // Enterprise KPIs
+  const ek=document.getElementById('enterpriseKpis');
+  if(ek&&EMPS.length){
+    const highFR=EMPS.filter(e=>e.flight_risk_score>=60).length;
+    const regret=EMPS.filter(e=>e.would_be_regrettable).length;
+    const noSucc=EMPS.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').length;
+    const phaseGap=EMPS.filter(e=>!e.acquisition_phase_match&&e.acquisition_phase_current).length;
+    const avgCR=(EMPS.reduce((s,e)=>s+e.compa_ratio,0)/EMPS.length).toFixed(2);
+    const items=[
+      ['High flight risk (sample)',highFR,'text-red-400'],
+      ['Would be regrettable',regret,'text-amber-400'],
+      ['Key persons — no successor',noSucc,'text-red-400'],
+      ['Phase experience gap',phaseGap,'text-amber-400'],
+      ['Avg compa-ratio',avgCR,'text-white'],
     ];
-    ltEl.innerHTML = leadTimes.map(l=>`
-      <div class="p-3 bg-gray-800 rounded-lg">
-        <div class="flex justify-between items-start">
-          <p class="text-xs font-medium text-white">${l.role}</p>
-          <span class="text-xs ${l.actual>l.target?'text-amber-400':'text-emerald-400'} font-bold">${l.actual} months</span>
-        </div>
-        <div class="flex items-center gap-2 mt-1">
-          <span class="text-xs text-gray-400">Target: ${l.target} months</span>
-          <span class="text-xs text-gray-500">·</span>
-          <span class="text-xs text-gray-400">${l.note}</span>
-        </div>
+    ek.innerHTML=items.map(([l,v,c])=>`
+      <div class="flex items-center justify-between py-1.5 border-b border-gray-800">
+        <span class="text-xs text-gray-400">${l}</span>
+        <span class="text-sm font-bold ${c}">${v}</span>
       </div>`).join('');
   }
 }
 
-// ── DEVELOP ────────────────────────────────────────────────────────────────
-function renderDevelop() {
-  const readyNow = EMP.filter(e=>e.succession_status==='Ready Now').length;
-  const pipeline = EMP.filter(e=>e.succession_status.includes('Development')).length;
-  const noSucc   = EMP.filter(e=>e.succession_status==='Not Nominated'&&e.direct_reports>0).length;
-  const avgMatch = Math.round(EMP.reduce((s,e)=>s+e.competency_match_pct,0)/Math.max(1,EMP.length));
-  const avgTrain = Math.round(EMP.reduce((s,e)=>s+e.training_hrs_ttm,0)/Math.max(1,EMP.length));
-
-  const el = document.getElementById('developKpis');
-  if(el) el.innerHTML = [
-    kpiCard('Succession Ready Now',readyNow,'Identified successor for a key role','text-emerald-400'),
-    kpiCard('Development Pipeline',pipeline,'In succession development (12-36mo)','text-blue-400'),
-    kpiCard('Avg Competency Match',avgMatch+'%','How well people fit their role requirements',avgMatch>75?'text-emerald-400':'text-amber-400'),
-    kpiCard('Avg Training Hours',avgTrain,'Trailing 12 months per person',avgTrain>30?'text-emerald-400':'text-amber-400'),
-  ].join('');
-
-  // Match chart
-  const ctx3 = document.getElementById('matchChart');
-  const buckets = ['< 60%','60-70%','70-80%','80-90%','90%+'];
-  const bCounts = [
-    EMP.filter(e=>e.competency_match_pct<60).length,
-    EMP.filter(e=>e.competency_match_pct>=60&&e.competency_match_pct<70).length,
-    EMP.filter(e=>e.competency_match_pct>=70&&e.competency_match_pct<80).length,
-    EMP.filter(e=>e.competency_match_pct>=80&&e.competency_match_pct<90).length,
-    EMP.filter(e=>e.competency_match_pct>=90).length,
-  ];
-  if(ctx3&&!ctx3._chartInst) {
-    ctx3._chartInst = new Chart(ctx3,{
-      type:'bar',
-      data:{labels:buckets,datasets:[{label:'Employees',data:bCounts,backgroundColor:['#ef4444','#f97316','#eab308','#22c55e','#10b981'],borderRadius:4}]},
-      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}}},plugins:{legend:{display:false}}}
+// ── ROAD HEATMAP ─────────────────────────────────────────────────────────
+function renderROADHeatmap(){
+  const el=document.getElementById('roadHeatmap');
+  if(!el||!FUNCS.length) return;
+  const pillars=['Retain','Optimize','Acquire','Develop'];
+  const pillColors={'Retain':'#f59e0b','Optimize':'#8b5cf6','Acquire':'#3b82f6','Develop':'#10b981'};
+  let html=`<table class="w-full text-xs border-collapse"><thead><tr>
+    <th class="text-left text-gray-400 py-2 pr-4 font-medium w-40">Function</th>`;
+  pillars.forEach(p=>{ html+=`<th class="text-center py-2 px-1 font-semibold" style="color:${pillColors[p]}">${p}</th>`; });
+  html+=`<th class="text-center py-2 px-1 text-gray-400 font-medium">Overall</th></tr></thead><tbody>`;
+  FUNCS.forEach(f=>{
+    const h=f.road_health;
+    html+=`<tr class="border-t border-gray-800 hover:bg-gray-900">
+      <td class="py-1.5 pr-4 text-gray-300 font-medium truncate max-w-36">${f.name}</td>`;
+    pillars.forEach(p=>{
+      const s=h[p]||0;
+      html+=`<td class="py-1.5 px-1 text-center">
+        <div class="hmap-cell mx-auto w-12 h-8" style="background:${rc(s)};color:${rcTxt(s)}">${s}</div>
+      </td>`;
     });
-  }
+    const ov=h.overall||0;
+    html+=`<td class="py-1.5 px-1 text-center">
+      <div class="hmap-cell mx-auto w-12 h-8 font-bold" style="background:${rc(ov)};color:${rcTxt(ov)}">${ov}</div>
+    </td></tr>`;
+  });
+  html+=`</tbody></table>`;
+  el.innerHTML=html;
 
-  // Succession
-  const sEl = document.getElementById('successionView');
-  if(sEl) {
-    const depts = [...new Set(EMP.map(e=>e.department))];
-    sEl.innerHTML = depts.map(d=>{
-      const managers = EMP.filter(e=>e.department===d&&e.direct_reports>0);
-      if(managers.length===0) return '';
-      const withSucc = managers.filter(e=>e.succession_status!=='Not Nominated').length;
-      const covPct   = Math.round(withSucc/managers.length*100);
-      return `<div class="flex items-center gap-3">
-        <span class="text-xs text-gray-400 w-36 truncate">${d}</span>
-        <div class="flex-1 bg-gray-800 rounded-full h-2"><div class="bar ${covPct>70?'bg-emerald-500':covPct>40?'bg-amber-500':'bg-red-500'} h-2 rounded-full" style="width:${covPct}%"></div></div>
-        <span class="text-xs ${covPct>70?'text-emerald-400':covPct>40?'text-amber-400':'text-red-400'} w-10 text-right">${covPct}%</span>
-      </div>`;
-    }).filter(Boolean).join('');
+  // Insights
+  const ins=document.getElementById('roadInsights');
+  if(ins){
+    const worst=FUNCS.slice().sort((a,b)=>a.road_health.overall-b.road_health.overall).slice(0,3);
+    const pillarWorst=pillars.map(p=>({p,avg:Math.round(FUNCS.reduce((s,f)=>s+f.road_health[p],0)/FUNCS.length)})).sort((a,b)=>a.avg-b.avg)[0];
+    ins.innerHTML=`
+      <div class="p-3 bg-red-950 border border-red-900 rounded-lg text-xs">
+        <span class="font-bold text-red-300">Weakest ROAD pillar enterprise-wide: ${pillarWorst.p} (avg ${pillarWorst.avg}/100)</span>
+        <p class="text-gray-400 mt-1">This is the pillar where the most functions are underperforming. Prioritise this for enterprise-wide investment.</p>
+      </div>
+      ${worst.map(f=>`<div class="p-3 bg-gray-800 rounded-lg flex items-center justify-between">
+        <div><p class="text-xs font-medium text-white">${f.name}</p>
+        <p class="text-xs text-gray-400">Lowest: ${Object.entries(f.road_health).filter(([k])=>k!=='overall').sort((a,b)=>a[1]-b[1])[0][0]} (${Object.entries(f.road_health).filter(([k])=>k!=='overall').sort((a,b)=>a[1]-b[1])[0][1]})</p></div>
+        <div class="hmap-cell w-12 h-8" style="background:${rc(f.road_health.overall)};color:${rcTxt(f.road_health.overall)}">${f.road_health.overall}</div>
+      </div>`).join('')}`;
   }
 }
 
-// ── ACTION PLANS ───────────────────────────────────────────────────────────
-function renderActions(filter) {
-  const list = document.getElementById('actionPlansList');
-  if(!list) return;
-  const filtered = filter==='all' ? ACTIONS : ACTIONS.filter(a=>a.road===filter);
-  list.innerHTML = filtered.map((a,i)=>`
-    <div class="${roadBg(a.road)} border rounded-xl p-5">
-      <div class="flex items-start justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <span class="pill ${a.priority==='Critical'?'risk-critical':'risk-high'}">${a.priority}</span>
-          <span class="${roadColor(a.road)} text-sm font-bold">${a.road}</span>
-        </div>
-        <div class="text-right">
-          <p class="text-xs text-gray-400">${a.owner}</p>
-          <p class="text-xs ${roadColor(a.road)} font-semibold mt-0.5">Return on impact: ${a.roi}x</p>
-        </div>
+// ── TEMPORAL VIEW ────────────────────────────────────────────────────────
+function renderTemporal(){
+  const fnSel=document.getElementById('tempFnSel');
+  if(fnSel&&!fnSel.innerHTML.includes('option')){
+    fnSel.innerHTML='<option value="">All Functions</option>'+FUNCS.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');
+  }
+  const fnId=fnSel?fnSel.value:'';
+  const emps=fnId?EMPS.filter(e=>e.function_id===fnId):EMPS;
+  if(!emps.length) return;
+
+  // KPIs
+  const stale5r=emps.filter(e=>e.time_in_role_yrs>=5).length;
+  const overdue4l=emps.filter(e=>e.time_in_level_yrs>=4).length;
+  const rot5p=emps.filter(e=>e.time_on_program_yrs>=5).length;
+  const phGap=emps.filter(e=>e.acquisition_phase_current&&!e.acquisition_phase_match).length;
+  const tk=document.getElementById('temporalKpis');
+  if(tk) tk.innerHTML=[
+    ['Time in role ≥5yr (stale)',stale5r,'text-amber-400','Consider rotation or career action'],
+    ['Time in level ≥4yr (overdue)',overdue4l,'text-red-400','Promotion or retention risk'],
+    ['Time on programme ≥5yr (rotation risk)',rot5p,'text-amber-400','Programme knowledge hoarding risk'],
+    ['Phase experience gap',phGap,'text-red-400','No experience in current acq phase'],
+  ].map(([l,v,c,sub])=>`<div class="card p-3">
+    <p class="text-xs text-gray-400 mb-0.5">${l}</p>
+    <p class="text-xl font-bold ${c}">${v}<span class="text-sm text-gray-500"> / ${emps.length}</span></p>
+    <p class="text-xs text-gray-500 mt-0.5">${sub}</p>
+  </div>`).join('');
+
+  const barRow=(label,count,total,color)=>`
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-gray-400 w-28 flex-shrink-0">${label}</span>
+      <div class="flex-1 bg-gray-800 rounded-full h-2">
+        <div class="temp-bar ${color}" style="width:${total?Math.round(count/total*100):0}%"></div>
       </div>
-      <h3 class="font-semibold text-white mb-2">${a.title}</h3>
-      <div class="grid grid-cols-3 gap-3 mb-3">
-        <div class="bg-black bg-opacity-20 rounded-lg p-3">
-          <p class="text-xs text-gray-400 font-medium mb-1">Driving indicators</p>
-          <p class="text-xs text-gray-300">${a.driver}</p>
+      <span class="text-xs text-gray-500 w-6">${count}</span>
+    </div>`;
+
+  // Time in role
+  const r=document.getElementById('timeRoleView');
+  if(r) r.innerHTML=[
+    ['< 1yr (Ramping)',   emps.filter(e=>e.time_in_role_yrs<1).length,   'bg-blue-500'],
+    ['1–3yr (Optimal)',   emps.filter(e=>e.time_in_role_yrs>=1&&e.time_in_role_yrs<3).length, 'bg-emerald-500'],
+    ['3–5yr (Consider)',  emps.filter(e=>e.time_in_role_yrs>=3&&e.time_in_role_yrs<5).length, 'bg-amber-500'],
+    ['5yr+ (Stale)',      emps.filter(e=>e.time_in_role_yrs>=5).length,  'bg-red-500'],
+  ].map(([l,c,col])=>barRow(l,c,emps.length,col)).join('');
+
+  // Time in level
+  const lv=document.getElementById('timeLevelView');
+  if(lv) lv.innerHTML=[
+    ['< 2yr (On track)',  emps.filter(e=>e.time_in_level_yrs<2).length,  'bg-emerald-500'],
+    ['2–4yr (Window)',    emps.filter(e=>e.time_in_level_yrs>=2&&e.time_in_level_yrs<4).length,'bg-amber-500'],
+    ['4yr+ (Overdue)',    emps.filter(e=>e.time_in_level_yrs>=4).length, 'bg-red-500'],
+  ].map(([l,c,col])=>barRow(l,c,emps.length,col)).join('');
+
+  // Time on programme
+  const tp=document.getElementById('timeProgView');
+  if(tp) tp.innerHTML=[
+    ['< 1yr (New)',       emps.filter(e=>e.time_on_program_yrs<1).length,'bg-blue-500'],
+    ['1–3yr (Building)',  emps.filter(e=>e.time_on_program_yrs>=1&&e.time_on_program_yrs<3).length,'bg-emerald-500'],
+    ['3–5yr (Deep)',      emps.filter(e=>e.time_on_program_yrs>=3&&e.time_on_program_yrs<5).length,'bg-amber-500'],
+    ['5yr+ (Rotate)',     emps.filter(e=>e.time_on_program_yrs>=5).length,'bg-red-500'],
+  ].map(([l,c,col])=>barRow(l,c,emps.length,col)).join('');
+
+  // Lifecycle experience
+  const lc=document.getElementById('lifecycleView');
+  if(lc){
+    const phases=['MSA','TMRR','EMD','P&D','O&S'];
+    lc.innerHTML=phases.map(ph=>{
+      const hasExp=emps.filter(e=>e.acquisition_phases_experienced?.includes(ph)).length;
+      const needsExp=emps.filter(e=>e.acquisition_phase_current===ph).length;
+      const matched=emps.filter(e=>e.acquisition_phase_current===ph&&e.acquisition_phase_match).length;
+      return `<div class="flex items-center gap-2">
+        <span class="text-xs text-gray-400 w-10 flex-shrink-0">${ph}</span>
+        <div class="flex-1 bg-gray-800 rounded-full h-2">
+          <div class="temp-bar bg-blue-500" style="width:${emps.length?Math.round(hasExp/emps.length*100):0}%"></div>
         </div>
-        <div class="bg-black bg-opacity-20 rounded-lg p-3">
-          <p class="text-xs text-gray-400 font-medium mb-1">If no action taken</p>
-          <p class="text-xs text-gray-300">${a.impact}</p>
+        <span class="text-xs text-gray-500 w-20 flex-shrink-0">${hasExp} have exp${needsExp?` · ${matched}/${needsExp} matched`:''}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Individual table
+  const tt=document.getElementById('temporalTable');
+  if(tt){
+    const scored=emps.map(e=>({...e,riskScore:
+      (e.time_in_level_yrs>=4?2:0)+(e.time_in_role_yrs>=5?1:0)+
+      (e.time_on_program_yrs>=5?1:0)+(!e.acquisition_phase_match&&e.acquisition_phase_current?2:0)
+    })).filter(e=>e.riskScore>0).sort((a,b)=>b.riskScore-a.riskScore).slice(0,15);
+
+    const badge=(val,thresholds,labels,colors)=>{
+      for(let i=0;i<thresholds.length;i++){
+        if(val>=thresholds[i]) return `<span class="pill" style="background:${colors[i]}20;color:${colors[i]}">${labels[i]} (${val.toFixed(1)}yr)</span>`;
+      }
+      return `<span class="text-xs text-gray-500">${val.toFixed(1)}yr</span>`;
+    };
+
+    tt.innerHTML=`<table class="w-full text-xs"><thead class="bg-gray-800">
+      <tr class="text-gray-400 text-left">
+        <th class="px-3 py-2">Name</th><th class="px-3 py-2">Function</th><th class="px-3 py-2">Subdiscipline</th>
+        <th class="px-3 py-2">Time in Role</th><th class="px-3 py-2">Time in Level</th>
+        <th class="px-3 py-2">Time on Prog</th><th class="px-3 py-2">Phase Match</th>
+      </tr></thead><tbody>${scored.map(e=>`
+      <tr class="border-b border-gray-800 hover:bg-gray-900">
+        <td class="px-3 py-2 font-medium text-white">${e.name}</td>
+        <td class="px-3 py-2 text-gray-400">${e.function_name?.split(' ')[0]??''}</td>
+        <td class="px-3 py-2 text-gray-400">${e.subdiscipline}</td>
+        <td class="px-3 py-2">${badge(e.time_in_role_yrs,[5,3],['>5yr stale','>3yr consider'],['#ef4444','#f59e0b'])}</td>
+        <td class="px-3 py-2">${badge(e.time_in_level_yrs,[4,2],['>4yr overdue','>2yr window'],['#ef4444','#f59e0b'])}</td>
+        <td class="px-3 py-2">${badge(e.time_on_program_yrs,[5,3],['>5yr rotate','>3yr deep'],['#ef4444','#f59e0b'])}</td>
+        <td class="px-3 py-2">${e.acquisition_phase_current?
+          (e.acquisition_phase_match?
+            `<span class="pill bg-emerald-900 text-emerald-300">&#10003; ${e.acquisition_phase_current}</span>`:
+            `<span class="pill bg-red-900 text-red-300">&#10007; No ${e.acquisition_phase_current} exp</span>`):
+          '<span class="text-gray-600">—</span>'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  }
+}
+
+// ── ALLOCATION MATRIX ────────────────────────────────────────────────────
+function renderAllocMatrix(){
+  const el=document.getElementById('allocMatrix');
+  if(!el||!ALLOC.length) return;
+  const filteredProgs = SCOPE_PG ? PROGS.filter(p=>p.id===SCOPE_PG) : PROGS;
+  const filteredFuncs = SCOPE_FN ? FUNCS.filter(f=>f.id===SCOPE_FN) : FUNCS;
+  const progIds=filteredProgs.map(p=>p.id);
+  const fnIds  =filteredFuncs.map(f=>f.id);
+  const relAlloc=ALLOC.filter(a=>progIds.includes(a.program_id)&&fnIds.includes(a.function_id));
+
+  const critBg={Critical:'#450a0a',High:'#422006',Medium:'#1e2d4f',Low:'#111827'};
+  const critBorder={Critical:'#991b1b',High:'#92400e',Medium:'#1d4ed8',Low:'#1f2937'};
+
+  let html=`<table class="text-xs border-collapse w-full"><thead><tr>
+    <th class="text-left text-gray-400 py-2 pr-3 font-medium w-40">Function</th>`;
+  filteredProgs.forEach(p=>{
+    const port=PORTS.find(pt=>pt.id===p.portfolio_id);
+    html+=`<th class="text-center py-2 px-1 font-semibold" style="color:${port?.color??'#94a3b8'}">${p.short}</th>`;
+  });
+  html+=`</tr></thead><tbody>`;
+  filteredFuncs.forEach(f=>{
+    html+=`<tr class="border-t border-gray-800">
+      <td class="py-2 pr-3 text-gray-300 font-medium truncate">${f.name}<br><span class="text-gray-500 font-normal">${fmt(f.headcount_actual)} FTEs</span></td>`;
+    filteredProgs.forEach(p=>{
+      const cell=relAlloc.find(a=>a.function_id===f.id&&a.program_id===p.id);
+      if(!cell){ html+=`<td class="py-1.5 px-1"></td>`; return; }
+      const bg=critBg[cell.criticality]||'#111827';
+      const br=critBorder[cell.criticality]||'#1f2937';
+      let val;
+      if(ALLOC_UNIT==='headcount') val=fmt(cell.headcount_required);
+      else if(ALLOC_UNIT==='pct') val=cell.pct_of_function+'%';
+      else val=cell.avg_flight_risk+'%';
+      const riskCol=ALLOC_UNIT==='risk'?(cell.avg_flight_risk>=60?'#ef4444':cell.avg_flight_risk>=40?'#f59e0b':'#10b981'):'#e2e8f0';
+      html+=`<td class="py-1 px-1">
+        <div class="rounded p-1.5 text-center border" style="background:${bg};border-color:${br}">
+          <div class="font-bold" style="color:${riskCol}">${val}</div>
+          ${cell.phase_experience_gap_count>0?'<div class="text-red-400" style="font-size:.55rem">&#9888; phase gap</div>':''}
+        </div></td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  el.innerHTML=html;
+}
+
+// ── ACTION PLANS ─────────────────────────────────────────────────────────
+function generateActions(){
+  ACTIONS_LIST=[];
+  const road=['Retain','Optimize','Acquire','Develop'];
+  const roadBg={Retain:'#78350f',Optimize:'#5b21b6',Acquire:'#1e3a8a',Develop:'#064e3b'};
+  const roadBd={Retain:'#92400e',Optimize:'#7c3aed',Acquire:'#1d4ed8',Develop:'#065f46'};
+  const roadCol={Retain:'#fcd34d',Optimize:'#c4b5fd',Acquire:'#93c5fd',Develop:'#6ee7b7'};
+
+  // Retain — high flight risk + regrettable
+  EMPS.filter(e=>e.flight_risk_score>=60&&e.would_be_regrettable).slice(0,4).forEach(e=>{
+    const rep=Math.round(e.base_salary_gbp*1.4);
+    const act=Math.round(e.base_salary_gbp*0.08);
+    ACTIONS_LIST.push({road:'Retain',priority:'Critical',
+      title:`Retention risk: ${e.name} — ${e.subdiscipline}`,
+      driver:`Flight risk ${e.flight_risk_score}% | Compa-ratio ${e.compa_ratio} | ${Math.round(e.time_in_level_yrs*12)} months in level | Function: ${e.function_name}`,
+      impact:`Regrettable departure introduces programme delivery risk. Replacement cost: £${fmt(rep)}. Lead time: 9-18 months for cleared role.`,
+      action:`1. Career conversation this week. 2. ${e.compa_ratio<0.92?'Compensation review — '+Math.round(e.compa_ratio*100)+'% of peer midpoint.':''} 3. Confirm succession plan. 4. BP to review team engagement.`,
+      cost_action:act,cost_inaction:rep,roi:Math.round(rep/act),
+      owner:'Action Owner — Line Manager',fn:e.function_id,prog:e.programs?.[0]??''});
+  });
+
+  // Phase experience gap
+  const phGap=EMPS.filter(e=>!e.acquisition_phase_match&&e.acquisition_phase_current);
+  if(phGap.length>0){
+    const fn=FUNCS.find(f=>f.id===phGap[0].function_id);
+    ACTIONS_LIST.push({road:'Develop',priority:'High',
+      title:`${phGap.length} employees lack ${phGap[0].acquisition_phase_current} phase experience`,
+      driver:`These employees are assigned to programmes currently in ${phGap[0].acquisition_phase_current} phase but have no prior experience in this phase.`,
+      impact:`Reduced delivery quality, extended ramp time, and higher risk of programme phase gate failures. ${phGap.length} individuals affected across ${[...new Set(phGap.map(e=>e.function_name))].join(', ')}.`,
+      action:`1. Identify internal mentors with ${phGap[0].acquisition_phase_current} experience. 2. Create structured knowledge transfer programme. 3. Consider cross-programme secondment for 2-3 key individuals.`,
+      cost_action:15000,cost_inaction:phGap.length*25000,roi:Math.round(phGap.length*25000/15000),
+      owner:'Business Partner — HR BP',fn:'',prog:''});
+  }
+
+  // Overdue promotions
+  const overdue=EMPS.filter(e=>e.time_in_level_yrs>=4&&e.would_be_regrettable).slice(0,3);
+  if(overdue.length>0){
+    ACTIONS_LIST.push({road:'Retain',priority:'High',
+      title:`${overdue.length} key employees overdue for promotion (4yr+ in level)`,
+      driver:`${overdue.map(e=>e.name.split(' ')[0]).join(', ')} have been at their current grade for 4+ years. Time in level is a leading indicator of departure intent.`,
+      impact:`Combined flight risk: ${Math.round(overdue.reduce((s,e)=>s+e.flight_risk_score,0)/overdue.length)}% average. Estimated combined replacement cost: £${fmt(overdue.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.4),0))}.`,
+      action:`1. Expedite promotion review for all three in next talent cycle. 2. BP to confirm promotion eligibility and rationale. 3. If promotion not yet warranted, agree interim development milestone and timeline.`,
+      cost_action:8000,cost_inaction:overdue.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.4),0),
+      roi:Math.round(overdue.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.4),0)/8000),
+      owner:'Business Partner — HR BP',fn:'',prog:''});
+  }
+
+  // Programme delivery gaps
+  PROGS.filter(p=>p.delivery_risk_score>60).slice(0,3).forEach(p=>{
+    ACTIONS_LIST.push({road:'Acquire',priority:p.delivery_risk_score>70?'Critical':'High',
+      title:`Pipeline gap — ${p.name} (${p.phase})`,
+      driver:`Delivery risk: ${p.delivery_risk_score}. Programme in ${p.phase} phase — ${p.phase_label}. ${(p.milestones||[]).filter(m=>m.status!=='On Track').length} milestones at risk.`,
+      impact:`Contract value: £${p.value_gbp}M. Late delivery risk. ${p.phase==='EMD'?'EMD is the highest-risk phase — talent gaps now will impact milestone compliance.':''}`,
+      action:`1. Review all open requisitions on this programme. 2. Initiate security clearances immediately for all cleared roles. 3. Engage contractor pool as bridge. 4. Escalate to Portfolio Director.`,
+      cost_action:50000,cost_inaction:Math.round(p.value_gbp*50000),roi:Math.round(p.value_gbp*50000/50000),
+      owner:'Action Owner — Talent Acquisition',fn:'',prog:p.id});
+  });
+
+  // Succession voids
+  const noSucc=EMPS.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').slice(0,3);
+  if(noSucc.length>0){
+    ACTIONS_LIST.push({road:'Develop',priority:'High',
+      title:`${noSucc.length} key person(s) with no succession plan`,
+      driver:`${noSucc.map(e=>e.name.split(' ')[0]+' ('+e.subdiscipline+')').join(', ')} — key person dependencies with no nominated successor.`,
+      impact:`Combined replacement cost if all departed: £${fmt(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0))}. Lead time for senior roles: 12-18 months.`,
+      action:`1. BP to schedule succession conversation with line manager within 30 days. 2. Identify 2 internal candidates per role. 3. Create individual development plans. 4. Report succession coverage to Leader quarterly.`,
+      cost_action:12000,cost_inaction:noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0),
+      roi:Math.round(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0)/12000),
+      owner:'Business Partner — HR BP',fn:'',prog:''});
+  }
+
+  ACTIONS_LIST.sort((a,b)=>{'Critical':0,'High':1,'Medium':2}[a.priority]-{'Critical':0,'High':1,'Medium':2}[b.priority]||0);
+}
+
+function renderActions(filter='all'){
+  const el=document.getElementById('actionsList');
+  const fc=document.getElementById('actionFilters');
+  if(!el) return;
+
+  if(fc){
+    const roads=['all','Retain','Optimize','Acquire','Develop'];
+    fc.innerHTML=roads.map(r=>`<button onclick="renderActions('${r}')"
+      class="text-xs px-3 py-1.5 rounded-lg transition-all ${r===filter?'bg-blue-700 text-white':'bg-gray-800 text-gray-300'}">${r==='all'?'All ROAD':r}</button>`).join('');
+  }
+
+  const list=filter==='all'?ACTIONS_LIST:ACTIONS_LIST.filter(a=>a.road===filter);
+  const roadBg={Retain:'bg-amber-950 border-amber-900',Optimize:'bg-purple-950 border-purple-900',Acquire:'bg-blue-950 border-blue-900',Develop:'bg-emerald-950 border-emerald-900'};
+  const roadCol={Retain:'text-amber-400',Optimize:'text-purple-400',Acquire:'text-blue-400',Develop:'text-emerald-400'};
+  const priCol={Critical:'risk-c',High:'risk-h',Medium:'risk-m'};
+
+  el.innerHTML=list.map(a=>`
+    <div class="${roadBg[a.road]||'bg-gray-800 border-gray-700'} border rounded-xl p-4">
+      <div class="flex items-start justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class="pill ${priCol[a.priority]||'risk-m'}">${a.priority}</span>
+          <span class="${roadCol[a.road]||'text-gray-400'} text-sm font-bold">${a.road}</span>
         </div>
-        <div class="bg-black bg-opacity-20 rounded-lg p-3">
-          <p class="text-xs text-gray-400 font-medium mb-1">Recommended actions</p>
-          <p class="text-xs text-gray-300">${a.action}</p>
-        </div>
+        <div class="text-right"><p class="text-xs text-gray-400">${a.owner.split(' — ')[0]}</p>
+          <p class="${roadCol[a.road]||'text-gray-400'} text-xs font-bold">${a.roi}x return on impact</p></div>
       </div>
-      <div class="flex items-center gap-4 pt-3 border-t border-white border-opacity-10">
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">Cost of action:</span>
-          <span class="text-xs font-bold text-white">£${fmt(a.cost_action)}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">Cost of inaction:</span>
-          <span class="text-xs font-bold text-red-400">£${fmt(a.cost_inaction)}</span>
-        </div>
-        <div class="flex items-center gap-2 ml-auto">
-          <span class="text-xs text-gray-400">Return on impact:</span>
-          <span class="text-xs font-bold ${roadColor(a.road)} text-lg">${a.roi}x</span>
-        </div>
+      <h3 class="font-semibold text-white mb-2 text-sm">${a.title}</h3>
+      <div class="grid grid-cols-3 gap-2 mb-3">
+        <div class="bg-black bg-opacity-20 rounded-lg p-2.5">
+          <p class="text-xs text-gray-400 font-medium mb-1">Driving indicator</p>
+          <p class="text-xs text-gray-300">${a.driver}</p></div>
+        <div class="bg-black bg-opacity-20 rounded-lg p-2.5">
+          <p class="text-xs text-gray-400 font-medium mb-1">If no action</p>
+          <p class="text-xs text-gray-300">${a.impact}</p></div>
+        <div class="bg-black bg-opacity-20 rounded-lg p-2.5">
+          <p class="text-xs text-gray-400 font-medium mb-1">Recommended</p>
+          <p class="text-xs text-gray-300">${a.action}</p></div>
+      </div>
+      <div class="flex items-center gap-4 pt-2 border-t border-white border-opacity-10 text-xs">
+        <span class="text-gray-400">Cost of action: <strong class="text-white">£${fmt(a.cost_action)}</strong></span>
+        <span class="text-gray-400">Cost of inaction: <strong class="text-red-400">£${fmt(a.cost_inaction)}</strong></span>
+        <span class="ml-auto ${roadCol[a.road]||'text-gray-400'} font-bold text-base">${a.roi}x</span>
       </div>
     </div>`).join('');
 }
 
-function filterActions(f) {
-  document.querySelectorAll('.action-filter').forEach(b=>{
-    b.className = 'action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300';
-  });
-  document.getElementById('af-'+f).className = 'action-filter text-xs px-3 py-1.5 rounded-lg bg-blue-700 text-white';
-  renderActions(f);
+// ── PROMPT LIBRARY ───────────────────────────────────────────────────────
+let openCats={};
+function buildPromptLibrary(){
+  const el=document.getElementById('plibTree');
+  if(!el) return;
+  el.innerHTML=PROMPT_SECTIONS.map(s=>`
+    <div class="mb-1">
+      <div class="plib-cat text-gray-300" style="color:${s.color}" onclick="toggleCat('${s.id}')">
+        <span>${s.title}</span>
+        <span id="cat-arrow-${s.id}" class="text-gray-500">&#9654;</span>
+      </div>
+      <div id="cat-body-${s.id}" class="hidden pl-2 space-y-0.5">
+        ${s.files.map(f=>`
+          <div class="mb-1">
+            <p class="text-xs text-gray-500 px-2 py-1 font-semibold">${f.title}</p>
+            ${f.prompts.slice(0,6).map(p=>`
+              <button class="prompt-chip w-full text-left mb-0.5" onclick="usePrompt(${JSON.stringify(p)})">
+                ${p.substring(0,80)}${p.length>80?'…':''}
+              </button>`).join('')}
+            ${f.prompts.length>6?`<button class="prompt-chip w-full text-left text-blue-400 mb-0.5" onclick="expandFile('${s.id}','${f.id}')">+ ${f.prompts.length-6} more prompts</button>`:''}
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
 }
 
-// ── PEOPLE DATA ────────────────────────────────────────────────────────────
-function populateDeptFilter() {
-  const sel = document.getElementById('deptFilter');
-  if(!sel) return;
-  const depts = [...new Set(EMP.map(e=>e.department))].sort();
-  sel.innerHTML = '<option value="">All Departments</option>'+depts.map(d=>`<option value="${d}">${d}</option>`).join('');
+function toggleCat(id){
+  openCats[id]=!openCats[id];
+  const body=document.getElementById('cat-body-'+id);
+  const arrow=document.getElementById('cat-arrow-'+id);
+  if(body) body.classList.toggle('hidden',!openCats[id]);
+  if(arrow) arrow.innerHTML=openCats[id]?'&#9660;':'&#9654;';
 }
 
-function filterPeople() {
-  const q    = (document.getElementById('peopleSearch')?.value||'').toLowerCase();
-  const dept = document.getElementById('deptFilter')?.value||'';
-  const filtered = EMP.filter(e=>{
-    const matchQ = !q || e.name.toLowerCase().includes(q)||e.role.toLowerCase().includes(q)||(e.programs||[]).join(' ').toLowerCase().includes(q);
-    const matchD = !dept || e.department===dept;
-    return matchQ && matchD;
-  });
-  renderPeopleTable(filtered);
-  const cnt = document.getElementById('peopleCount');
-  if(cnt) cnt.textContent = `Showing ${filtered.length} of ${EMP.length} employees`;
+function expandFile(secId,fileId){
+  const sec=PROMPT_SECTIONS.find(s=>s.id===secId);
+  const file=sec?.files.find(f=>f.id===fileId);
+  if(!file) return;
+  const body=document.getElementById('cat-body-'+secId);
+  if(!body) return;
+  const placeholder=body.querySelector(`[onclick*="${fileId}"][onclick*="expandFile"]`);
+  if(!placeholder) return;
+  const extra=file.prompts.slice(6).map(p=>`
+    <button class="prompt-chip w-full text-left mb-0.5" onclick="usePrompt(${JSON.stringify(p)})">
+      ${p.substring(0,80)}${p.length>80?'…':''}
+    </button>`).join('');
+  placeholder.insertAdjacentHTML('beforebegin',extra);
+  placeholder.remove();
 }
 
-function renderPeople() {
-  renderPeopleTable(EMP);
-  const cnt = document.getElementById('peopleCount');
-  if(cnt) cnt.textContent = `Showing ${EMP.length} of ${EMP.length} employees`;
+function filterPrompts(){
+  const q=(document.getElementById('plibSearch').value||'').toLowerCase();
+  if(!q){ buildPromptLibrary(); return; }
+  const el=document.getElementById('plibTree');
+  if(!el) return;
+  const matched=[];
+  PROMPT_SECTIONS.forEach(s=>s.files.forEach(f=>f.prompts.forEach(p=>{
+    if(p.toLowerCase().includes(q)) matched.push(p);
+  })));
+  el.innerHTML=matched.slice(0,30).map(p=>`
+    <button class="prompt-chip w-full text-left mb-0.5" onclick="usePrompt(${JSON.stringify(p)})">
+      ${p.substring(0,100)}${p.length>100?'…':''}
+    </button>`).join('')+(matched.length>30?`<p class="text-xs text-gray-500 px-2 py-1">${matched.length-30} more — refine search</p>`:'');
 }
 
-function renderPeopleTable(data) {
-  const tb = document.getElementById('peopleTbody');
-  if(!tb) return;
-  const succColor = s => s==='Ready Now'?'text-emerald-400':s.includes('Development')?'text-blue-400':s.includes('Nominated')?'text-amber-400':'text-gray-500';
-  tb.innerHTML = data.slice(0,50).map(e=>`
-    <tr class="border-b border-gray-800 hover:bg-gray-800">
-      <td class="px-3 py-2 font-medium text-white">${e.name}</td>
-      <td class="px-3 py-2 text-gray-400">${e.department}</td>
-      <td class="px-3 py-2 text-gray-300">${e.grade?.split(' — ')[0]||''}</td>
-      <td class="px-3 py-2 text-gray-400">${e.location}</td>
-      <td class="px-3 py-2 text-gray-300 text-xs">${e.clearance}</td>
-      <td class="px-3 py-2 text-center ${e.compa_ratio<0.92?'text-red-400':e.compa_ratio>1.05?'text-emerald-400':'text-gray-300'}">${e.compa_ratio}</td>
-      <td class="px-3 py-2 text-center"><span class="pill ${riskColor(e.flight_risk_score)}">${e.flight_risk_score}%</span></td>
-      <td class="px-3 py-2 text-center text-gray-300">${e.performance_current}</td>
-      <td class="px-3 py-2 text-xs ${succColor(e.succession_status||'')}">${(e.succession_status||'').split(' ')[0]}</td>
-      <td class="px-3 py-2 text-center ${e.would_be_regrettable?'text-red-400 font-bold':'text-gray-600'}">${e.would_be_regrettable?'Yes':'—'}</td>
-    </tr>`).join('');
+function usePrompt(p){
+  showSection('agent');
+  const inp=document.getElementById('chatIn');
+  if(inp){ inp.value=p; inp.focus(); }
+  // Auto-send
+  sendChat();
 }
 
-// ── AI AGENT — analytical engine ──────────────────────────────────────────
+// Full prompt library page
+function buildFullPlib(){
+  const el=document.getElementById('fullPlibContent');
+  if(!el) return;
+  el.innerHTML=PROMPT_SECTIONS.map(s=>`
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-2 h-2 rounded-full" style="background:${s.color}"></div>
+        <h2 class="text-lg font-bold text-white">${s.title}</h2>
+      </div>
+      ${s.files.map(f=>`
+        <div class="card p-4 mb-3">
+          <h3 class="font-semibold text-white text-sm mb-2">${f.title} <span class="text-gray-500 font-normal text-xs">${f.prompts.length} prompts</span></h3>
+          <div class="space-y-1">
+            ${f.prompts.map((p,i)=>`
+              <div class="flex items-start gap-2 p-2 hover:bg-gray-800 rounded-lg group">
+                <span class="text-gray-600 text-xs w-5 flex-shrink-0 mt-0.5">${i+1}</span>
+                <p class="text-xs text-gray-300 flex-1">${p}</p>
+                <button onclick="usePrompt(${JSON.stringify(p)})"
+                  class="opacity-0 group-hover:opacity-100 text-xs bg-blue-700 text-white px-2 py-0.5 rounded flex-shrink-0">Run</button>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
 
-// Department groupings by leadership role
-const DEPT_GROUPS = {
-  engineering: ['Systems Engineering','R&M Engineering','Cybersecurity'],
-  systems:     ['Systems Engineering'],
-  'r&m':       ['R&M Engineering'],
-  reliability: ['R&M Engineering'],
-  cyber:       ['Cybersecurity'],
-  hr:          ['HR'],
-  finance:     ['Finance'],
-  it:          ['IT & Digital'],
-  digital:     ['IT & Digital'],
-  operations:  ['Operations'],
-  ops:         ['Operations'],
-  programme:   ['Programme Management'],
-  pm:          ['Programme Management'],
-  leadership:  ['Leadership'],
+function filterFullPlib(){
+  const q=(document.getElementById('fullPlibSearch')?.value||'').toLowerCase();
+  const el=document.getElementById('fullPlibContent');
+  if(!el) return;
+  if(!q){ buildFullPlib(); return; }
+  const results=[];
+  PROMPT_SECTIONS.forEach(s=>s.files.forEach(f=>f.prompts.forEach((p,i)=>{
+    if(p.toLowerCase().includes(q)) results.push({section:s.title,file:f.title,prompt:p,idx:i});
+  })));
+  el.innerHTML=`<p class="text-xs text-gray-400 mb-3">${results.length} prompts match "${q}"</p>`+
+    results.map(r=>`<div class="card p-3 mb-2 flex items-start gap-3">
+      <div class="flex-1">
+        <p class="text-xs text-gray-500 mb-1">${r.section} → ${r.file}</p>
+        <p class="text-xs text-gray-200">${r.prompt}</p>
+      </div>
+      <button onclick="usePrompt(${JSON.stringify(r.prompt)})" class="text-xs bg-blue-700 text-white px-2 py-1 rounded flex-shrink-0">Run</button>
+    </div>`).join('');
+}
+
+// Quick chips in agent
+function buildQuickChips(){
+  const el=document.getElementById('quickChips');
+  if(!el) return;
+  const chips=[
+    'Assess the Engineering organisation',
+    'Who is at highest flight risk and why?',
+    'Show me phase experience gaps on FCAS',
+    'Which functions are most under-supplied to programmes?',
+    'Return on impact for all actions',
+  ];
+  el.innerHTML=chips.map(c=>`<button class="prompt-chip" onclick="usePrompt(${JSON.stringify(c)})">${c}</button>`).join('');
+}
+
+// ── AI ANALYTICAL ENGINE ──────────────────────────────────────────────────
+const DEPT_MAP={
+  'systems engineering':['FN-SE'],'systems eng':['FN-SE'],'systems':['FN-SE'],
+  'r&m':['FN-RM'],'reliability':['FN-RM'],'maintainability':['FN-RM'],
+  'software':['FN-SW'],'software engineering':['FN-SW'],'devops':['FN-SW'],
+  'cyber':['FN-CS'],'cybersecurity':['FN-CS'],'information assurance':['FN-CS'],
+  'mission systems':['FN-MS'],'radar':['FN-MS'],'ew':['FN-MS'],
+  'integration':['FN-ST'],'test':['FN-ST'],'sit':['FN-ST'],
+  'programme management':['FN-PM'],'schedule':['FN-PM'],
+  'quality':['FN-QS'],'safety':['FN-QS'],
+  'logistics':['FN-LS'],'supportability':['FN-LS'],
+  'finance':['FN-FC'],'commercial':['FN-FC'],
+  'hr':['FN-HR'],'human resources':['FN-HR'],
+  'it':['FN-IT'],'digital':['FN-IT'],
+  'engineering':['FN-SE','FN-RM','FN-SW','FN-CS','FN-MS','FN-ST'],
+};
+const PROG_MAP={
+  'typhoon':['PRG-001'],'fcas':['PRG-002'],'future combat':['PRG-002'],
+  'e-scan':['PRG-003'],'eurofighter':['PRG-003'],
+  'adcc':['PRG-004'],'air defence':['PRG-004'],
+  'skyshield':['PRG-005'],'shorad':['PRG-006'],
+  'cms':['PRG-007'],'cyber mission':['PRG-007'],
+  'eap':['PRG-008'],'electronic attack':['PRG-008'],
+  'isr':['PRG-009'],
+  'air systems':PROGS.filter(p=>p.portfolio_id==='PORT-AIR').map(p=>p.id),
+  'ground defence':PROGS.filter(p=>p.portfolio_id==='PORT-GND').map(p=>p.id),
 };
 
-function detectScope(q) {
-  const lower = q.toLowerCase();
-  // explicit department match
-  for (const [key, depts] of Object.entries(DEPT_GROUPS)) {
-    if (lower.includes(key)) return { emps: EMP.filter(e=>depts.includes(e.department)), label: depts.join(' & '), depts };
-  }
-  // VP / organisation-wide
-  if (/\b(vp|vice president|cpo|ceo|all|enterprise|company|organisation|organization|whole)\b/.test(lower)) {
-    return { emps: EMP, label: 'all departments (enterprise view)', depts: [] };
-  }
-  // my team / my org — default to engineering if no other clue
-  if (/\b(my team|my org|my organization|my organisation|my people|my department)\b/.test(lower)) {
-    const eng = DEPT_GROUPS.engineering;
-    return { emps: EMP.filter(e=>eng.includes(e.department)), label: 'Engineering (Systems, R&M, Cybersecurity)', depts: eng };
-  }
-  // fallback — all
-  return { emps: EMP, label: 'all departments', depts: [] };
-}
-
-function detectIntent(q) {
-  const lower = q.toLowerCase();
-  if (/\b(assess|assessment|overview|summary|health|status|brief|how are we|how is|state of)\b/.test(lower)) return 'assess';
-  if (/\b(retain|retention|flight risk|leaving|resign|attrition|turnover|at risk of losing|who might leave)\b/.test(lower)) return 'retain';
-  if (/\b(program|programme|delivery|milestone|schedule|on.time|delay|behind)\b/.test(lower)) return 'program';
-  if (/\b(hire|hiring|pipeline|acquire|acquisition|vacancy|vacancies|headcount gap|recruit|bottleneck|ahead of ready|lead time)\b/.test(lower)) return 'acquire';
-  if (/\b(develop|skill|competency|succession|training|learning|capability|gap)\b/.test(lower)) return 'develop';
-  if (/\b(return on impact|roi|cost of inaction|cost of action|business case|invest)\b/.test(lower)) return 'roi';
-  if (/\b(pay|salary|compensation|compa.ratio|below market|underpay)\b/.test(lower)) return 'pay';
-  if (/\b(contagion|team risk|colleague left|departure effect|ripple)\b/.test(lower)) return 'contagion';
-  if (/\b(star model|structure|optimize|optimise|span of control|org design|layer)\b/.test(lower)) return 'optimize';
-  return 'assess'; // default
-}
-
-// ── Analysis functions ────────────────────────────────────────────────────
-
-function aiAssess(emps, label) {
-  const n = emps.length;
-  if(!n) return `No employees found in that scope. Try "engineering", "cybersecurity", or "all" to set the scope.`;
-
-  const avgFR  = Math.round(emps.reduce((s,e)=>s+e.flight_risk_score,0)/n);
-  const highFR = emps.filter(e=>e.flight_risk_score>=60);
-  const regret = highFR.filter(e=>e.would_be_regrettable);
-  const avgCR  = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
-  const belowMkt = emps.filter(e=>e.compa_ratio<0.90);
-  const avgEng = Math.round(emps.reduce((s,e)=>s+e.engagement_score,0)/n);
-  const avgStar= Math.round(emps.reduce((s,e)=>s+e.star_overall,0)/n);
-  const weakDim= ['strategy','structure','processes','rewards','people']
-    .map(d=>({d, v:Math.round(emps.reduce((s,e)=>s+(e['star_'+d]||0),0)/n)}))
-    .sort((a,b)=>a.v-b.v)[0];
-  const avgMatch= Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n);
-  const lowMatch= emps.filter(e=>e.competency_match_pct<70).length;
-  const noSucc  = emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').length;
-  const kpCount = emps.filter(e=>e.key_person_dependency).length;
-
-  // Programme exposure for this scope
-  const deptProgs = [...new Set(emps.flatMap(e=>e.programs||[]))].filter(id=>id!=='Corporate / Internal');
-  const relevantProgs = PROG.filter(p=>deptProgs.includes(p.id));
-  const atRiskProgs = relevantProgs.filter(p=>p.delivery_risk_score>50);
-
-  // LOGs for this scope
-  const deptNames = [...new Set(emps.map(e=>e.department))];
-  const scopeLogs = LOG.filter(l=>deptNames.includes(l.department));
-  const highRiskCases = scopeLogs.filter(l=>l.risk_label==='High'||l.risk_label==='Critical');
-
-  // Build narrative
-  let out = `**Organisation Assessment — ${label} (${n} employees)**\n\n`;
-
-  out += `**RETAIN — Stabilise critical skills**\n`;
-  out += `Average flight risk score: ${avgFR}/100. ${highFR.length} employee${highFR.length!==1?'s':''} at elevated risk (score ≥60)`;
-  if(regret.length) {
-    out += `, ${regret.length} of whom would be regrettable to lose based on programme execution impact`;
-    const top = regret.sort((a,b)=>b.flight_risk_score-a.flight_risk_score)[0];
-    out += `.\nHighest risk: **${top.name}** (${top.department}, score ${top.flight_risk_score}) — `;
-    const drivers = [];
-    if(top.compa_ratio<0.90) drivers.push(`pay ${Math.round(top.compa_ratio*100)}% of peer midpoint`);
-    if(top.months_since_promotion>36) drivers.push(`${top.months_since_promotion} months without promotion`);
-    if(top.department==='Cybersecurity') drivers.push('high external market demand');
-    if(top.performance_current>=4) drivers.push('high performer, marketable');
-    out += drivers.join(', ') + `. Programme: ${(top.programs||['—'])[0]}`;
-  } else {
-    out += `. No regrettable flight risk currently flagged.`;
-  }
-  out += `\nAverage compa-ratio: ${avgCR}. ${belowMkt.length} employee${belowMkt.length!==1?'s':''} below 0.90 — compensation review recommended.\n`;
-  out += `Average engagement: ${avgEng}/100.\n\n`;
-
-  out += `**OPTIMIZE — Accelerate org performance**\n`;
-  out += `STAR Model average: ${avgStar}/100. Weakest dimension: **${weakDim.d[0].toUpperCase()+weakDim.d.slice(1)}** (${weakDim.v}/100).`;
-  const stretched = emps.filter(e=>e.direct_reports>=10);
-  if(stretched.length) out += ` ${stretched.length} manager${stretched.length!==1?'s':''} with ≥10 direct reports — span of control stretched.`;
-  out += `\n\n`;
-
-  out += `**ACQUIRE — Deliver talent on time**\n`;
-  if(atRiskProgs.length) {
-    out += `${atRiskProgs.length} programme${atRiskProgs.length!==1?'s':''} with delivery risk above 50 involving ${label}: `;
-    out += atRiskProgs.map(p=>`**${p.name}** (risk score ${p.delivery_risk_score})`).join(', ') + `.`;
-  } else {
-    out += `No high-delivery-risk programmes currently mapped to this scope.`;
-  }
-  if(highRiskCases.length) out += ` ${highRiskCases.length} H2R case${highRiskCases.length!==1?'s':''} in ${label} classified as High/Critical risk — average ${Math.round(highRiskCases.reduce((s,l)=>s+l.days_open,0)/highRiskCases.length)} days open.`;
-  out += `\n\n`;
-
-  out += `**DEVELOP — Build skills, grow leaders**\n`;
-  out += `Average competency match: ${avgMatch}%. ${lowMatch} employee${lowMatch!==1?'s':''} below 70% threshold — targeted development plans required.`;
-  if(noSucc) out += ` **${noSucc} key person${noSucc!==1?'s':''} with no identified successor** — critical succession void.`;
-  out += `\n\n`;
-
-  // Top actions
-  const scopeActions = ACTIONS.filter(a=>!a.dept||deptNames.includes(a.dept)||a.dept==='Multiple').slice(0,3);
-  if(scopeActions.length) {
-    out += `**Top ${scopeActions.length} recommended actions:**\n`;
-    scopeActions.forEach((a,i)=>{
-      out += `${i+1}. [${a.road}] ${a.title} — ${a.priority} priority. Return on impact: £${fmt(a.cost_inaction)} avoided for £${fmt(a.cost_action)} invested (${a.roi}x). Owner: ${a.owner.split(' — ')[0]}.\n`;
-    });
-  }
-  return out;
-}
-
-function aiRetain(emps, label) {
-  const n = emps.length;
-  const highFR = emps.filter(e=>e.flight_risk_score>=50).sort((a,b)=>b.flight_risk_score-a.flight_risk_score);
-  const regret = highFR.filter(e=>e.would_be_regrettable);
-
-  let out = `**Retention Risk — ${label} (${n} employees)**\n\n`;
-  out += `${highFR.length} employee${highFR.length!==1?'s':''} at elevated flight risk (score ≥50). ${regret.length} would be regrettable to lose.\n\n`;
-
-  if(highFR.length===0) return out + `No elevated flight risk detected in this scope.`;
-
-  out += `**Top flight risks:**\n`;
-  highFR.slice(0,5).forEach((e,i)=>{
-    const factors = [];
-    if(e.compa_ratio<0.90) factors.push(`pay at ${Math.round(e.compa_ratio*100)}% of peer midpoint`);
-    if(e.compa_ratio<0.85) factors.push('severe pay gap (>15% below peers)');
-    if(e.performance_current>=4) factors.push('high performer — market demand');
-    if(e.org_tenure_yrs>8) factors.push('long tenure with limited progression');
-    if(e.department==='Cybersecurity') factors.push('Cybersecurity — highly competed-for in market');
-    if(e.months_since_promotion>36) factors.push(`${e.months_since_promotion} months without promotion`);
-    if(e.engagement_score<60) factors.push(`low engagement (${e.engagement_score}/100)`);
-    out += `${i+1}. **${e.name}** — ${e.role}, ${e.department}\n`;
-    out += `   Score: ${e.flight_risk_score}/100 | Programme: ${(e.programs||['—'])[0]} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}\n`;
-    out += `   Driving factors: ${factors.length?factors.join('; '):'baseline risk'}\n`;
-    out += `   Estimated replacement cost if they leave: £${fmt(Math.round(e.base_salary_gbp*1.4))}\n\n`;
-  });
-
-  // Contagion events in scope
-  const deptNames = [...new Set(emps.map(e=>e.department))];
-  const contagion = ATT.filter(a=>deptNames.includes(a.department)&&a.contagion_team_members_at_risk>0&&a.regrettability==='Regrettable');
-  if(contagion.length) {
-    out += `**Turnover contagion active:**\n`;
-    contagion.forEach(a=>{
-      out += `${a.name} departed ${a.departure_date} (${a.departure_reason}) — ${a.contagion_team_members_at_risk} teammate(s) at +${a.contagion_risk_uplift_pct}% elevated flight risk. Action: team pulse check.\n`;
-    });
-    out += `\n`;
-  }
-
-  const avgCR = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
-  out += `**Pay equity summary:** Average compa-ratio ${avgCR}. ${emps.filter(e=>e.compa_ratio<0.90).length} employee${emps.filter(e=>e.compa_ratio<0.90).length!==1?'s':''} below 0.90.`;
-  return out;
-}
-
-function aiProgram(emps, label) {
-  const deptProgs = [...new Set(emps.flatMap(e=>e.programs||[]))].filter(id=>id!=='Corporate / Internal');
-  const relevantProgs = PROG.filter(p=>deptProgs.includes(p.id));
-
-  let out = `**Programme Delivery Risk — ${label}**\n\n`;
-  if(!relevantProgs.length) {
-    out += `No active programmes mapped to this scope. Try "all" to see enterprise-wide programme risk.`;
-    return out;
-  }
-
-  relevantProgs.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score).forEach(p=>{
-    const totalGap = Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0);
-    const atRiskMs = (p.milestones||[]).filter(m=>m.status!=='On Track');
-    out += `**${p.name}** — ${p.phase_short} · £${p.value_gbp}M · ${p.customer}\n`;
-    out += `Delivery risk score: **${p.delivery_risk_score}/100 (${p.delivery_risk_label})**\n`;
-    if(totalGap>0) {
-      out += `Headcount gap: ${Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k}`).join(', ')}.\n`;
-      const worstRole = Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])[0];
-      if(worstRole) {
-        const lt = p.lead_time_months?.[worstRole[0]]||6;
-        const status = lt>9?'BEHIND — open requisition immediately':'AT RISK — pipeline needs action';
-        out += `Biggest gap: **${worstRole[0]}** (${worstRole[1]} needed). Lead time: ${lt} months → ${status}\n`;
-      }
+function detectScope(q){
+  const lower=q.toLowerCase();
+  // Check agent scope selector first
+  const sel=document.getElementById('agentScope');
+  if(sel&&sel.value){
+    if(VIEW==='functional'){
+      const fn=FUNCS.find(f=>f.id===sel.value);
+      if(fn) return {emps:EMPS.filter(e=>e.function_id===fn.id),label:fn.name,progs:PROGS,fns:[fn]};
+    } else {
+      const pr=PROGS.find(p=>p.id===sel.value);
+      if(pr) return {emps:EMPS.filter(e=>e.programs?.includes(pr.id)),label:pr.name,progs:[pr],fns:FUNCS};
     }
-    if(atRiskMs.length) out += `Milestones at risk: ${atRiskMs.map(m=>`${m.name} (${m.date}, ${m.status})`).join('; ')}.\n`;
-    out += `\n`;
-  });
-
-  // Binding constraint
-  out += `**Binding constraint (Theory of Constraints):** Security clearance lead time is the single bottleneck limiting throughput across all programmes — DV clearance averages 14-18 months. `;
-  out += `Every other process improvement is subordinate until this constraint is elevated. Recommend: (1) initiate clearances before requisitions are raised; (2) maintain pre-cleared contractor pool as bridge.`;
-  return out;
+  }
+  // NL detection
+  for(const[kw,fnIds] of Object.entries(DEPT_MAP)){
+    if(lower.includes(kw)){
+      const fns=FUNCS.filter(f=>fnIds.includes(f.id));
+      const emps=EMPS.filter(e=>fnIds.includes(e.function_id));
+      return {emps,label:fns.map(f=>f.name).join(' & '),progs:PROGS,fns};
+    }
+  }
+  for(const[kw,pIds] of Object.entries(PROG_MAP)){
+    if(lower.includes(kw)&&pIds.length){
+      const progs=PROGS.filter(p=>pIds.includes(p.id));
+      const emps=EMPS.filter(e=>pIds.some(id=>e.programs?.includes(id)));
+      return {emps,label:progs.map(p=>p.name).join(' & '),progs,fns:FUNCS};
+    }
+  }
+  return {emps:EMPS,label:'Enterprise (54,500 FTEs)',progs:PROGS,fns:FUNCS};
 }
 
-function aiAcquire(emps, label) {
-  const deptNames = [...new Set(emps.map(e=>e.department))];
-  const scopeLogs = LOG.filter(l=>deptNames.includes(l.department));
-  const active = scopeLogs.filter(l=>l.status==='Active');
-  const high = active.filter(l=>l.risk_label==='High'||l.risk_label==='Critical');
-  const avgDays = active.length?Math.round(active.reduce((s,l)=>s+l.days_open,0)/active.length):0;
-  const cleared = active.filter(l=>l.clearance_required!=='Baseline');
-
-  let out = `**Talent Pipeline — ${label}**\n\n`;
-  out += `${active.length} active requisition${active.length!==1?'s':''} | ${high.length} high/critical risk | Average age: ${avgDays} days | ${cleared.length} requiring SC or DV clearance\n\n`;
-
-  if(high.length) {
-    out += `**Cases requiring immediate attention:**\n`;
-    high.slice(0,4).forEach(l=>{
-      out += `• **${l.role}** (${l.department}) — ${l.days_open} days open | Risk: ${l.risk_label} | Clearance: ${l.clearance_required}\n`;
-      if(l.sla_breach) out += `  ⚠ SLA already breached.\n`;
-      if(l.compliance_breach) out += `  ⚠ Compliance gap: ${l.compliance_breach}.\n`;
-    });
-    out += `\n`;
-  }
-
-  out += `**Lead time benchmarks (time from need to productive in role):**\n`;
-  out += `• DV-cleared roles: 14–18 months actual vs 12 month target → **Behind target**\n`;
-  out += `• SC-cleared roles: 9–11 months actual vs 8 month target → **Slightly behind**\n`;
-  out += `• Uncleared professional: 3–6 months → **On track**\n\n`;
-
-  out += `**"Ahead of Ready" status:** If any programme milestone is within ${cleared.length>0?'12-18':'6'} months and cleared roles are unfilled, you are already behind the lead time curve. `;
-  out += `Cleared contractor bridge is the recommended immediate action while permanent hiring progresses.`;
-  return out;
+function detectIntent(q){
+  const l=q.toLowerCase();
+  if(/assess|overview|summary|health|status|brief|how are|state of/.test(l)) return 'assess';
+  if(/flight risk|leav|resign|attrition|turnover|retain/.test(l)) return 'retain';
+  if(/program|programme|delivery|milestone|phase|schedule|delay/.test(l)) return 'program';
+  if(/hire|hiring|pipeline|acqui|vacancy|lead time|ahead of ready|clearance/.test(l)) return 'acquire';
+  if(/temporal|time in role|time in level|time on prog|lifecycle|phase experience/.test(l)) return 'temporal';
+  if(/alloc|supply|resource|function.*supply|who.*supply|matrix/.test(l)) return 'alloc';
+  if(/develop|skill|competency|succession|training|capabilit/.test(l)) return 'develop';
+  if(/roi|return on impact|cost of inaction|business case/.test(l)) return 'roi';
+  if(/pay|salary|compensation|compa/.test(l)) return 'pay';
+  if(/span|layer|structure|org design|star model/.test(l)) return 'optimize';
+  if(/contagion|team risk|colleague left/.test(l)) return 'contagion';
+  // Prompt book categories
+  if(/data audit|data quality|hris|data field|data gap/.test(l)) return 'dataaudit';
+  if(/ai readiness|ai adoption|ai risk|model output/.test(l)) return 'aiready';
+  if(/demand forecast|headcount demand|demand model/.test(l)) return 'demand';
+  if(/supply model|talent supply|internal supply|pipeline health/.test(l)) return 'supply';
+  if(/scenario|what if|stress case|optimistic|recession/.test(l)) return 'scenario';
+  if(/gap analysis|gap closure|capability gap|skill gap/.test(l)) return 'gap';
+  if(/reskilling|upskilling|learning|l&d/.test(l)) return 'reskill';
+  if(/critical role|succession plan|key role|bench/.test(l)) return 'critical';
+  if(/change management|transformation|change strategy/.test(l)) return 'change';
+  if(/stakeholder|engagement strategy/.test(l)) return 'stakeholder';
+  return 'assess';
 }
 
-function aiDevelop(emps, label) {
-  const n = emps.length;
-  const avgMatch = Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n);
-  const lowMatch = emps.filter(e=>e.competency_match_pct<70);
-  const readyNow = emps.filter(e=>e.succession_status==='Ready Now');
-  const pipeline  = emps.filter(e=>e.succession_status.includes('Development'));
-  const noSucc    = emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated');
-  const avgTrain  = Math.round(emps.reduce((s,e)=>s+e.training_hrs_ttm,0)/n);
+function analyzeQuery(q){
+  const {emps,label,progs,fns}=detectScope(q);
+  const intent=detectIntent(q);
+  const n=emps.length;
+  if(!n&&intent!=='alloc') return `No employee data found for that scope. Try specifying a function (e.g. "engineering") or programme (e.g. "FCAS").`;
 
-  let out = `**Capability & Development — ${label} (${n} employees)**\n\n`;
-  out += `Average competency match: **${avgMatch}%** (target: 80%). ${lowMatch.length} employee${lowMatch.length!==1?'s':''} below 70% threshold — development plans needed.\n`;
-  out += `Average training hours (last 12 months): ${avgTrain} hours per person.\n\n`;
-
-  out += `**Succession depth:**\n`;
-  out += `• Ready Now: ${readyNow.length} nominee${readyNow.length!==1?'s':''}\n`;
-  out += `• In development pipeline: ${pipeline.length}\n`;
-  out += `• Key persons with NO successor: **${noSucc.length}** — critical void\n`;
-  if(noSucc.length) {
-    noSucc.slice(0,3).forEach(e=>{
-      out += `  — ${e.name} (${e.role}, ${e.department}) — departure would expose programme delivery.\n`;
-    });
+  switch(intent){
+    case 'assess':   return aiAssess(emps,label,progs,fns);
+    case 'retain':   return aiRetain(emps,label);
+    case 'program':  return aiProgram(emps,label,progs);
+    case 'acquire':  return aiAcquire(emps,label,progs);
+    case 'temporal': return aiTemporal(emps,label);
+    case 'alloc':    return aiAlloc(label,progs,fns);
+    case 'develop':  return aiDevelop(emps,label);
+    case 'roi':      return aiROI(emps,label);
+    case 'pay':      return aiPay(emps,label);
+    case 'optimize': return aiOptimize(emps,label);
+    case 'dataaudit':return aiDataAudit(emps,label);
+    case 'demand':   return aiDemand(progs,label);
+    case 'supply':   return aiSupply(emps,label,fns);
+    case 'gap':      return aiGap(emps,label,progs);
+    case 'critical': return aiCritical(emps,label);
+    default:         return aiAssess(emps,label,progs,fns);
   }
-  out += `\n`;
-
-  if(lowMatch.length) {
-    out += `**Lowest competency match (priority for development investment):**\n`;
-    lowMatch.sort((a,b)=>a.competency_match_pct-b.competency_match_pct).slice(0,4).forEach(e=>{
-      out += `• ${e.name} — ${e.role} — match: ${e.competency_match_pct}% | Training hours: ${e.training_hrs_ttm}\n`;
-    });
-  }
-  return out;
 }
 
-function aiPay(emps, label) {
-  const n = emps.length;
-  const avgCR = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
-  const below85 = emps.filter(e=>e.compa_ratio<0.85);
-  const below90 = emps.filter(e=>e.compa_ratio>=0.85&&e.compa_ratio<0.90);
-  const atMkt   = emps.filter(e=>e.compa_ratio>=0.90&&e.compa_ratio<=1.05);
-  const above   = emps.filter(e=>e.compa_ratio>1.05);
+function aiAssess(emps,label,progs,fns){
+  const n=emps.length;
+  const highFR=emps.filter(e=>e.flight_risk_score>=60).length;
+  const regret=emps.filter(e=>e.would_be_regrettable&&e.flight_risk_score>=60).length;
+  const avgCR =(emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
+  const avgEng=Math.round(emps.reduce((s,e)=>s+e.engagement_score,0)/n);
+  const phGap =emps.filter(e=>!e.acquisition_phase_match&&e.acquisition_phase_current).length;
+  const noSucc=emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').length;
+  const stale =emps.filter(e=>e.time_in_level_yrs>=4).length;
 
-  let out = `**Pay equity analysis — ${label} (${n} employees)**\n\n`;
-  out += `Average compa-ratio: **${avgCR}** (1.00 = peer market midpoint)\n\n`;
-  out += `• Severe gap (<0.85): **${below85.length}** employee${below85.length!==1?'s':''} — immediate review\n`;
-  out += `• Below peers (0.85–0.90): **${below90.length}** — plan in next cycle\n`;
-  out += `• At/near market (0.90–1.05): **${atMkt.length}** — healthy\n`;
-  out += `• Above midpoint (>1.05): **${above.length}**\n\n`;
+  const topRisk=PROGS.filter(p=>progs.map(pr=>pr.id).includes(p.id)).sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score)[0];
 
-  if(below85.length) {
-    out += `**Employees at severe pay gap — highest retention risk:**\n`;
-    [...below85].sort((a,b)=>a.compa_ratio-b.compa_ratio).slice(0,4).forEach(e=>{
-      out += `• ${e.name} (${e.role}) — compa-ratio ${e.compa_ratio} | Flight risk: ${e.flight_risk_score} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}\n`;
-      out += `  Estimated cost to bring to midpoint: £${fmt(Math.round(e.base_salary_gbp*(1/e.compa_ratio - 1)))} pa | Replacement cost if they leave: £${fmt(Math.round(e.base_salary_gbp*1.4))}\n`;
-    });
-  }
-  return out;
+  return `**${label} — Workforce Assessment**\n\n**ROAD Framework Summary (${n} sample employees → ${fmt(fns.reduce((s,f)=>s+f.headcount_actual,0))} FTEs):**\n\n**Retain (score: ${Math.round(fns.reduce((s,f)=>s+f.road_health.Retain,0)/Math.max(1,fns.length))}/100)**\n${highFR} employees at elevated flight risk (≥60%). ${regret} would be regrettable to lose. Average compa-ratio: ${avgCR}. ${stale} employees are 4+ years in their current level — overdue for promotion or career action. Average engagement: ${avgEng}/100.\n\n**Optimize (score: ${Math.round(fns.reduce((s,f)=>s+f.road_health.Optimize,0)/Math.max(1,fns.length))}/100)**\nSpan of control, STAR model, and org effectiveness indicators are ${avgEng>70?'within acceptable range':'showing strain — engagement below target'}. ${emps.filter(e=>e.direct_reports>=10).length} manager(s) with ≥10 direct reports — stretched.\n\n**Acquire (score: ${Math.round(fns.reduce((s,f)=>s+f.road_health.Acquire,0)/Math.max(1,fns.length))}/100)**\n${topRisk?`Highest delivery risk programme involving this scope: **${topRisk.name}** (risk score ${topRisk.delivery_risk_score}, phase ${topRisk.phase}). `:''}Security clearance lead time remains the binding constraint — DV clearance averages 14-18 months.\n\n**Develop (score: ${Math.round(fns.reduce((s,f)=>s+f.road_health.Develop,0)/Math.max(1,fns.length))}/100)**\nAverage competency match: ${Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n)}%. ${noSucc} key person(s) with no succession plan — critical void. ${phGap} employee(s) have no experience in their programme's current acquisition phase.\n\n**Top actions:** View the Action Plans section for full detail with return on impact calculations.`;
 }
 
-function aiROI(emps, label) {
-  const deptNames = [...new Set(emps.map(e=>e.department))];
-  const scopeActions = ACTIONS.filter(a=>!a.dept||deptNames.includes(a.dept)||a.dept==='Multiple');
-  const total_act = scopeActions.reduce((s,a)=>s+a.cost_action,0);
-  const total_inact = scopeActions.reduce((s,a)=>s+a.cost_inaction,0);
-
-  let out = `**Return on Impact — ${label}**\n\n`;
-  out += `${scopeActions.length} recommended action${scopeActions.length!==1?'s':''} across all ROAD pillars.\n`;
-  out += `Total investment required: **£${fmt(total_act)}** | Total cost avoided (if no action): **£${fmt(total_inact)}** | Combined return: **${Math.round(total_inact/Math.max(1,total_act))}x**\n\n`;
-
-  scopeActions.forEach((a,i)=>{
-    out += `**${i+1}. ${a.title}**\n`;
-    out += `   ROAD: ${a.road} | Priority: ${a.priority} | Owner: ${a.owner.split(' — ')[0]}\n`;
-    out += `   Cost of action: £${fmt(a.cost_action)} → Cost of inaction: £${fmt(a.cost_inaction)} → Return: ${a.roi}x\n`;
-    out += `   ${a.action.split('.')[0]}.\n\n`;
+function aiRetain(emps,label){
+  const sorted=emps.filter(e=>e.flight_risk_score>=50).sort((a,b)=>b.flight_risk_score-a.flight_risk_score);
+  if(!sorted.length) return `No elevated flight risk detected in ${label}.`;
+  let out=`**Retention Risk — ${label}**\n\n${sorted.length} employee(s) at elevated flight risk (≥50).\n\n`;
+  sorted.slice(0,6).forEach((e,i)=>{
+    const factors=[];
+    if(e.compa_ratio<0.90) factors.push(`pay ${Math.round(e.compa_ratio*100)}% of peers`);
+    if(e.performance_current>=4) factors.push('high performer — marketable');
+    if(e.time_in_level_yrs>=4) factors.push(`${e.time_in_level_yrs.toFixed(1)}yr in level`);
+    if(e.org_tenure_yrs>10) factors.push('long tenure/career ceiling');
+    if(e.department==='Cybersecurity'||e.function_id==='FN-CS') factors.push('Cyber — critical market demand');
+    out+=`${i+1}. **${e.name}** — ${e.subdiscipline}, ${e.function_name}\n   Score: ${e.flight_risk_score}/100 | Compa-ratio: ${e.compa_ratio} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}\n   Drivers: ${factors.join('; ')||'base factors'}\n   Estimated replacement: £${fmt(Math.round(e.base_salary_gbp*1.4))}\n\n`;
   });
   return out;
 }
 
-function aiOptimize(emps, label) {
-  const n = emps.length;
-  const dims = ['strategy','structure','processes','rewards','people'];
-  const scores = dims.map(d=>({d, v:Math.round(emps.reduce((s,e)=>s+(e['star_'+d]||0),0)/n)}));
-  const stretched = emps.filter(e=>e.direct_reports>=10);
-  const overmanaged = emps.filter(e=>e.direct_reports>0&&e.direct_reports<4);
-
-  let out = `**Org Performance (STAR Model) — ${label} (${n} employees)**\n\n`;
-  out += `**Galbraith STAR Model scores:**\n`;
-  scores.forEach(s=>{
-    const status = s.v<55?'⚠ Action needed':s.v<70?'Monitor':s.v<85?'Healthy':'Strong';
-    out += `• ${s.d[0].toUpperCase()+s.d.slice(1)}: ${s.v}/100 — ${status}\n`;
+function aiProgram(emps,label,progs){
+  const relevant=progs.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score);
+  if(!relevant.length) return `No programme data found for ${label}.`;
+  let out=`**Programme Delivery Risk — ${label}**\n\n`;
+  relevant.forEach(p=>{
+    const atRisk=(p.milestones||[]).filter(m=>m.status!=='On Track');
+    out+=`**${p.name}** — ${p.phase_label} (${p.phase})\nRisk score: ${p.delivery_risk_score}/100 (${p.delivery_risk_label}) | £${p.value_gbp}M | ${p.customer}\n`;
+    if(atRisk.length) out+=`Milestones at risk: ${atRisk.map(m=>`${m.name} (${m.date}, ${m.status})`).join('; ')}\n`;
+    const allocEntries=ALLOC.filter(a=>a.program_id===p.id);
+    const critAlloc=allocEntries.filter(a=>a.criticality==='Critical');
+    if(critAlloc.length) out+=`Critical function dependencies: ${critAlloc.map(a=>`${a.function_name} (${fmt(a.headcount_required)} FTEs required)`).join(', ')}\n`;
+    out+='\n';
   });
-  const weakest = scores.sort((a,b)=>a.v-b.v)[0];
-  out += `\nWeakest dimension: **${weakest.d[0].toUpperCase()+weakest.d.slice(1)} (${weakest.v}/100)**. `;
-  const advice = {
-    strategy:'Workforce capability is not fully aligned to programme objectives — review role profiles against current programme portfolio.',
-    structure:'Org structure needs review — check span of control, layers, and reporting lines.',
-    processes:'Information flows and decision rights are limiting performance — clarify RACI and escalation paths.',
-    rewards:'Recognition and compensation are not driving the right behaviours — review incentive structures.',
-    people:'Development and succession quality needs attention — invest in career conversations and L&D.',
-  };
-  out += advice[weakest.d]+'\n\n';
+  out+=`**Binding constraint (TOC):** Clearance lead time — DV clearance 14-18 months. Start clearances before requisitions are raised.`;
+  return out;
+}
 
-  out += `**Span of control:**\n`;
-  out += `• ${stretched.length} manager${stretched.length!==1?'s':''} with ≥10 direct reports — stretched, productivity risk\n`;
-  out += `• ${overmanaged.length} manager${overmanaged.length!==1?'s':''} with <4 direct reports — over-managed, efficiency opportunity\n`;
-  if(stretched.length) {
-    out += `Stretched managers: ${stretched.map(e=>`${e.name.split(' ')[0]} (${e.direct_reports} reports, engagement ${e.engagement_score}/100)`).join(', ')}\n`;
+function aiTemporal(emps,label){
+  const n=emps.length; if(!n) return 'No data for that scope.';
+  const staleRole=emps.filter(e=>e.time_in_role_yrs>=5);
+  const overdueLevel=emps.filter(e=>e.time_in_level_yrs>=4);
+  const rotProg=emps.filter(e=>e.time_on_program_yrs>=5);
+  const phGap=emps.filter(e=>!e.acquisition_phase_match&&e.acquisition_phase_current);
+  let out=`**Temporal Analysis — ${label} (${n} sample employees)**\n\n`;
+  out+=`**Time in role:** ${staleRole.length} employees at 5yr+ (stale — rotation or career action needed).\n`;
+  if(staleRole.length) out+=`  Longest: ${staleRole.sort((a,b)=>b.time_in_role_yrs-a.time_in_role_yrs).slice(0,3).map(e=>`${e.name} (${e.time_in_role_yrs.toFixed(1)}yr in ${e.subdiscipline})`).join(', ')}\n\n`;
+  out+=`**Time in level:** ${overdueLevel.length} employees at 4yr+ in current grade — overdue for promotion or career conversation.\n`;
+  if(overdueLevel.length) out+=`  Highest risk: ${overdueLevel.filter(e=>e.would_be_regrettable).length} of these are flagged as regrettable to lose.\n\n`;
+  out+=`**Time on programme:** ${rotProg.length} employees at 5yr+ on same programme — knowledge hoarding risk and personal rotation need.\n\n`;
+  out+=`**Acquisition lifecycle experience gaps:** ${phGap.length} employees have no experience in their current programme's phase.\n`;
+  if(phGap.length){
+    const byPhase={};
+    phGap.forEach(e=>{ byPhase[e.acquisition_phase_current]=(byPhase[e.acquisition_phase_current]||0)+1; });
+    out+=`  By phase: ${Object.entries(byPhase).map(([ph,ct])=>`${ph}: ${ct} person(s)`).join(', ')}\n`;
+    out+=`  Recommended: structured knowledge transfer from experienced colleagues + cross-programme secondment.`;
   }
   return out;
 }
 
-function aiContagion() {
-  const events = ATT.filter(a=>a.contagion_team_members_at_risk>0&&a.regrettability==='Regrettable');
-  let out = `**Turnover Contagion Analysis**\n\n`;
-  out += `When a regrettable departure occurs, teammates' flight risk increases by 40-80% within 6 months (research baseline). The platform applies a ${40}% uplift as default, adjusted upward for team-critical roles.\n\n`;
-  if(!events.length) return out+`No active contagion events detected in the last 18 months.`;
-  out += `**Active contagion events:**\n`;
-  events.forEach(a=>{
-    out += `**${a.name}** left ${a.departure_date} — ${a.department}\n`;
-    out += `Reason: ${a.departure_reason} | Clearance: ${a.clearance} | Knowledge documented: ${a.knowledge_documented}\n`;
-    out += `Impact: ${a.contagion_team_members_at_risk} remaining teammate(s) at +${a.contagion_risk_uplift_pct}% elevated flight risk\n`;
-    out += `Recommended action: schedule team pulse check, review workload, prioritise career conversations with at-risk teammates.\n\n`;
-  });
-  const totalAtRisk = events.reduce((s,a)=>s+a.contagion_team_members_at_risk,0);
-  out += `**Total teammates at elevated contagion risk: ${totalAtRisk}**`;
+function aiAlloc(label,progs,fns){
+  const allocData=ALLOC.filter(a=>progs.map(p=>p.id).includes(a.program_id)&&fns.map(f=>f.id).includes(a.function_id));
+  if(!allocData.length) return `No allocation data found. Try "allocation matrix" to see the full view.`;
+  const total=allocData.reduce((s,a)=>s+a.headcount_required,0);
+  const critical=allocData.filter(a=>a.criticality==='Critical');
+  const highRisk=allocData.filter(a=>a.avg_flight_risk>=55);
+  let out=`**Resource Allocation — ${label}**\n\nTotal headcount required across selected scope: ${fmt(total)} FTEs\nCritical allocations: ${critical.length}\nAllocations with high flight risk (≥55%): ${highRisk.length}\n\n`;
+  if(critical.length){
+    out+=`**Critical function-programme dependencies:**\n`;
+    critical.forEach(a=>{
+      out+=`• ${a.function_name} → ${a.program_name}: ${fmt(a.headcount_required)} FTEs (${a.pct_of_function}% of function)\n`;
+      if(a.phase_experience_gap_count>0) out+=`  ⚠ ${a.phase_experience_gap_count} employees lack experience in this programme's current phase.\n`;
+    });
+  }
   return out;
 }
 
-function analyzeQuery(q) {
-  const scope  = detectScope(q);
-  const intent = detectIntent(q);
-  switch(intent) {
-    case 'assess':   return aiAssess(scope.emps, scope.label);
-    case 'retain':   return aiRetain(scope.emps, scope.label);
-    case 'program':  return aiProgram(scope.emps, scope.label);
-    case 'acquire':  return aiAcquire(scope.emps, scope.label);
-    case 'develop':  return aiDevelop(scope.emps, scope.label);
-    case 'pay':      return aiPay(scope.emps, scope.label);
-    case 'roi':      return aiROI(scope.emps, scope.label);
-    case 'optimize': return aiOptimize(scope.emps, scope.label);
-    case 'contagion':return aiContagion();
-    default:         return aiAssess(scope.emps, scope.label);
-  }
+function aiDevelop(emps,label){
+  const n=emps.length; if(!n) return 'No data.';
+  const avgMatch=Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n);
+  const low=emps.filter(e=>e.competency_match_pct<70);
+  const noSucc=emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated');
+  const readyNow=emps.filter(e=>e.succession_status==='Ready Now');
+  return `**Capability & Development — ${label}**\n\nAverage competency match: ${avgMatch}% (target ≥80%)\n${low.length} employee(s) below 70% — development plans needed.\n\n**Succession depth:**\n• Ready Now: ${readyNow.length}\n• In development pipeline: ${emps.filter(e=>e.succession_status.includes('Development')).length}\n• Key persons with NO successor: **${noSucc.length}** — critical void${noSucc.length?'\n  '+noSucc.slice(0,3).map(e=>`${e.name} (${e.subdiscipline})`).join(', '):''}`;
 }
 
-// Preset queries
-const PRESETS = [
-  'Give me an assessment of the Engineering organisation',
-  'Who in Cybersecurity is at highest risk of leaving?',
-  'What is the programme delivery risk on Typhoon Modernisation?',
-  'Show me the return on impact for all recommended actions',
-];
-
-function preset(i) {
-  addMsg(PRESETS[i], true);
-  setTimeout(()=>addMsg(analyzeQuery(PRESETS[i]), false), 400);
+function aiPay(emps,label){
+  const n=emps.length; if(!n) return 'No data.';
+  const avgCR=(emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
+  const sev=emps.filter(e=>e.compa_ratio<0.85);
+  const below=emps.filter(e=>e.compa_ratio>=0.85&&e.compa_ratio<0.90);
+  return `**Pay Equity — ${label}**\n\nAverage compa-ratio: ${avgCR} (1.00 = peer market midpoint)\n\n• Severe gap (<0.85): **${sev.length}** — immediate review\n• Below peers (0.85–0.90): **${below.length}** — plan in next cycle\n• At/near market (≥0.90): **${emps.filter(e=>e.compa_ratio>=0.90).length}**\n\n${sev.length?'**Severe gaps:**\n'+sev.sort((a,b)=>a.compa_ratio-b.compa_ratio).slice(0,4).map(e=>`• ${e.name} (${e.subdiscipline}) — ${e.compa_ratio} | Flight risk: ${e.flight_risk_score} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}`).join('\n'):''}`;
 }
 
-function sendChat() {
-  const inp = document.getElementById('chatIn');
+function aiROI(emps,label){
+  const relevant=ACTIONS_LIST.slice(0,6);
+  const totAct=relevant.reduce((s,a)=>s+a.cost_action,0);
+  const totInact=relevant.reduce((s,a)=>s+a.cost_inaction,0);
+  let out=`**Return on Impact — ${label}**\n\n${relevant.length} recommended actions | Total investment: £${fmt(totAct)} | Total cost avoided: £${fmt(totInact)} | Combined return: ${Math.round(totInact/Math.max(1,totAct))}x\n\n`;
+  relevant.forEach((a,i)=>{
+    out+=`${i+1}. **${a.title}**\n   ${a.road} | ${a.priority} | Cost of action: £${fmt(a.cost_action)} → Inaction: £${fmt(a.cost_inaction)} → Return: ${a.roi}x\n\n`;
+  });
+  return out;
+}
+
+function aiOptimize(emps,label){
+  const n=emps.length; if(!n) return 'No data.';
+  const dims=['strategy','structure','processes','rewards','people'];
+  const scores=dims.map(d=>({d,v:Math.round(emps.reduce((s,e)=>s+(e['star_'+d]||0),0)/n)}));
+  const worst=scores.sort((a,b)=>a.v-b.v)[0];
+  const stretched=emps.filter(e=>e.direct_reports>=10);
+  return `**Org Performance (STAR Model) — ${label}**\n\n${scores.sort((a,b)=>a.v-b.v).map(s=>`• ${s.d[0].toUpperCase()+s.d.slice(1)}: ${s.v}/100`).join('\n')}\n\nWeakest: **${worst.d[0].toUpperCase()+worst.d.slice(1)} (${worst.v}/100)**\n\n${stretched.length} manager(s) with ≥10 direct reports — stretched span of control. Average engagement: ${Math.round(emps.reduce((s,e)=>s+e.engagement_score,0)/n)}/100.`;
+}
+
+function aiDataAudit(emps,label){
+  const n=emps.length;
+  const fields=[
+    {name:'Compa-ratio',coverage:100,risk:'Low'},
+    {name:'Security clearance level',coverage:100,risk:'Low — available in HRIS but verify field mapping for Phase 2'},
+    {name:'Acquisition phase experience',coverage:Math.round(emps.filter(e=>e.acquisition_phases_experienced?.length).length/n*100),risk:'Medium — requires programme system integration (Phase 2)'},
+    {name:'Time on programme',coverage:100,risk:'Low — derivable from programme allocation data'},
+    {name:'Engagement score',coverage:Math.round(emps.filter(e=>e.engagement_score).length/n*100),risk:'High — requires engagement survey platform integration'},
+    {name:'Competency match %',coverage:100,risk:'Medium — currently approximated; requires formal assessment data'},
+    {name:'Critical path flag',coverage:Math.round(emps.filter(e=>e.on_critical_path!==undefined).length/n*100),risk:'High — requires programme management system integration'},
+  ];
+  let out=`**Workforce Data Audit — ${label} (${n} sample records)**\n\nKey data field coverage and Phase 2 integration risk:\n\n`;
+  fields.forEach(f=>{ out+=`• **${f.name}**: ${f.coverage}% coverage | Risk: ${f.risk}\n`; });
+  out+=`\n**Top data gaps to resolve before Phase 2:**\n1. Engagement survey integration — currently using approximated scores\n2. Programme critical path data — needed for "Ahead of Ready" analysis\n3. Acquisition phase experience — must be maintained in HR system, not just programme records\n4. Security clearance — confirm SAP infotype field mapping with IT`;
+  return out;
+}
+
+function aiDemand(progs,label){
+  const n=progs.length; if(!n) return 'No programme data for this scope.';
+  const totalHC=ALLOC.filter(a=>progs.map(p=>p.id).includes(a.program_id)).reduce((s,a)=>s+a.headcount_required,0);
+  return `**Workforce Demand Forecast — ${label}**\n\n${n} programme(s) analysed. Total headcount required: ${fmt(totalHC)} FTEs across all functions.\n\n**Demand by acquisition phase:**\n${[...new Set(progs.map(p=>p.phase))].map(ph=>{
+    const phProgs=progs.filter(p=>p.phase===ph);
+    const phHC=ALLOC.filter(a=>phProgs.map(p=>p.id).includes(a.program_id)).reduce((s,a)=>s+a.headcount_required,0);
+    return `• **${ph}** (${phProgs.map(p=>p.short).join(', ')}): ${fmt(phHC)} FTEs required`;
+  }).join('\n')}\n\n**Demand risk:** ${progs.filter(p=>p.delivery_risk_score>60).length} programme(s) at High/Critical delivery risk — demand signal is urgent and supply pipeline must respond immediately.`;
+}
+
+function aiSupply(emps,label,fns){
+  const n=emps.length; if(!n) return 'No data.';
+  const highFR=emps.filter(e=>e.flight_risk_score>=60).length;
+  const attrition_risk_pct=Math.round(highFR/n*100);
+  return `**Talent Supply Model — ${label}**\n\n**Current supply position:**\n• Sample size: ${n} employees (representing ${fmt(fns.reduce((s,f)=>s+f.headcount_actual,0))} FTEs at scale)\n• At elevated flight risk: ${highFR} (${attrition_risk_pct}%) — potential outflow\n• Key persons: ${emps.filter(e=>e.key_person_dependency).length} — critical supply nodes\n• Would be regrettable to lose: ${emps.filter(e=>e.would_be_regrettable).length}\n\n**Supply bottlenecks:**\n1. DV-cleared talent — scarce supply, 14-18 month lead time to replace\n2. SW/Cyber functions — highest flight risk (market demand)\n3. Phase experience gaps — ${emps.filter(e=>!e.acquisition_phase_match&&e.acquisition_phase_current).length} employees lack current-phase experience\n\n**Recommended supply actions:**\n1. Retain the ${emps.filter(e=>e.would_be_regrettable&&e.flight_risk_score>=55).length} regrettable-flight-risk employees through targeted compensation and career action\n2. Build pre-cleared contractor pipeline as supply buffer\n3. Initiate succession development for ${emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').length} key persons with no successor`;
+}
+
+function aiGap(emps,label,progs){
+  const demanded=ALLOC.filter(a=>progs.map(p=>p.id).includes(a.program_id)).reduce((s,a)=>s+a.headcount_required,0);
+  const atRiskProgs=progs.filter(p=>p.delivery_risk_score>50);
+  return `**Gap Analysis — ${label}**\n\n**Demand vs Supply Summary:**\n• Total FTEs required across programmes: ${fmt(demanded)}\n• High/Critical delivery risk programmes: ${atRiskProgs.length} of ${progs.length}\n\n**Critical gaps (by programme):**\n${atRiskProgs.slice(0,4).map(p=>{
+    const pAlloc=ALLOC.filter(a=>a.program_id===p.id&&a.criticality==='Critical');
+    return `• **${p.name}** (risk ${p.delivery_risk_score}): ${pAlloc.map(a=>`${a.function_name} — ${fmt(a.headcount_required)} FTEs`).join(', ')}`;
+  }).join('\n')}\n\n**Gap closure options:**\nBuild — reskill/develop internal talent (9-18 months for cleared roles)\nBuy — external hire (6-18 months including clearance)\nBorrow — cleared contractor bridge (2-4 months)\nBot — automate low-complexity tasks to free up scarce expertise`;
+}
+
+function aiCritical(emps,label){
+  const kp=emps.filter(e=>e.key_person_dependency);
+  const noSucc=kp.filter(e=>e.succession_status==='Not Nominated');
+  const highRisk=kp.filter(e=>e.flight_risk_score>=55);
+  return `**Critical Role & Succession Analysis — ${label}**\n\n${kp.length} key persons identified (departure would be regrettable and hard to replace).\n\n**Succession coverage:**\n• Ready Now: ${kp.filter(e=>e.succession_status==='Ready Now').length}\n• In development pipeline: ${kp.filter(e=>e.succession_status.includes('Development')).length}\n• **No successor nominated: ${noSucc.length}** — critical void${noSucc.length?'\n  '+noSucc.slice(0,3).map(e=>`${e.name} (${e.subdiscipline}, ${e.function_name})`).join('\n  '):''}\n\n**Flight risk among key persons:**\n${highRisk.length} key persons at elevated flight risk (≥55%) — combined replacement cost if all departed: £${fmt(highRisk.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.4),0))}\n\n**Recommended:** Schedule succession conversation for all ${noSucc.length} unplanned key persons within 30 days.`;
+}
+
+// Chat
+function sendChat(){
+  const inp=document.getElementById('chatIn');
   if(!inp?.value.trim()) return;
-  const q = inp.value.trim(); inp.value='';
-  addMsg(q, true);
-  setTimeout(()=>addMsg(analyzeQuery(q), false), 400);
+  const q=inp.value.trim(); inp.value='';
+  addMsg(q,true);
+  setTimeout(()=>addMsg(analyzeQuery(q),false),350);
 }
 
-function addMsg(txt, isUser) {
-  const msgs = document.getElementById('chatMsgs');
+function addMsg(txt,isUser){
+  const msgs=document.getElementById('chatMsgs');
   if(!msgs) return;
-  const sanitised = txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  msgs.innerHTML += isUser
-    ? `<div class="flex gap-2 justify-end"><div class="chat-user p-3 max-w-2xl"><p class="text-sm text-white">${sanitised}</p></div><div class="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">MT</div></div>`
-    : `<div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div><div class="chat-ai p-3 max-w-2xl"><p class="text-sm text-gray-200">${sanitised}</p></div></div>`;
-  msgs.scrollTop = msgs.scrollHeight;
+  const san=txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  msgs.innerHTML+=isUser
+    ?`<div class="flex gap-2 justify-end"><div class="chat-user p-3 max-w-2xl"><p class="text-sm text-white">${san}</p></div><div class="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">You</div></div>`
+    :`<div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div><div class="chat-ai p-3 max-w-3xl text-sm text-gray-200">${san}</div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// Boot
 loadData();
 </script>
 </body>

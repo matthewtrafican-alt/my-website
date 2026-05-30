@@ -1,0 +1,492 @@
+[
+  {
+    "id": "PRG-001",
+    "portfolio_id": "PORT-AIR",
+    "name": "Typhoon Modernisation Block 20",
+    "short": "Typhoon Mod",
+    "customer": "Royal Air Force",
+    "value_gbp": 420,
+    "phase": "EMD",
+    "phase_label": "Engineering & Manufacturing Development",
+    "delivery_risk_score": 61,
+    "delivery_risk_label": "High",
+    "milestones": [
+      {
+        "name": "Critical Design Review",
+        "date": "2025-03",
+        "status": "At Risk"
+      },
+      {
+        "name": "System Integration Test",
+        "date": "2025-09",
+        "status": "On Track"
+      },
+      {
+        "name": "First Aircraft Delivery",
+        "date": "2027-02",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-SE": {
+        "headcount": 220,
+        "criticality": "High"
+      },
+      "FN-RM": {
+        "headcount": 180,
+        "criticality": "High"
+      },
+      "FN-SW": {
+        "headcount": 150,
+        "criticality": "High"
+      },
+      "FN-MS": {
+        "headcount": 120,
+        "criticality": "Critical"
+      },
+      "FN-ST": {
+        "headcount": 90,
+        "criticality": "High"
+      },
+      "FN-CS": {
+        "headcount": 60,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 80,
+        "criticality": "Medium"
+      },
+      "FN-QS": {
+        "headcount": 50,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-002",
+    "portfolio_id": "PORT-AIR",
+    "name": "Future Combat Air System",
+    "short": "FCAS",
+    "customer": "MOD / Partner Nations",
+    "value_gbp": 890,
+    "phase": "TMRR",
+    "phase_label": "Technology Maturation & Risk Reduction",
+    "delivery_risk_score": 74,
+    "delivery_risk_label": "High",
+    "milestones": [
+      {
+        "name": "Capability Development Doc",
+        "date": "2025-06",
+        "status": "On Track"
+      },
+      {
+        "name": "Tech Demonstration Phase",
+        "date": "2026-03",
+        "status": "At Risk"
+      },
+      {
+        "name": "EMD Gate Review",
+        "date": "2027-09",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-SE": {
+        "headcount": 380,
+        "criticality": "Critical"
+      },
+      "FN-SW": {
+        "headcount": 290,
+        "criticality": "Critical"
+      },
+      "FN-MS": {
+        "headcount": 240,
+        "criticality": "Critical"
+      },
+      "FN-CS": {
+        "headcount": 180,
+        "criticality": "High"
+      },
+      "FN-RM": {
+        "headcount": 160,
+        "criticality": "High"
+      },
+      "FN-ST": {
+        "headcount": 130,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 120,
+        "criticality": "High"
+      },
+      "FN-IT": {
+        "headcount": 90,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-003",
+    "portfolio_id": "PORT-AIR",
+    "name": "Eurofighter E-Scan Radar Upgrade",
+    "short": "E-Scan Upgrade",
+    "customer": "Multi-Nation Consortium",
+    "value_gbp": 310,
+    "phase": "P&D",
+    "phase_label": "Production & Deployment",
+    "delivery_risk_score": 38,
+    "delivery_risk_label": "Medium",
+    "milestones": [
+      {
+        "name": "Production Readiness Review",
+        "date": "2025-04",
+        "status": "On Track"
+      },
+      {
+        "name": "First Production Unit",
+        "date": "2025-12",
+        "status": "On Track"
+      },
+      {
+        "name": "Full Rate Production",
+        "date": "2026-06",
+        "status": "On Track"
+      }
+    ],
+    "functions_required": {
+      "FN-MS": {
+        "headcount": 180,
+        "criticality": "Critical"
+      },
+      "FN-SE": {
+        "headcount": 140,
+        "criticality": "High"
+      },
+      "FN-SW": {
+        "headcount": 110,
+        "criticality": "High"
+      },
+      "FN-QS": {
+        "headcount": 80,
+        "criticality": "High"
+      },
+      "FN-LS": {
+        "headcount": 70,
+        "criticality": "Medium"
+      },
+      "FN-PM": {
+        "headcount": 60,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-004",
+    "portfolio_id": "PORT-GND",
+    "name": "Air Defence Command & Control",
+    "short": "ADCC",
+    "customer": "British Army",
+    "value_gbp": 520,
+    "phase": "EMD",
+    "phase_label": "Engineering & Manufacturing Development",
+    "delivery_risk_score": 55,
+    "delivery_risk_label": "Medium",
+    "milestones": [
+      {
+        "name": "System Requirements Review",
+        "date": "2025-02",
+        "status": "On Track"
+      },
+      {
+        "name": "Preliminary Design Review",
+        "date": "2025-08",
+        "status": "At Risk"
+      },
+      {
+        "name": "CDR Gate",
+        "date": "2026-04",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-SW": {
+        "headcount": 200,
+        "criticality": "Critical"
+      },
+      "FN-SE": {
+        "headcount": 160,
+        "criticality": "High"
+      },
+      "FN-CS": {
+        "headcount": 140,
+        "criticality": "Critical"
+      },
+      "FN-MS": {
+        "headcount": 100,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 80,
+        "criticality": "Medium"
+      },
+      "FN-IT": {
+        "headcount": 60,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-005",
+    "portfolio_id": "PORT-GND",
+    "name": "SKYSHIELD Ground Integration",
+    "short": "SKYSHIELD",
+    "customer": "Export / Partner Nation",
+    "value_gbp": 680,
+    "phase": "EMD",
+    "phase_label": "Engineering & Manufacturing Development",
+    "delivery_risk_score": 42,
+    "delivery_risk_label": "Medium",
+    "milestones": [
+      {
+        "name": "Interface Control Document",
+        "date": "2025-05",
+        "status": "On Track"
+      },
+      {
+        "name": "Hardware Delivery",
+        "date": "2026-01",
+        "status": "On Track"
+      },
+      {
+        "name": "Operational Test",
+        "date": "2026-09",
+        "status": "On Track"
+      }
+    ],
+    "functions_required": {
+      "FN-SE": {
+        "headcount": 200,
+        "criticality": "High"
+      },
+      "FN-RM": {
+        "headcount": 160,
+        "criticality": "High"
+      },
+      "FN-SW": {
+        "headcount": 120,
+        "criticality": "Medium"
+      },
+      "FN-ST": {
+        "headcount": 100,
+        "criticality": "High"
+      },
+      "FN-LS": {
+        "headcount": 80,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-006",
+    "portfolio_id": "PORT-GND",
+    "name": "SHORAD Missile Enhancement",
+    "short": "SHORAD",
+    "customer": "MOD / Export",
+    "value_gbp": 420,
+    "phase": "MSA",
+    "phase_label": "Materiel Solution Analysis",
+    "delivery_risk_score": 28,
+    "delivery_risk_label": "Low",
+    "milestones": [
+      {
+        "name": "Analysis of Alternatives",
+        "date": "2025-09",
+        "status": "On Track"
+      },
+      {
+        "name": "AOA Decision Brief",
+        "date": "2026-03",
+        "status": "On Track"
+      }
+    ],
+    "functions_required": {
+      "FN-SE": {
+        "headcount": 80,
+        "criticality": "Medium"
+      },
+      "FN-MS": {
+        "headcount": 60,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 40,
+        "criticality": "Medium"
+      },
+      "FN-FC": {
+        "headcount": 30,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-007",
+    "portfolio_id": "PORT-CEW",
+    "name": "Cyber Mission System",
+    "short": "CMS",
+    "customer": "MOD / GCHQ",
+    "value_gbp": 290,
+    "phase": "TMRR",
+    "phase_label": "Technology Maturation & Risk Reduction",
+    "delivery_risk_score": 78,
+    "delivery_risk_label": "Critical",
+    "milestones": [
+      {
+        "name": "Capability Requirements Doc",
+        "date": "2025-03",
+        "status": "Delayed"
+      },
+      {
+        "name": "Prototype Demonstration",
+        "date": "2025-10",
+        "status": "At Risk"
+      },
+      {
+        "name": "EMD Proposal",
+        "date": "2026-06",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-CS": {
+        "headcount": 220,
+        "criticality": "Critical"
+      },
+      "FN-SW": {
+        "headcount": 180,
+        "criticality": "Critical"
+      },
+      "FN-SE": {
+        "headcount": 100,
+        "criticality": "High"
+      },
+      "FN-IT": {
+        "headcount": 80,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 50,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-008",
+    "portfolio_id": "PORT-CEW",
+    "name": "Electronic Attack Platform",
+    "short": "EAP",
+    "customer": "RAF / Export",
+    "value_gbp": 380,
+    "phase": "EMD",
+    "phase_label": "Engineering & Manufacturing Development",
+    "delivery_risk_score": 66,
+    "delivery_risk_label": "High",
+    "milestones": [
+      {
+        "name": "System PDR",
+        "date": "2025-05",
+        "status": "At Risk"
+      },
+      {
+        "name": "Hardware Prototype",
+        "date": "2025-11",
+        "status": "At Risk"
+      },
+      {
+        "name": "Subsystem CDR",
+        "date": "2026-04",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-MS": {
+        "headcount": 200,
+        "criticality": "Critical"
+      },
+      "FN-SE": {
+        "headcount": 140,
+        "criticality": "High"
+      },
+      "FN-SW": {
+        "headcount": 120,
+        "criticality": "High"
+      },
+      "FN-CS": {
+        "headcount": 100,
+        "criticality": "High"
+      },
+      "FN-ST": {
+        "headcount": 80,
+        "criticality": "High"
+      },
+      "FN-RM": {
+        "headcount": 60,
+        "criticality": "Medium"
+      }
+    }
+  },
+  {
+    "id": "PRG-009",
+    "portfolio_id": "PORT-CEW",
+    "name": "ISR Data Fusion Platform",
+    "short": "ISR-DFP",
+    "customer": "Intelligence Community",
+    "value_gbp": 310,
+    "phase": "EMD",
+    "phase_label": "Engineering & Manufacturing Development",
+    "delivery_risk_score": 59,
+    "delivery_risk_label": "Medium",
+    "milestones": [
+      {
+        "name": "Data Architecture Review",
+        "date": "2025-04",
+        "status": "On Track"
+      },
+      {
+        "name": "Integration Test Start",
+        "date": "2025-10",
+        "status": "On Track"
+      },
+      {
+        "name": "Operational Trial",
+        "date": "2026-07",
+        "status": "At Risk"
+      }
+    ],
+    "functions_required": {
+      "FN-IT": {
+        "headcount": 160,
+        "criticality": "Critical"
+      },
+      "FN-SW": {
+        "headcount": 140,
+        "criticality": "Critical"
+      },
+      "FN-CS": {
+        "headcount": 120,
+        "criticality": "High"
+      },
+      "FN-SE": {
+        "headcount": 80,
+        "criticality": "High"
+      },
+      "FN-MS": {
+        "headcount": 60,
+        "criticality": "High"
+      },
+      "FN-PM": {
+        "headcount": 50,
+        "criticality": "Medium"
+      }
+    }
+  }
+]

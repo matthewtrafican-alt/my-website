@@ -1,0 +1,386 @@
+[
+  {
+    "id": "FN-SE",
+    "code": "SE",
+    "name": "Systems Engineering",
+    "headcount_actual": 9200,
+    "headcount_sample": 46,
+    "subdisciplines": [
+      "Mission Systems Architecture",
+      "Avionics Integration",
+      "Systems Architecture",
+      "Safety & Certification",
+      "Systems Integration & Test"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.15,
+      "Security Check (SC)": 0.55,
+      "Developed Vetting (DV)": 0.3
+    },
+    "market_demand": "Very High",
+    "road_retain": 62,
+    "road_optimize": 71,
+    "road_acquire": 55,
+    "road_develop": 68,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 62,
+      "Optimize": 71,
+      "Acquire": 55,
+      "Develop": 68,
+      "overall": 64
+    }
+  },
+  {
+    "id": "FN-RM",
+    "code": "RM",
+    "name": "R&M Engineering",
+    "headcount_actual": 7800,
+    "headcount_sample": 39,
+    "subdisciplines": [
+      "Reliability Analysis",
+      "Maintainability Engineering",
+      "Integrated Logistics Support",
+      "Technical Publications",
+      "Field Support Engineering"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.2,
+      "Security Check (SC)": 0.6,
+      "Developed Vetting (DV)": 0.2
+    },
+    "market_demand": "High",
+    "road_retain": 71,
+    "road_optimize": 65,
+    "road_acquire": 63,
+    "road_develop": 59,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 71,
+      "Optimize": 65,
+      "Acquire": 63,
+      "Develop": 59,
+      "overall": 64
+    }
+  },
+  {
+    "id": "FN-SW",
+    "code": "SW",
+    "name": "Software Engineering",
+    "headcount_actual": 6200,
+    "headcount_sample": 31,
+    "subdisciplines": [
+      "Embedded Software",
+      "Mission Software",
+      "DevSecOps",
+      "Verification & Validation",
+      "AI/ML Engineering"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.1,
+      "Security Check (SC)": 0.5,
+      "Developed Vetting (DV)": 0.4
+    },
+    "market_demand": "Critical",
+    "road_retain": 48,
+    "road_optimize": 69,
+    "road_acquire": 41,
+    "road_develop": 74,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 48,
+      "Optimize": 69,
+      "Acquire": 41,
+      "Develop": 74,
+      "overall": 58
+    }
+  },
+  {
+    "id": "FN-CS",
+    "code": "CS",
+    "name": "Cybersecurity",
+    "headcount_actual": 3800,
+    "headcount_sample": 19,
+    "subdisciplines": [
+      "IA & Accreditation",
+      "Secure Software Development",
+      "Penetration Testing",
+      "TEMPEST & Emissions Security",
+      "Crypto Engineering"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.05,
+      "Security Check (SC)": 0.35,
+      "Developed Vetting (DV)": 0.6
+    },
+    "market_demand": "Critical",
+    "road_retain": 44,
+    "road_optimize": 66,
+    "road_acquire": 38,
+    "road_develop": 72,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 44,
+      "Optimize": 66,
+      "Acquire": 38,
+      "Develop": 72,
+      "overall": 55
+    }
+  },
+  {
+    "id": "FN-MS",
+    "code": "MS",
+    "name": "Mission Systems",
+    "headcount_actual": 5400,
+    "headcount_sample": 27,
+    "subdisciplines": [
+      "Radar Systems",
+      "Electronic Warfare & Countermeasures",
+      "Communications & Datalinks",
+      "Weapons Integration",
+      "Sensor Systems"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.05,
+      "Security Check (SC)": 0.4,
+      "Developed Vetting (DV)": 0.55
+    },
+    "market_demand": "Very High",
+    "road_retain": 59,
+    "road_optimize": 72,
+    "road_acquire": 52,
+    "road_develop": 65,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 59,
+      "Optimize": 72,
+      "Acquire": 52,
+      "Develop": 65,
+      "overall": 62
+    }
+  },
+  {
+    "id": "FN-ST",
+    "code": "ST",
+    "name": "Systems Integration & Test",
+    "headcount_actual": 4100,
+    "headcount_sample": 21,
+    "subdisciplines": [
+      "Integration Planning",
+      "Test Engineering",
+      "Ground Test & Evaluation",
+      "Flight Test Support",
+      "Test Lab Management"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.15,
+      "Security Check (SC)": 0.55,
+      "Developed Vetting (DV)": 0.3
+    },
+    "market_demand": "High",
+    "road_retain": 68,
+    "road_optimize": 74,
+    "road_acquire": 61,
+    "road_develop": 63,
+    "scale_factor": 195.2,
+    "road_health": {
+      "Retain": 68,
+      "Optimize": 74,
+      "Acquire": 61,
+      "Develop": 63,
+      "overall": 66
+    }
+  },
+  {
+    "id": "FN-PM",
+    "code": "PM",
+    "name": "Programme Management",
+    "headcount_actual": 4600,
+    "headcount_sample": 23,
+    "subdisciplines": [
+      "Schedule Management",
+      "Risk Management",
+      "Earned Value Management",
+      "Stakeholder Engagement",
+      "Configuration Management"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.2,
+      "Security Check (SC)": 0.55,
+      "Developed Vetting (DV)": 0.25
+    },
+    "market_demand": "Medium",
+    "road_retain": 73,
+    "road_optimize": 68,
+    "road_acquire": 70,
+    "road_develop": 66,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 73,
+      "Optimize": 68,
+      "Acquire": 70,
+      "Develop": 66,
+      "overall": 69
+    }
+  },
+  {
+    "id": "FN-QS",
+    "code": "QS",
+    "name": "Quality & Safety",
+    "headcount_actual": 2900,
+    "headcount_sample": 15,
+    "subdisciplines": [
+      "Quality Assurance",
+      "Safety Case Management",
+      "Airworthiness",
+      "Process Improvement",
+      "Supplier Quality"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.25,
+      "Security Check (SC)": 0.6,
+      "Developed Vetting (DV)": 0.15
+    },
+    "market_demand": "Medium",
+    "road_retain": 76,
+    "road_optimize": 70,
+    "road_acquire": 72,
+    "road_develop": 61,
+    "scale_factor": 193.3,
+    "road_health": {
+      "Retain": 76,
+      "Optimize": 70,
+      "Acquire": 72,
+      "Develop": 61,
+      "overall": 70
+    }
+  },
+  {
+    "id": "FN-LS",
+    "code": "LS",
+    "name": "Logistics & Supportability",
+    "headcount_actual": 3200,
+    "headcount_sample": 16,
+    "subdisciplines": [
+      "Integrated Logistics Support",
+      "Supply Chain Management",
+      "Spares Provisioning",
+      "Training Systems",
+      "Technical Data Management"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.3,
+      "Security Check (SC)": 0.55,
+      "Developed Vetting (DV)": 0.15
+    },
+    "market_demand": "Medium",
+    "road_retain": 74,
+    "road_optimize": 67,
+    "road_acquire": 68,
+    "road_develop": 60,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 74,
+      "Optimize": 67,
+      "Acquire": 68,
+      "Develop": 60,
+      "overall": 67
+    }
+  },
+  {
+    "id": "FN-FC",
+    "code": "FC",
+    "name": "Finance & Commercial",
+    "headcount_actual": 2100,
+    "headcount_sample": 11,
+    "subdisciplines": [
+      "Contract Management",
+      "Pricing & Estimating",
+      "Financial Reporting",
+      "Procurement",
+      "Cost Engineering"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.4,
+      "Security Check (SC)": 0.5,
+      "Developed Vetting (DV)": 0.1
+    },
+    "market_demand": "Low",
+    "road_retain": 78,
+    "road_optimize": 72,
+    "road_acquire": 75,
+    "road_develop": 64,
+    "scale_factor": 190.9,
+    "road_health": {
+      "Retain": 78,
+      "Optimize": 72,
+      "Acquire": 75,
+      "Develop": 64,
+      "overall": 72
+    }
+  },
+  {
+    "id": "FN-HR",
+    "code": "HR",
+    "name": "Human Resources",
+    "headcount_actual": 1800,
+    "headcount_sample": 9,
+    "subdisciplines": [
+      "HR Business Partnering",
+      "Talent Acquisition",
+      "Learning & Development",
+      "HR Operations & Reward",
+      "Workforce Planning & Analytics"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.5,
+      "Security Check (SC)": 0.45,
+      "Developed Vetting (DV)": 0.05
+    },
+    "market_demand": "Low",
+    "road_retain": 80,
+    "road_optimize": 69,
+    "road_acquire": 77,
+    "road_develop": 71,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 80,
+      "Optimize": 69,
+      "Acquire": 77,
+      "Develop": 71,
+      "overall": 74
+    }
+  },
+  {
+    "id": "FN-IT",
+    "code": "IT",
+    "name": "IT & Digital Engineering",
+    "headcount_actual": 3400,
+    "headcount_sample": 17,
+    "subdisciplines": [
+      "PLM & CAD Systems",
+      "Digital Twin & Simulation",
+      "IT Infrastructure",
+      "Data Engineering & Analytics",
+      "DevOps & Cloud Platform"
+    ],
+    "clearance_profile": {
+      "Baseline": 0.2,
+      "Security Check (SC)": 0.55,
+      "Developed Vetting (DV)": 0.25
+    },
+    "market_demand": "High",
+    "road_retain": 55,
+    "road_optimize": 71,
+    "road_acquire": 50,
+    "road_develop": 70,
+    "scale_factor": 200.0,
+    "road_health": {
+      "Retain": 55,
+      "Optimize": 71,
+      "Acquire": 50,
+      "Develop": 70,
+      "overall": 62
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "PORT-AIR",
+    "name": "Air Systems Portfolio",
+    "short": "Air Systems",
+    "color": "#3b82f6",
+    "programs": [
+      "PRG-001",
+      "PRG-002",
+      "PRG-003"
+    ],
+    "value_gbp": 2840,
+    "delivery_risk_score": 67,
+    "delivery_risk_label": "High"
+  },
+  {
+    "id": "PORT-GND",
+    "name": "Ground Defence & Missiles Portfolio",
+    "short": "Ground Defence",
+    "color": "#f59e0b",
+    "programs": [
+      "PRG-004",
+      "PRG-005",
+      "PRG-006"
+    ],
+    "value_gbp": 1620,
+    "delivery_risk_score": 44,
+    "delivery_risk_label": "Medium"
+  },
+  {
+    "id": "PORT-CEW",
+    "name": "Cyber, EW & ISR Portfolio",
+    "short": "Cyber/EW/ISR",
+    "color": "#8b5cf6",
+    "programs": [
+      "PRG-007",
+      "PRG-008",
+      "PRG-009"
+    ],
+    "value_gbp": 980,
+    "delivery_risk_score": 71,
+    "delivery_risk_label": "High"
+  }
+]
