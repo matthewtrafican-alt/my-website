@@ -7,814 +7,1178 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-  * { font-family: 'Inter', sans-serif; }
-  .nav-link { transition: all 0.15s; }
-  .nav-link.active { background: #1d4ed8; color: #fff; }
-  .nav-link:not(.active):hover { background: #1e3a5f; }
-  .card { transition: transform 0.15s, box-shadow 0.15s; }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-  .tab-btn.active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-  .level-bar { transition: width 0.6s ease; }
-  .bloom-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 999px; }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-  .chat-bubble-user { background: #1d4ed8; border-radius: 12px 12px 4px 12px; }
-  .chat-bubble-ai { background: #1e293b; border-radius: 12px 12px 12px 4px; border: 1px solid #334155; }
-  .cascade-line { stroke: #3b82f6; stroke-width: 2; stroke-dasharray: 6 3; animation: dash 2s linear infinite; }
-  @keyframes dash { to { stroke-dashoffset: -18; } }
-  .new-badge { background: linear-gradient(135deg, #1d4ed8, #7c3aed); font-size: 0.6rem; padding: 1px 6px; border-radius: 999px; color: white; font-weight: 700; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{font-family:'Inter',sans-serif;box-sizing:border-box;}
+body{background:#0a0f1e;color:#e2e8f0;}
+.nav-btn{transition:all .15s;cursor:pointer;}
+.nav-btn.active{background:#1d4ed8;color:#fff;}
+.nav-btn:not(.active):hover{background:#1e2d4f;}
+.section{display:none;}
+.section.active{display:block;}
+.card{background:#111827;border:1px solid #1f2937;border-radius:.75rem;}
+.card:hover{border-color:#374151;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.road-r{color:#f59e0b;border-color:#92400e;}
+.road-o{color:#8b5cf6;border-color:#5b21b6;}
+.road-a{color:#3b82f6;border-color:#1d4ed8;}
+.road-d{color:#10b981;border-color:#065f46;}
+.pill{font-size:.65rem;padding:2px 8px;border-radius:999px;font-weight:700;}
+.risk-critical{background:#7f1d1d;color:#fca5a5;}
+.risk-high{background:#78350f;color:#fcd34d;}
+.risk-medium{background:#713f12;color:#fde68a;}
+.risk-low{background:#064e3b;color:#6ee7b7;}
+.vuca-v{border-left:3px solid #3b82f6;}
+.vuca-u{border-left:3px solid #8b5cf6;}
+.vuca-c{border-left:3px solid #10b981;}
+.vuca-a{border-left:3px solid #f59e0b;}
+.bar{transition:width .8s ease;height:6px;border-radius:3px;}
+input[type=text]:focus{outline:none;border-color:#3b82f6;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:#0a0f1e;}
+::-webkit-scrollbar-thumb{background:#374151;border-radius:2px;}
+.chat-ai{background:#111827;border:1px solid #1f2937;border-radius:12px 12px 12px 4px;}
+.chat-user{background:#1d4ed8;border-radius:12px 12px 4px 12px;}
+.ahead-bar{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:.7rem;font-weight:600;transition:width .6s;}
 </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="min-h-screen">
 
-<!-- ── Top bar ─────────────────────────────────────────────────────────── -->
-<header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header class="bg-gray-900 border-b border-gray-800 px-5 py-3 flex items-center justify-between sticky top-0 z-50">
   <div class="flex items-center gap-3">
-    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-      </svg>
-    </div>
+    <div class="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center font-bold text-sm">WI</div>
     <div>
-      <div class="font-bold text-white text-sm">Workforce Intelligence Platform</div>
-      <div class="text-slate-400 text-xs">AeroDefend Group  ·  WIP-SRNA-001 v1.0  ·  Illustrative Demo</div>
+      <div class="font-bold text-white text-sm tracking-tight">Workforce Intelligence Platform</div>
+      <div class="text-gray-400 text-xs">AeroDefend Group · Illustrative Demo · Data refreshed 00:47</div>
     </div>
   </div>
   <div class="flex items-center gap-3">
-    <span class="text-xs text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1 rounded-full">● Pipeline complete 00:47</span>
+    <div id="ownerToggle" class="flex gap-1 bg-gray-800 rounded-lg p-1">
+      <button onclick="setOwner('action')" id="btn-action" class="owner-btn active text-xs px-3 py-1 rounded-md bg-blue-700 text-white font-medium transition-all">Action Owner</button>
+      <button onclick="setOwner('bp')"     id="btn-bp"     class="owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all">Business Partner</button>
+      <button onclick="setOwner('leader')" id="btn-leader" class="owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all">Leader</button>
+    </div>
     <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-xs font-bold">MT</div>
   </div>
 </header>
 
-<div class="flex h-[calc(100vh-53px)]">
+<div class="flex" style="height:calc(100vh - 53px)">
 
-<!-- ── Sidebar navigation ─────────────────────────────────────────────── -->
-<nav class="w-56 bg-slate-900 border-r border-slate-800 flex flex-col py-4 flex-shrink-0 overflow-y-auto">
-  <div class="px-3 mb-2">
-    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Planning Horizons</p>
-    <button onclick="showSection('overview')" class="nav-link active w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-200 mb-1">
-      <span>🏠</span> Overview
+<!-- ── Sidebar ────────────────────────────────────────────────────────── -->
+<nav class="w-52 bg-gray-900 border-r border-gray-800 py-3 overflow-y-auto flex-shrink-0">
+  <div class="px-3 mb-1">
+    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Platform</p>
+    <button onclick="show('overview')"  class="nav-btn active w-full text-left px-3 py-2 rounded-lg text-sm text-gray-200 flex items-center gap-2 mb-1">
+      <span class="text-base">&#9689;</span> Overview
     </button>
-    <button onclick="showSection('strategic')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>🎯</span> Strategic WFP
-      <span class="ml-auto new-badge">3–5 yr</span>
-    </button>
-    <button onclick="showSection('operational')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>📋</span> Operational WFP
-      <span class="ml-auto text-xs text-slate-500">1–3 yr</span>
-    </button>
-    <button onclick="showSection('tactical')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>⚡</span> Tactical / H2R
-      <span class="ml-auto text-xs text-slate-500">0–12 mo</span>
+    <button onclick="show('delivery')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center justify-between mb-1">
+      <span class="flex items-center gap-2"><span class="text-base">&#9650;</span> Program Delivery</span>
+      <span class="text-xs text-blue-400 font-semibold">Risk</span>
     </button>
   </div>
-  <div class="px-3 mb-2 mt-2">
-    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Intelligence</p>
-    <button onclick="showSection('competency')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>🧠</span> Competency Models
+  <div class="px-3 mb-1 mt-2">
+    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">ROAD Framework</p>
+    <button onclick="show('retain')"   class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span> Retain
     </button>
-    <button onclick="showSection('cascade')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>🔗</span> Cascade Engine
-      <span class="ml-auto new-badge">NEW</span>
+    <button onclick="show('optimize')" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"></span> Optimize
     </button>
-    <button onclick="showSection('agent')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>🤖</span> AI Agent
+    <button onclick="show('acquire')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span> Acquire
+    </button>
+    <button onclick="show('develop')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span> Develop
+    </button>
+  </div>
+  <div class="px-3 mb-1 mt-2">
+    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Intelligence</p>
+    <button onclick="show('actions')"  class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="text-base">&#9889;</span> Action Plans
+    </button>
+    <button onclick="show('people')"   class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="text-base">&#128101;</span> People Data
+    </button>
+    <button onclick="show('agent')"    class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="text-base">&#129302;</span> AI Agent
     </button>
   </div>
   <div class="px-3 mt-2">
-    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Platform</p>
-    <button onclick="showSection('architecture')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>🏗️</span> Architecture
-    </button>
-    <button onclick="showSection('frameworks')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
-      <span>📚</span> Framework Backbone
+    <p class="text-xs text-gray-500 uppercase tracking-widest px-2 mb-2 font-semibold">Platform</p>
+    <button onclick="show('arch')"     class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 flex items-center gap-2 mb-1">
+      <span class="text-base">&#127959;</span> Architecture
     </button>
   </div>
 </nav>
 
-<!-- ── Main content ───────────────────────────────────────────────────── -->
-<main class="flex-1 overflow-y-auto bg-slate-950 p-6">
+<!-- ── Main ───────────────────────────────────────────────────────────── -->
+<main class="flex-1 overflow-y-auto p-5" id="main">
 
-<!-- OVERVIEW ──────────────────────────────────────────────────────────── -->
-<section id="section-overview" class="tab-panel active">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Workforce Intelligence Dashboard</h1>
-    <p class="text-slate-400 text-sm mt-1">Good morning. Pipeline completed at 00:47. All 4 planning horizons current as of today.</p>
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div id="section-overview" class="section active">
+  <div class="mb-5">
+    <h1 class="text-xl font-bold text-white">Workforce Overview</h1>
+    <p class="text-gray-400 text-sm mt-1" id="ownerTagline">Showing your active cases and team — Action Owner view</p>
+  </div>
+
+  <!-- VUCA Prime strip -->
+  <div class="grid grid-cols-4 gap-3 mb-5">
+    <div class="vuca-v bg-gray-900 rounded-lg p-3">
+      <p class="text-xs text-blue-400 font-semibold mb-1">VISION — Where we're going</p>
+      <p class="text-xs text-gray-300">3-year capability plan active. 14 gaps identified. Recommended actions defined.</p>
+    </div>
+    <div class="vuca-u bg-gray-900 rounded-lg p-3">
+      <p class="text-xs text-purple-400 font-semibold mb-1">UNDERSTANDING — Why it's happening</p>
+      <p class="text-xs text-gray-300">Compa-ratio drift + manager overload driving flight risk in R&M Engineering.</p>
+    </div>
+    <div class="vuca-c bg-gray-900 rounded-lg p-3">
+      <p class="text-xs text-emerald-400 font-semibold mb-1">CLARITY — What to do</p>
+      <p class="text-xs text-gray-300">3 critical actions required this week. Plain-English plans below.</p>
+    </div>
+    <div class="vuca-a bg-gray-900 rounded-lg p-3">
+      <p class="text-xs text-amber-400 font-semibold mb-1">AGILITY — How fast we can move</p>
+      <p class="text-xs text-gray-300">ROAD framework active. 9 actions in progress. 4 cascade breaks flagged.</p>
+    </div>
   </div>
 
   <!-- KPI row -->
-  <div class="grid grid-cols-4 gap-4 mb-6">
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400 mb-1">Workforce Readiness Index</p>
-      <p class="text-3xl font-bold text-white">67<span class="text-lg text-slate-400">/100</span></p>
-      <p class="text-xs text-amber-400 mt-1">▼ 3 pts vs last quarter</p>
+  <div class="grid grid-cols-5 gap-3 mb-5" id="kpiRow"></div>
+
+  <!-- ROAD health + Delivery risk -->
+  <div class="grid grid-cols-2 gap-4 mb-5">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">ROAD Framework Health</h3>
+      <div class="space-y-3" id="roadHealth"></div>
     </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400 mb-1">3-Year Capability Gaps</p>
-      <p class="text-3xl font-bold text-red-400">14</p>
-      <p class="text-xs text-slate-400 mt-1">Across 4 competency domains</p>
-    </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400 mb-1">H2R Conformance Fitness</p>
-      <p class="text-3xl font-bold text-emerald-400">81<span class="text-lg text-slate-400">%</span></p>
-      <p class="text-xs text-emerald-400 mt-1">▲ 4% vs last month</p>
-    </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400 mb-1">Active Compliance Breaches</p>
-      <p class="text-3xl font-bold text-red-400">3</p>
-      <p class="text-xs text-red-400 mt-1">RTW missing on 2 cases</p>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Program Delivery Risk — This Week</h3>
+      <div id="deliverySnapshot" class="space-y-2"></div>
     </div>
   </div>
 
-  <!-- Planning horizon status -->
-  <div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-blue-500"></span> Planning Cascade Health
-      </h3>
-      <div class="space-y-3">
-        <div>
-          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Strategic → Operational</span><span class="text-emerald-400">92% covered</span></div>
-          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-emerald-500 h-2 rounded-full" style="width:92%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Operational → Tactical</span><span class="text-amber-400">74% covered</span></div>
-          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-amber-500 h-2 rounded-full" style="width:74%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Tactical → H2R Execution</span><span class="text-emerald-400">88% covered</span></div>
-          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-emerald-500 h-2 rounded-full" style="width:88%"></div></div>
-        </div>
-        <div class="pt-2 border-t border-slate-800 text-xs text-amber-300">⚠ 4 cascade breaks detected — see Cascade Engine view</div>
-      </div>
+  <!-- Top priority actions -->
+  <div class="card p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-semibold text-white text-sm">Priority Actions — Generated from driving indicators</h3>
+      <button onclick="show('actions')" class="text-xs text-blue-400 hover:text-blue-300">View all with return on impact &rarr;</button>
     </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-purple-500"></span> Capability Gap by Domain
-      </h3>
-      <canvas id="gapChart" height="160"></canvas>
-    </div>
+    <div id="topActions" class="space-y-2"></div>
   </div>
+</div>
 
-  <!-- Action items -->
-  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-    <h3 class="font-semibold text-white mb-4">Top Action Items  <span class="text-xs text-slate-400 font-normal">Generated by AI Agent · Updated 00:47</span></h3>
-    <div class="space-y-3">
-      <div class="flex items-start gap-3 p-3 bg-red-950 border border-red-900 rounded-lg">
-        <span class="text-red-400 text-sm mt-0.5">🔴</span>
-        <div class="flex-1">
-          <p class="text-sm font-medium text-white">Critical: Compliance breach — 2 cases missing Right-to-Work documentation</p>
-          <p class="text-xs text-slate-400 mt-0.5">Owner: HR Operations  ·  Estimated impact: Legal risk  ·  Action by: Today</p>
-        </div>
-        <span class="text-xs text-red-400 bg-red-950 border border-red-800 px-2 py-1 rounded">Must</span>
-      </div>
-      <div class="flex items-start gap-3 p-3 bg-amber-950 border border-amber-900 rounded-lg">
-        <span class="text-amber-400 text-sm mt-0.5">🟡</span>
-        <div class="flex-1">
-          <p class="text-sm font-medium text-white">Strategic gap: R&M Engineering capability insufficient for 2026 programme demands</p>
-          <p class="text-xs text-slate-400 mt-0.5">Owner: CPO  ·  Recommendation: Build (L&D) + Buy (2 external hires)  ·  Action by: Q3 planning</p>
-        </div>
-        <span class="text-xs text-amber-400 bg-amber-950 border border-amber-800 px-2 py-1 rounded">High</span>
-      </div>
-      <div class="flex items-start gap-3 p-3 bg-slate-800 border border-slate-700 rounded-lg">
-        <span class="text-blue-400 text-sm mt-0.5">🔵</span>
-        <div class="flex-1">
-          <p class="text-sm font-medium text-white">Cascade break: 3 approved headcount positions have no active requisition in tactical plan</p>
-          <p class="text-xs text-slate-400 mt-0.5">Owner: TA Lead  ·  Impact: 3 roles not progressing  ·  Action by: End of week</p>
-        </div>
-        <span class="text-xs text-blue-400 bg-blue-950 border border-blue-800 px-2 py-1 rounded">Medium</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STRATEGIC WFP ──────────────────────────────────────────────────────── -->
-<section id="section-strategic" class="tab-panel">
-  <div class="mb-6 flex items-center justify-between">
+<!-- ═══════════════════ PROGRAM DELIVERY ═══════════════════ -->
+<div id="section-delivery" class="section">
+  <div class="mb-5 flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-white">Strategic Workforce Plan</h1>
-      <p class="text-slate-400 text-sm mt-1">3-year capability analysis  ·  FY2026–FY2028  ·  Last updated: Annual cycle Sep 2025</p>
+      <h1 class="text-xl font-bold text-white">Program Delivery Risk</h1>
+      <p class="text-gray-400 text-sm mt-1">Right talent · Right place · Right time · Right skills · Right cost — across all active programs</p>
     </div>
-    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Run New Scenario</button>
   </div>
 
-  <!-- Workforce Readiness -->
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-5 col-span-2">
-      <h3 class="font-semibold text-white mb-1">Workforce Readiness Index — 3-Year Trend</h3>
-      <p class="text-xs text-slate-400 mb-4">Combined capability coverage, pipeline strength, and attrition risk</p>
-      <canvas id="wriChart" height="120"></canvas>
-    </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4">Scenario Comparison</h3>
-      <div class="space-y-3">
-        <div class="p-3 bg-slate-800 rounded-lg">
-          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Status Quo</span><span class="text-amber-400">WRI: 58</span></div>
-          <p class="text-xs text-slate-400">No intervention — capability gap widens</p>
-        </div>
-        <div class="p-3 bg-blue-950 border border-blue-800 rounded-lg">
-          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Recommended ★</span><span class="text-emerald-400">WRI: 79</span></div>
-          <p class="text-xs text-slate-400">Build + Buy + 2 Bot substitutions</p>
-        </div>
-        <div class="p-3 bg-slate-800 rounded-lg">
-          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Restructure</span><span class="text-blue-400">WRI: 71</span></div>
-          <p class="text-xs text-slate-400">Consolidate job families, higher FTE cost</p>
-        </div>
+  <!-- Ahead of Ready view -->
+  <div class="card p-4 mb-4">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h3 class="font-semibold text-white text-sm">"Ahead of Ready" — Talent Supply vs. Program Demand</h3>
+        <p class="text-xs text-gray-400 mt-0.5">Green = supply meets demand with time to spare. Red = we needed to start acquiring sooner.</p>
       </div>
+      <div class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded">Lead times: Cleared roles 9-18 months &nbsp;|&nbsp; Standard roles 3-6 months</div>
+    </div>
+    <div id="aheadOfReady" class="space-y-4 mt-3"></div>
+  </div>
+
+  <!-- TOC Bottlenecks -->
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-1">Constraint #1 — Process</h3>
+      <p class="text-xs text-gray-400 mb-3">Where is the H2R process slowing throughput?</p>
+      <div id="tocProcess" class="space-y-2"></div>
+    </div>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-1">Constraint #2 — Skills</h3>
+      <p class="text-xs text-gray-400 mb-3">Which scarce competency limits program delivery?</p>
+      <div id="tocSkills" class="space-y-2"></div>
+    </div>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-1">Constraint #3 — Capacity</h3>
+      <p class="text-xs text-gray-400 mb-3">Which managers are overloaded?</p>
+      <div id="tocCapacity" class="space-y-2"></div>
     </div>
   </div>
 
-  <!-- Capability gap heatmap -->
-  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
-    <h3 class="font-semibold text-white mb-4">Capability Gap Matrix — FY2026 to FY2028</h3>
-    <div class="overflow-x-auto">
-      <table class="w-full text-xs">
-        <thead>
-          <tr class="text-slate-400 border-b border-slate-800">
-            <th class="text-left py-2 pr-4 font-medium">Competency Domain</th>
-            <th class="py-2 px-3 font-medium">FY2026 Gap</th>
-            <th class="py-2 px-3 font-medium">FY2027 Gap</th>
-            <th class="py-2 px-3 font-medium">FY2028 Gap</th>
-            <th class="text-left py-2 px-3 font-medium">Recommended Action</th>
-            <th class="py-2 px-3 font-medium">Est. Cost</th>
-          </tr>
-        </thead>
-        <tbody id="capabilityTable"></tbody>
-      </table>
+  <!-- Milestone status -->
+  <div class="card p-4">
+    <h3 class="font-semibold text-white text-sm mb-3">Program Milestones — Workforce Risk Assessment</h3>
+    <div id="milestoneTable"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RETAIN ═══════════════════ -->
+<div id="section-retain" class="section">
+  <div class="mb-5">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+      <h1 class="text-xl font-bold text-white">Retain</h1>
+    </div>
+    <p class="text-gray-400 text-sm">Stabilize critical skills and foster a positive work environment — attrition classified by program execution impact</p>
+  </div>
+
+  <div class="grid grid-cols-4 gap-3 mb-5" id="retainKpis"></div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Attrition Classification — Last 18 Months</h3>
+      <p class="text-xs text-gray-400 mb-3">Regrettable = departure that introduces risk into program execution. Non-regrettable = departure with no material impact on delivery.</p>
+      <canvas id="attritionChart" height="180"></canvas>
+    </div>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-1">Turnover Contagion — Team Risk</h3>
+      <p class="text-xs text-gray-400 mb-3">When one person leaves, their teammates' likelihood of leaving increases by 40-80% within 6 months. Teams shown where a regrettable departure triggered elevated risk.</p>
+      <div id="contagionView" class="space-y-2"></div>
     </div>
   </div>
 
-  <!-- Build/Buy/Borrow/Bot summary -->
-  <div class="grid grid-cols-4 gap-4">
-    <div class="bg-slate-900 border border-emerald-900 rounded-xl p-4 text-center">
-      <div class="text-2xl mb-1">🔨</div>
-      <p class="font-bold text-emerald-400 text-lg">Build</p>
-      <p class="text-2xl font-bold text-white">6</p>
-      <p class="text-xs text-slate-400">roles via L&D</p>
-      <p class="text-xs text-emerald-400 mt-1">~£420K investment</p>
-    </div>
-    <div class="bg-slate-900 border border-blue-900 rounded-xl p-4 text-center">
-      <div class="text-2xl mb-1">💼</div>
-      <p class="font-bold text-blue-400 text-lg">Buy</p>
-      <p class="text-2xl font-bold text-white">4</p>
-      <p class="text-xs text-slate-400">external hires</p>
-      <p class="text-xs text-blue-400 mt-1">~£680K total cost</p>
-    </div>
-    <div class="bg-slate-900 border border-purple-900 rounded-xl p-4 text-center">
-      <div class="text-2xl mb-1">🤝</div>
-      <p class="font-bold text-purple-400 text-lg">Borrow</p>
-      <p class="text-2xl font-bold text-white">3</p>
-      <p class="text-xs text-slate-400">contractors / partners</p>
-      <p class="text-xs text-purple-400 mt-1">~£310K p.a.</p>
-    </div>
-    <div class="bg-slate-900 border border-cyan-900 rounded-xl p-4 text-center">
-      <div class="text-2xl mb-1">🤖</div>
-      <p class="font-bold text-cyan-400 text-lg">Bot</p>
-      <p class="text-2xl font-bold text-white">2</p>
-      <p class="text-xs text-slate-400">AI/automation substitute</p>
-      <p class="text-xs text-cyan-400 mt-1">~£85K tooling</p>
-    </div>
+  <div class="card p-4">
+    <h3 class="font-semibold text-white text-sm mb-3">High Flight Risk — People Who Would Be Regrettable to Lose</h3>
+    <div id="flightRiskTable"></div>
   </div>
-</section>
+</div>
 
-<!-- OPERATIONAL WFP ────────────────────────────────────────────────────── -->
-<section id="section-operational" class="tab-panel">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Operational Workforce Plan</h1>
-    <p class="text-slate-400 text-sm mt-1">Annual headcount plan · FY2026 · Q3 review · Budget cycle: Sep–Nov 2025</p>
+<!-- ═══════════════════ OPTIMIZE ═══════════════════ -->
+<div id="section-optimize" class="section">
+  <div class="mb-5">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="w-3 h-3 rounded-full bg-purple-400"></span>
+      <h1 class="text-xl font-bold text-white">Optimize</h1>
+    </div>
+    <p class="text-gray-400 text-sm">Accelerate organizational performance and maximize productivity — Galbraith STAR Model analysis</p>
   </div>
 
-  <!-- Headcount summary -->
-  <div class="grid grid-cols-4 gap-4 mb-6">
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">Approved HC Budget</p>
-      <p class="text-3xl font-bold text-white">847</p>
-      <p class="text-xs text-slate-400 mt-1">FTE across all departments</p>
+  <div class="grid grid-cols-5 gap-3 mb-5" id="starCards"></div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Span of Control Distribution</h3>
+      <p class="text-xs text-gray-400 mb-3">Ideal: 5-9 direct reports for operational managers. Under 4 = over-managed. Over 12 = stretched.</p>
+      <canvas id="spanChart" height="180"></canvas>
     </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">Current Headcount</p>
-      <p class="text-3xl font-bold text-amber-400">819</p>
-      <p class="text-xs text-amber-400 mt-1">▼ 28 vs plan</p>
-    </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">Open Positions</p>
-      <p class="text-3xl font-bold text-blue-400">31</p>
-      <p class="text-xs text-slate-400 mt-1">17 in active recruitment</p>
-    </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">Critical Succession Gaps</p>
-      <p class="text-3xl font-bold text-red-400">7</p>
-      <p class="text-xs text-red-400 mt-1">No ready-now successor</p>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">STAR Model — Where to Focus</h3>
+      <div id="starInsights" class="space-y-2"></div>
     </div>
   </div>
 
-  <div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4">Headcount: Plan vs Budget vs Actual</h3>
-      <canvas id="hcChart" height="180"></canvas>
-    </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4">Succession Risk Matrix</h3>
-      <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2 bg-red-950 border border-red-900 rounded-lg">
-          <span class="text-red-400 text-xs w-4">🔴</span>
-          <div class="flex-1 text-xs"><span class="font-medium text-white">Chief Systems Engineer</span> <span class="text-slate-400">— No successor identified</span></div>
-        </div>
-        <div class="flex items-center gap-3 p-2 bg-red-950 border border-red-900 rounded-lg">
-          <span class="text-red-400 text-xs w-4">🔴</span>
-          <div class="flex-1 text-xs"><span class="font-medium text-white">Head of R&M Engineering</span> <span class="text-slate-400">— Successor 12–18mo away</span></div>
-        </div>
-        <div class="flex items-center gap-3 p-2 bg-amber-950 border border-amber-900 rounded-lg">
-          <span class="text-amber-400 text-xs w-4">🟡</span>
-          <div class="flex-1 text-xs"><span class="font-medium text-white">Lead Cybersecurity Architect</span> <span class="text-slate-400">— 1 candidate in development</span></div>
-        </div>
-        <div class="flex items-center gap-3 p-2 bg-amber-950 border border-amber-900 rounded-lg">
-          <span class="text-amber-400 text-xs w-4">🟡</span>
-          <div class="flex-1 text-xs"><span class="font-medium text-white">Programme Director (TMRR)</span> <span class="text-slate-400">— External hire recommended</span></div>
-        </div>
-        <div class="flex items-center gap-3 p-2 bg-slate-800 rounded-lg">
-          <span class="text-emerald-400 text-xs w-4">🟢</span>
-          <div class="flex-1 text-xs"><span class="font-medium text-white">HR Business Partner (Lead)</span> <span class="text-slate-400">— 2 ready-now candidates</span></div>
-        </div>
-      </div>
-    </div>
+  <div class="card p-4">
+    <h3 class="font-semibold text-white text-sm mb-3">Organizational Layer Analysis</h3>
+    <div id="layerAnalysis" class="space-y-2"></div>
   </div>
-</section>
+</div>
 
-<!-- TACTICAL / H2R ─────────────────────────────────────────────────────── -->
-<section id="section-tactical" class="tab-panel">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Tactical Workforce Plan & H2R Execution</h1>
-    <p class="text-slate-400 text-sm mt-1">0–12 month horizon  ·  Process mining active  ·  31 open requisitions  ·  Pipeline updated 00:47</p>
+<!-- ═══════════════════ ACQUIRE ═══════════════════ -->
+<div id="section-acquire" class="section">
+  <div class="mb-5">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+      <h1 class="text-xl font-bold text-white">Acquire</h1>
+    </div>
+    <p class="text-gray-400 text-sm">Deliver talent at the right place, on time, at the right cost — pipeline health and lead time analysis</p>
   </div>
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">Mean Time-to-Fill</p>
-      <p class="text-3xl font-bold text-amber-400">47<span class="text-lg text-slate-400"> days</span></p>
-      <p class="text-xs text-amber-400 mt-1">SLA target: 40 days</p>
+
+  <div class="grid grid-cols-4 gap-3 mb-5" id="acquireKpis"></div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Active Hiring Pipeline — Risk by Case</h3>
+      <div id="pipelineTable" class="overflow-x-auto"></div>
     </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">SLA Breach Rate</p>
-      <p class="text-3xl font-bold text-red-400">23<span class="text-lg text-slate-400">%</span></p>
-      <p class="text-xs text-red-400 mt-1">▲ 6% vs last month</p>
-    </div>
-    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400">High-Risk Active Cases</p>
-      <p class="text-3xl font-bold text-red-400">8</p>
-      <p class="text-xs text-slate-400 mt-1">Risk score &gt;70%</p>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Lead Time by Role Type</h3>
+      <p class="text-xs text-gray-400 mb-3">Time from need identified to person in seat and productive. Lead time is the TOC constraint on program delivery.</p>
+      <div id="leadTimeView" class="space-y-3"></div>
     </div>
   </div>
-  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
-    <h3 class="font-semibold text-white mb-4">Active Case Risk Scores</h3>
-    <table class="w-full text-xs">
-      <thead><tr class="text-slate-400 border-b border-slate-800">
-        <th class="text-left py-2">Case ID</th><th class="text-left py-2">Role</th><th class="text-left py-2">Department</th><th class="py-2">Days Open</th><th class="py-2">Risk Score</th><th class="text-left py-2">SHAP Top Factor</th>
-      </tr></thead>
-      <tbody>
-        <tr class="border-b border-slate-800 hover:bg-slate-800">
-          <td class="py-2 text-slate-300">H2R-2024-1142</td><td class="py-2 text-white font-medium">Senior R&M Engineer</td><td class="py-2 text-slate-300">Engineering</td><td class="py-2 text-center text-amber-400">62</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">91%</span></td><td class="py-2 text-slate-400">SC clearance requirement</td>
+</div>
+
+<!-- ═══════════════════ DEVELOP ═══════════════════ -->
+<div id="section-develop" class="section">
+  <div class="mb-5">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+      <h1 class="text-xl font-bold text-white">Develop</h1>
+    </div>
+    <p class="text-gray-400 text-sm">Build skills and empower leaders to sustain growth — competency gaps, succession depth, learning investment</p>
+  </div>
+
+  <div class="grid grid-cols-4 gap-3 mb-5" id="developKpis"></div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Competency Match Distribution</h3>
+      <p class="text-xs text-gray-400 mb-3">What percentage of employees are well-matched to their role requirements? Below 70% indicates a development need.</p>
+      <canvas id="matchChart" height="180"></canvas>
+    </div>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Succession Depth by Department</h3>
+      <p class="text-xs text-gray-400 mb-3">Percentage of critical roles with at least one identified successor at any readiness level.</p>
+      <div id="successionView" class="space-y-2 mt-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ ACTION PLANS ═══════════════════ -->
+<div id="section-actions" class="section">
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-white">Proactive Action Plans</h1>
+      <p class="text-gray-400 text-sm mt-1">Synthesized from driving indicators — with return on impact, owner, and urgency</p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="filterActions('all')"      id="af-all"      class="action-filter active text-xs px-3 py-1.5 rounded-lg bg-blue-700 text-white">All ROAD</button>
+      <button onclick="filterActions('Retain')"   id="af-Retain"   class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Retain</button>
+      <button onclick="filterActions('Optimize')" id="af-Optimize" class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Optimize</button>
+      <button onclick="filterActions('Acquire')"  id="af-Acquire"  class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Acquire</button>
+      <button onclick="filterActions('Develop')"  id="af-Develop"  class="action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300">Develop</button>
+    </div>
+  </div>
+  <div id="actionPlansList" class="space-y-3"></div>
+</div>
+
+<!-- ═══════════════════ PEOPLE DATA ═══════════════════ -->
+<div id="section-people" class="section">
+  <div class="mb-4 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-white">People & Org Data</h1>
+      <p class="text-gray-400 text-sm mt-1">95 employees · Synthetic data · Search and filter by any attribute</p>
+    </div>
+    <div class="flex gap-2 items-center">
+      <select id="deptFilter" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-2 rounded-lg" onchange="filterPeople()">
+        <option value="">All Departments</option>
+      </select>
+      <input type="text" id="peopleSearch" placeholder="Search name, role, program..." onkeyup="filterPeople()"
+        class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-2 rounded-lg w-56">
+    </div>
+  </div>
+  <div class="card overflow-x-auto">
+    <table class="w-full text-xs" id="peopleTable">
+      <thead class="bg-gray-800 sticky top-0">
+        <tr class="text-gray-400 text-left">
+          <th class="px-3 py-2">Name</th>
+          <th class="px-3 py-2">Department</th>
+          <th class="px-3 py-2">Grade</th>
+          <th class="px-3 py-2">Location</th>
+          <th class="px-3 py-2">Clearance</th>
+          <th class="px-3 py-2 text-center">Compa-ratio</th>
+          <th class="px-3 py-2 text-center">Flight Risk</th>
+          <th class="px-3 py-2 text-center">Perf</th>
+          <th class="px-3 py-2">Succession</th>
+          <th class="px-3 py-2 text-center">Regrettable?</th>
         </tr>
-        <tr class="border-b border-slate-800 hover:bg-slate-800">
-          <td class="py-2 text-slate-300">H2R-2024-1156</td><td class="py-2 text-white font-medium">Cybersecurity Architect</td><td class="py-2 text-slate-300">IT Security</td><td class="py-2 text-center text-amber-400">54</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">84%</span></td><td class="py-2 text-slate-400">Niche skill scarcity</td>
-        </tr>
-        <tr class="border-b border-slate-800 hover:bg-slate-800">
-          <td class="py-2 text-slate-300">H2R-2024-1163</td><td class="py-2 text-white font-medium">Systems Engineer (TMRR)</td><td class="py-2 text-slate-300">Programme</td><td class="py-2 text-center text-red-400">71</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">78%</span></td><td class="py-2 text-slate-400">Pending offer decision &gt;10 days</td>
-        </tr>
-        <tr class="border-b border-slate-800 hover:bg-slate-800">
-          <td class="py-2 text-slate-300">H2R-2024-1171</td><td class="py-2 text-white font-medium">Programme Manager</td><td class="py-2 text-slate-300">PMO</td><td class="py-2 text-center text-amber-400">38</td><td class="py-2 text-center"><span class="bg-amber-900 text-amber-300 px-2 py-0.5 rounded text-xs">61%</span></td><td class="py-2 text-slate-400">3 offers declined this role</td>
-        </tr>
-        <tr class="hover:bg-slate-800">
-          <td class="py-2 text-slate-300">H2R-2024-1178</td><td class="py-2 text-white font-medium">R&M Planning Lead</td><td class="py-2 text-slate-300">Engineering</td><td class="py-2 text-center text-slate-300">22</td><td class="py-2 text-center"><span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-xs">34%</span></td><td class="py-2 text-slate-400">On track</td>
-        </tr>
-      </tbody>
+      </thead>
+      <tbody id="peopleTbody"></tbody>
     </table>
   </div>
-</section>
+  <p class="text-xs text-gray-500 mt-2" id="peopleCount"></p>
+</div>
 
-<!-- COMPETENCY MODELS ──────────────────────────────────────────────────── -->
-<section id="section-competency" class="tab-panel">
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-white">Competency Intelligence</h1>
-      <p class="text-slate-400 text-sm mt-1">AI-generated models · INCOSE SECF format · Grounded in O*NET, NICE, INCOSE SECF, R&M BoK</p>
-    </div>
-    <button onclick="generateModel()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Generate New Model</button>
+<!-- ═══════════════════ AI AGENT ═══════════════════ -->
+<div id="section-agent" class="section flex flex-col" style="height:calc(100vh - 110px)">
+  <div class="mb-3">
+    <h1 class="text-xl font-bold text-white">Workforce AI Agent</h1>
+    <p class="text-gray-400 text-sm">Ask anything about delivery risk, workforce planning, or people decisions — responses grounded in today's data</p>
   </div>
-
-  <!-- Framework backbone strip -->
-  <div class="grid grid-cols-6 gap-2 mb-6">
-    <div class="bg-slate-900 border border-blue-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-blue-400">O*NET</p><p class="text-xs text-slate-400 mt-1">900+ occupations</p>
+  <div class="card flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 overflow-y-auto p-4 space-y-3" id="chatMsgs">
+      <div class="flex gap-2">
+        <div class="w-6 h-6 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div>
+        <div class="chat-ai p-3 max-w-2xl">
+          <p class="text-sm text-gray-200">Good morning. I'm grounded on today's workforce data — 95 employees, 5 active programs, 22 attrition records from the last 18 months.</p>
+          <p class="text-sm text-gray-300 mt-2">I can help with: <span class="text-blue-300">program delivery risk</span> · <span class="text-amber-300">retention decisions</span> · <span class="text-blue-300">talent pipeline gaps</span> · <span class="text-emerald-300">competency development</span> · <span class="text-purple-300">org design</span> · <span class="text-gray-300">return on impact calculations</span></p>
+        </div>
+      </div>
     </div>
-    <div class="bg-slate-900 border border-emerald-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-emerald-400">NICE v2.2</p><p class="text-xs text-slate-400 mt-1">30+ work roles</p>
-    </div>
-    <div class="bg-slate-900 border border-purple-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-purple-400">INCOSE SECF</p><p class="text-xs text-slate-400 mt-1">36 competencies</p>
-    </div>
-    <div class="bg-slate-900 border border-orange-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-orange-400">R&M BoK</p><p class="text-xs text-slate-400 mt-1">5 lifecycle phases</p>
-    </div>
-    <div class="bg-slate-900 border border-cyan-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-cyan-400">Bloom's</p><p class="text-xs text-slate-400 mt-1">6 cognitive levels</p>
-    </div>
-    <div class="bg-slate-900 border border-rose-900 rounded-lg p-3 text-center">
-      <p class="text-xs font-bold text-rose-400">UGESP</p><p class="text-xs text-slate-400 mt-1">Legal methodology</p>
-    </div>
-  </div>
-
-  <!-- Competency model viewer -->
-  <div class="grid grid-cols-3 gap-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p class="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">Model Library</p>
-      <div id="modelList" class="space-y-1"></div>
-    </div>
-    <div class="col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5" id="modelDetail">
-      <div class="text-slate-500 text-center py-8">Select a competency model from the list</div>
+    <div class="p-3 border-t border-gray-800">
+      <div class="flex flex-wrap gap-2 mb-2">
+        <button onclick="preset(0)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Which programs are at most risk from talent gaps?</button>
+        <button onclick="preset(1)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Who are we most at risk of losing this quarter?</button>
+        <button onclick="preset(2)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">What is our biggest hiring bottleneck right now?</button>
+        <button onclick="preset(3)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Show me return on impact for the top retention actions</button>
+      </div>
+      <div class="flex gap-2">
+        <input id="chatIn" type="text" placeholder="Ask about delivery risk, people decisions, or workforce planning..."
+          class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-500"
+          onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Send</button>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- CASCADE ENGINE ─────────────────────────────────────────────────────── -->
-<section id="section-cascade" class="tab-panel">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Cascade Engine <span class="new-badge ml-2">NEW</span></h1>
-    <p class="text-slate-400 text-sm mt-1">Bidirectional planning layer synchronisation · Top-down propagation + bottom-up feedback · Updated 00:47</p>
+<!-- ═══════════════════ ARCHITECTURE ═══════════════════ -->
+<div id="section-arch" class="section">
+  <div class="mb-5">
+    <h1 class="text-xl font-bold text-white">Platform Architecture</h1>
+    <p class="text-gray-400 text-sm mt-1">WIP-SRNA-001 v2.0 · Nine-layer stack · Phase 1: flat files + vector stores · Phase 2: live IT integration</p>
   </div>
 
-  <div class="grid grid-cols-2 gap-6 mb-6">
-    <!-- Cascade diagram -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4">Cascade Flow</h3>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Phase 1 — Demo & Proof of Concept (Now)</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3">
-          <div class="flex-1 bg-indigo-900 border border-indigo-700 rounded-lg p-3">
-            <p class="text-xs font-bold text-indigo-300">STRATEGIC</p>
-            <p class="text-xs text-slate-400">14 capability gaps identified</p>
-          </div>
-          <div class="text-blue-400 text-lg">↓</div>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex-1 bg-blue-900 border border-blue-700 rounded-lg p-3">
-            <p class="text-xs font-bold text-blue-300">OPERATIONAL</p>
-            <p class="text-xs text-slate-400">13/14 gaps have HC positions  ·  1 cascade break</p>
-          </div>
-          <div class="text-blue-400 text-lg">↓</div>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex-1 bg-cyan-900 border border-cyan-700 rounded-lg p-3">
-            <p class="text-xs font-bold text-cyan-300">TACTICAL</p>
-            <p class="text-xs text-slate-400">10/13 positions have requisitions  ·  3 cascade breaks</p>
-          </div>
-          <div class="text-blue-400 text-lg">↓</div>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex-1 bg-emerald-900 border border-emerald-700 rounded-lg p-3">
-            <p class="text-xs font-bold text-emerald-300">H2R EXECUTION</p>
-            <p class="text-xs text-slate-400">31 active cases  ·  8 high-risk  ·  3 compliance breaches</p>
-          </div>
-          <div class="text-slate-500 text-lg">↑</div>
-        </div>
-        <div class="text-center text-xs text-slate-500 italic mt-1">Bottom-up feedback active — execution data updates tactical actuals nightly</div>
+        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Synthetic flat files (CSV/JSON) → pre-processed into vector store</span></div>
+        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">ChromaDB vector store — framework backbone + employee profiles embedded</span></div>
+        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Claude API (claude-sonnet-4) with RAG — AI agent grounded on workforce data</span></div>
+        <div class="flex items-center gap-3 p-2 bg-emerald-950 border border-emerald-900 rounded-lg"><span class="text-xs font-bold text-emerald-400 w-20">Active</span><span class="text-xs text-gray-300">Static React dashboard — deployed to GitHub Pages, no backend required</span></div>
       </div>
     </div>
-
-    <!-- Cascade breaks -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 class="font-semibold text-white mb-4">Cascade Breaks — Action Required</h3>
-      <div class="space-y-3">
-        <div class="p-3 bg-amber-950 border border-amber-800 rounded-lg">
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-medium text-amber-300">Operational → Strategic</span>
-            <span class="text-amber-400">1 break</span>
-          </div>
-          <p class="text-xs text-slate-300">Cybersecurity Architect (DV cleared) — strategic requirement has no approved HC position. Owner: CPO.</p>
-        </div>
-        <div class="p-3 bg-red-950 border border-red-800 rounded-lg">
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-medium text-red-300">Tactical → Operational</span>
-            <span class="text-red-400">3 breaks</span>
-          </div>
-          <p class="text-xs text-slate-300">3 approved HC positions have no active requisition: R&M Lead, TMRR Systems Engr x2. Owner: TA Lead — action by end of week.</p>
-        </div>
-        <div class="p-3 bg-slate-800 border border-slate-700 rounded-lg">
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-medium text-slate-300">Cascade Health Score</span>
-            <span class="text-amber-400">74%</span>
-          </div>
-          <div class="w-full bg-slate-700 rounded-full h-2 mt-1">
-            <div class="level-bar bg-amber-500 h-2 rounded-full" style="width:74%"></div>
-          </div>
-        </div>
+    <div class="card p-4">
+      <h3 class="font-semibold text-white text-sm mb-3">Phase 2 — IT Integration (Next)</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">SAP SuccessFactors OData API → employee master data, H2R event log</span></div>
+        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">SAP HCM/ECC → position data, org hierarchy, payroll</span></div>
+        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Databricks Delta Lake (Bronze/Silver/Gold) · Unity Catalog governance</span></div>
+        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Near-real-time pipeline — nightly batch Phase 2 · event-driven Phase 3</span></div>
+        <div class="flex items-center gap-3 p-2 bg-gray-800 rounded-lg"><span class="text-xs font-bold text-blue-400 w-20">Planned</span><span class="text-xs text-gray-300">Tableau Server — strategic analytics for leadership</span></div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- AI AGENT ───────────────────────────────────────────────────────────── -->
-<section id="section-agent" class="tab-panel">
-  <div class="mb-4">
-    <h1 class="text-2xl font-bold text-white">AI Workforce Agent</h1>
-    <p class="text-slate-400 text-sm mt-1">Claude API · RAG over framework backbone + process mining outputs · PII-stripped before transmission</p>
+  <div class="card p-4">
+    <img src="assets/architecture.png" alt="Platform Architecture Diagram" class="w-full rounded-lg"
+      onerror="this.parentElement.innerHTML='<p class=\'text-gray-400 text-center py-6 text-sm\'>Run generate_diagram.py to generate the architecture diagram</p>'">
   </div>
-  <div class="bg-slate-900 border border-slate-800 rounded-xl flex flex-col" style="height: calc(100vh - 220px)">
-    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
-      <div class="flex gap-3">
-        <div class="w-7 h-7 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div>
-        <div class="chat-bubble-ai p-3 max-w-2xl">
-          <p class="text-sm text-slate-200">Good morning. I'm your Workforce Intelligence Agent, grounded on today's data — pipeline completed at 00:47.</p>
-          <p class="text-sm text-slate-200 mt-2">I can help with: <span class="text-blue-300">capability gap analysis</span>, <span class="text-blue-300">competency model generation</span>, <span class="text-blue-300">H2R process questions</span>, <span class="text-blue-300">build/buy/borrow recommendations</span>, or <span class="text-blue-300">UGESP documentation</span>.</p>
-          <p class="text-sm text-slate-200 mt-2">What would you like to know?</p>
-        </div>
-      </div>
-    </div>
-    <div class="p-3 border-t border-slate-800 flex gap-2">
-      <div class="flex-1 flex flex-wrap gap-2 mb-2">
-        <button onclick="sendPreset(0)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">What are our biggest capability gaps?</button>
-        <button onclick="sendPreset(1)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Generate competency model for R&M Engineer</button>
-        <button onclick="sendPreset(2)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Why is case H2R-2024-1142 high risk?</button>
-        <button onclick="sendPreset(3)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Build/buy/borrow for Cybersecurity Architect?</button>
-      </div>
-    </div>
-    <div class="p-3 border-t border-slate-800 flex gap-2">
-      <input id="chatInput" type="text" placeholder="Ask anything about workforce planning, competencies, or H2R processes..."
-        class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500"
-        onkeydown="if(event.key==='Enter') sendChat()">
-      <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium">Send</button>
-    </div>
-  </div>
-</section>
-
-<!-- ARCHITECTURE ───────────────────────────────────────────────────────── -->
-<section id="section-architecture" class="tab-panel">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Platform Architecture</h1>
-    <p class="text-slate-400 text-sm mt-1">WIP-SRNA-001 v1.0 · Nine-layer stack · Extends H2R-SRNA-001 with L5 Strategic Intelligence and L6 Cascade Engine</p>
-  </div>
-  <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-    <img src="assets/architecture.png" alt="Workforce Intelligence Platform Architecture" class="w-full rounded-lg" onerror="this.parentElement.innerHTML='<p class=\'text-slate-400 text-center py-8 text-sm\'>Architecture diagram — run generate_diagram.py to generate assets/architecture.png</p>'">
-  </div>
-</section>
-
-<!-- FRAMEWORKS ─────────────────────────────────────────────────────────── -->
-<section id="section-frameworks" class="tab-panel">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Framework Backbone</h1>
-    <p class="text-slate-400 text-sm mt-1">Six authoritative occupational frameworks that seed the platform ontology and competency models</p>
-  </div>
-  <div class="grid grid-cols-2 gap-4" id="frameworkCards"></div>
-</section>
+</div>
 
 </main>
 </div>
 
 <script>
-// ── Navigation ──────────────────────────────────────────────────────────────
-function showSection(id) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.getElementById('section-' + id).classList.add('active');
+// ── Data loading ──────────────────────────────────────────────────────────
+let EMP=[], PROG=[], ATT=[], LOG=[], ACTIONS=[];
+let currentOwner = 'action';
+
+async function loadData() {
+  try {
+    const [e,p,a,l] = await Promise.all([
+      fetch('assets/employees.json').then(r=>r.json()),
+      fetch('assets/programs.json').then(r=>r.json()),
+      fetch('assets/attrition.json').then(r=>r.json()),
+      fetch('assets/action_log.json').then(r=>r.json()),
+    ]);
+    EMP=e; PROG=p; ATT=a; LOG=l;
+    generateActions();
+    renderAll();
+  } catch(err) {
+    console.error('Data load error:',err);
+    // Use minimal inline fallback so demo still works
+    EMP=[]; PROG=[]; ATT=[]; LOG=[];
+    generateActions();
+    renderAll();
+  }
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
   event.currentTarget.classList.add('active');
 }
 
-// ── Charts ──────────────────────────────────────────────────────────────────
-const chartDefaults = {
-  color: '#94a3b8',
-  borderColor: '#334155',
-  plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
-  scales: {
-    x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } },
-    y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+function setOwner(type) {
+  currentOwner = type;
+  document.querySelectorAll('.owner-btn').forEach(b=>{
+    b.className = 'owner-btn text-xs px-3 py-1 rounded-md text-gray-300 hover:text-white transition-all';
+  });
+  document.getElementById('btn-'+type).className = 'owner-btn text-xs px-3 py-1 rounded-md bg-blue-700 text-white font-medium transition-all';
+  const tags = {
+    action: 'Showing your active cases and team — Action Owner view',
+    bp:     'Showing your department portfolio — Business Partner view',
+    leader: 'Showing enterprise-wide workforce health — Leader view',
+  };
+  const el = document.getElementById('ownerTagline');
+  if(el) el.textContent = tags[type];
+  renderAll();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+const fmt = n => n?.toLocaleString('en-GB') ?? '—';
+const pct = n => Math.round(n)+'%';
+const riskColor = s => s>65?'risk-critical':s>45?'risk-high':s>25?'risk-medium':'risk-low';
+const riskLabel = s => s>65?'Critical':s>45?'High':s>25?'Medium':'Low';
+const roadColor = r => ({Retain:'text-amber-400',Optimize:'text-purple-400',Acquire:'text-blue-400',Develop:'text-emerald-400'}[r]||'text-gray-400');
+const roadBg    = r => ({Retain:'bg-amber-950 border-amber-900',Optimize:'bg-purple-950 border-purple-900',Acquire:'bg-blue-950 border-blue-900',Develop:'bg-emerald-950 border-emerald-900'}[r]||'bg-gray-800');
+
+function kpiCard(label, value, sub, color='text-white') {
+  return `<div class="card p-4"><p class="text-xs text-gray-400 mb-1">${label}</p><p class="text-2xl font-bold ${color}">${value}</p><p class="text-xs text-gray-500 mt-1">${sub}</p></div>`;
+}
+
+function bar(val, max, color) {
+  const w = Math.round(Math.min(100,(val/max)*100));
+  return `<div class="w-full bg-gray-800 rounded-full h-1.5 mt-1"><div class="bar rounded-full ${color}" style="width:${w}%"></div></div>`;
+}
+
+// ── Action plan generator ─────────────────────────────────────────────────
+function generateActions() {
+  ACTIONS = [];
+
+  // RETAIN actions from high flight risk + regrettable
+  const atRisk = EMP.filter(e=>e.flight_risk_score>=60 && e.would_be_regrettable).slice(0,4);
+  atRisk.forEach(e => {
+    const replCost = Math.round(e.base_salary_gbp * 1.4);
+    const actCost  = Math.round(e.base_salary_gbp * 0.08);
+    const roi      = Math.round(replCost / actCost);
+    ACTIONS.push({
+      road:'Retain', priority:'Critical',
+      title:`Retention risk: ${e.name} — ${e.role}`,
+      driver:`Flight risk ${e.flight_risk_score}% driven by: compa-ratio ${e.compa_ratio} (${e.compa_ratio<0.95?'below peers':'at market'}), ${e.months_since_promotion} months without promotion, ${e.engagement_score<65?'low engagement score '+e.engagement_score:''}`,
+      impact:`If ${e.name.split(' ')[0]} leaves: programme delivery risk${e.on_critical_path?' — currently on critical path':''}. Estimated replacement cost £${fmt(replCost)}. Lead time to replace: 6-12 months.`,
+      action:`1. Schedule career development conversation this week. 2. ${e.compa_ratio<0.92?'Submit for compensation review — currently '+Math.round(e.compa_ratio*100)+'% of peer midpoint.':''} 3. ${e.succession_status.includes('Not')?"Nominate for succession pool — role is "+e.grade+".":'Confirm development plan milestones.'} 4. HR Business Partner to review team engagement.`,
+      cost_action: actCost, cost_inaction: replCost, roi,
+      owner:'Action Owner — Line Manager',
+      dept: e.department, program: e.programs[0]||'',
+    });
+  });
+
+  // RETAIN — contagion warning
+  const regAtt = ATT.filter(a=>a.regrettability==='Regrettable' && a.contagion_team_members_at_risk>0);
+  if(regAtt.length>0) {
+    const a = regAtt[0];
+    ACTIONS.push({
+      road:'Retain', priority:'High',
+      title:`Turnover contagion risk — ${a.department} team`,
+      driver:`${a.name} departed ${a.departure_date} (regrettable — ${a.departure_reason}). ${a.contagion_team_members_at_risk} remaining teammate(s) show elevated flight risk (${a.contagion_risk_uplift_pct}% increase).`,
+      impact:`Research shows 40-80% risk uplift for direct teammates within 6 months. Team is on ${a.program==='Corporate / Internal'?'internal work':a.program}. Knowledge documented: ${a.knowledge_documented}.`,
+      action:`1. HR Business Partner to schedule team pulse check this month. 2. Line Manager to review workload redistribution. 3. Prioritise career conversations with team members showing flight risk. 4. Assess if team restructure is needed.`,
+      cost_action: 5000, cost_inaction: Math.round(65000 * a.contagion_team_members_at_risk * 0.4), roi: Math.round((65000 * a.contagion_team_members_at_risk * 0.4)/5000),
+      owner:'Business Partner — HR Business Partner',
+      dept: a.department, program: a.program,
+    });
   }
-};
 
-// Gap chart (overview)
-new Chart(document.getElementById('gapChart'), {
-  type: 'bar',
-  data: {
-    labels: ['R&M Eng', 'Cyber', 'Sys Eng', 'Prog Mgmt'],
-    datasets: [{
-      label: 'Gap Severity',
-      data: [8, 6, 5, 4],
-      backgroundColor: ['#ef4444','#f97316','#eab308','#3b82f6'],
-      borderRadius: 4,
-    }]
-  },
-  options: { ...chartDefaults, plugins: { legend: { display: false } } }
-});
+  // ACQUIRE actions from program headcount gaps
+  PROG.forEach(p => {
+    const totalGap = Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0);
+    if(totalGap>0 && p.delivery_risk_score>40) {
+      const biggestGapRole = Object.entries(p.headcount_gap||{}).sort((a,b)=>b[1]-a[1])[0];
+      if(biggestGapRole) {
+        const leadMonths = p.lead_time_months[biggestGapRole[0]]||6;
+        const actCost = biggestGapRole[1] * 45000;
+        const delayCost = Math.round(p.value_gbp * 0.05 * 1000000);
+        ACTIONS.push({
+          road:'Acquire', priority: p.delivery_risk_score>65?'Critical':'High',
+          title:`Pipeline gap — ${biggestGapRole[0]} on ${p.name}`,
+          driver:`${biggestGapRole[1]} ${biggestGapRole[0]} positions unfilled. Programme phase: ${p.phase_short}. Delivery risk score: ${p.delivery_risk_score}. Lead time for this role type: ${leadMonths} months.`,
+          impact:`${p.milestones?.filter(m=>m.status==='At Risk'||m.status==='Delayed').length||0} milestones currently at risk on this programme. Late delivery risk to £${p.value_gbp}M contract.`,
+          action:`1. Open ${biggestGapRole[1]} requisition(s) immediately — need in seat by ${leadMonths} months. 2. Engage cleared contractor pool as bridge while permanent hire progresses. 3. Review scope of roles requiring SC/DV clearance — plan clearance initiation now. 4. Report to Programme Director this week.`,
+          cost_action: actCost, cost_inaction: delayCost, roi: Math.round(delayCost/actCost),
+          owner:'Action Owner — Talent Acquisition', dept: biggestGapRole[0], program: p.id,
+        });
+      }
+    }
+  });
 
-// WRI trend chart
-new Chart(document.getElementById('wriChart'), {
-  type: 'line',
-  data: {
-    labels: ['Q1 24','Q2 24','Q3 24','Q4 24','Q1 25','Q2 25','Q3 25','NOW','Q1 26','Q2 26','Q3 26','Q4 26'],
-    datasets: [
-      { label: 'Actual WRI', data: [71,69,70,68,66,65,67,67,null,null,null,null], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3, pointRadius: 3 },
-      { label: 'Recommended Scenario', data: [null,null,null,null,null,null,null,67,70,73,76,79], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', borderDash: [4,4], tension: 0.3, pointRadius: 3 },
-      { label: 'Status Quo', data: [null,null,null,null,null,null,null,67,64,62,60,58], borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', borderDash: [4,4], tension: 0.3, pointRadius: 3 },
-    ]
-  },
-  options: { ...chartDefaults, scales: { x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } } } }
-});
+  // OPTIMIZE — span of control
+  const overloaded = EMP.filter(e=>e.direct_reports>=12);
+  if(overloaded.length>0) {
+    ACTIONS.push({
+      road:'Optimize', priority:'High',
+      title:`${overloaded.length} manager(s) exceed optimal span of control`,
+      driver:`${overloaded.map(e=>e.name.split(' ')[0]).join(', ')} each manage 12+ direct reports. Research shows productivity declines and manager effectiveness drops above 12 reports. Average engagement in over-managed teams: ${Math.round(overloaded.reduce((s,e)=>s+e.engagement_score,0)/overloaded.length)}.`,
+      impact:`Over-managed teams show 20-35% lower decision velocity. Manager burnout risk elevated. Talent development quality declines when managers cannot give adequate attention to each person.`,
+      action:`1. Review team structures for ${overloaded.map(e=>e.department).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}. 2. Identify team lead candidates who could take 3-4 reports. 3. Present restructure options to relevant Leader. 4. Target: no manager above 10 direct reports within 2 quarters.`,
+      cost_action: 8000, cost_inaction: Math.round(overloaded.length * 45000 * 0.2), roi: Math.round((overloaded.length*45000*0.2)/8000),
+      owner:'Business Partner — HR Business Partner', dept:'Multiple', program:'',
+    });
+  }
 
-// Headcount chart
-new Chart(document.getElementById('hcChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Sys Eng', 'R&M Eng', 'Cyber', 'PMO', 'HR', 'Finance'],
-    datasets: [
-      { label: 'Budget', data: [180,145,95,120,65,42], backgroundColor: 'rgba(59,130,246,0.3)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 2 },
-      { label: 'Actual', data: [172,138,88,115,64,41], backgroundColor: 'rgba(16,185,129,0.3)', borderColor: '#10b981', borderWidth: 1, borderRadius: 2 },
-      { label: 'Planned', data: [185,152,102,124,67,44], backgroundColor: 'rgba(168,85,247,0.3)', borderColor: '#a855f7', borderWidth: 1, borderRadius: 2 },
-    ]
-  },
-  options: { ...chartDefaults }
-});
+  // DEVELOP — succession gaps
+  const noSucc = EMP.filter(e=>e.succession_status==='Not Nominated' && e.direct_reports>0 && e.key_person_dependency).slice(0,3);
+  if(noSucc.length>0) {
+    ACTIONS.push({
+      road:'Develop', priority:'High',
+      title:`${noSucc.length} key person(s) with no succession plan`,
+      driver:`${noSucc.map(e=>e.name.split(' ')[0]+' ('+e.role+')').join(', ')} — identified as key person dependencies with no successor nominated. Departure would leave a critical gap.`,
+      impact:`Combined replacement cost if all departed: £${fmt(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0))}. Lead time to fill senior roles: 12-18 months. Programme risk: HIGH.`,
+      action:`1. HR Business Partner to schedule succession conversation with each Line Manager within 30 days. 2. Identify 2 internal candidates per role for development pipeline. 3. Create individual development plans aligned to next grade competency requirements. 4. Report succession coverage to Leader quarterly.`,
+      cost_action: 12000, cost_inaction: noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0), roi: Math.round(noSucc.reduce((s,e)=>s+Math.round(e.base_salary_gbp*1.3),0)/12000),
+      owner:'Business Partner — HR Business Partner', dept:'Multiple', program:'',
+    });
+  }
 
-// ── Capability gap table ────────────────────────────────────────────────────
-const gaps = [
-  { domain: 'R&M Engineering', fy26: -5, fy27: -8, fy28: -12, action: 'Build + Buy (2 hires)', cost: '£680K' },
-  { domain: 'Cybersecurity', fy26: -3, fy27: -5, fy28: -7, action: 'Buy + Borrow', cost: '£520K' },
-  { domain: 'Systems Engineering', fy26: -2, fy27: -4, fy28: -5, action: 'Build via L&D', cost: '£280K' },
-  { domain: 'Programme Management', fy26: -1, fy27: -2, fy28: -3, action: 'Build (internal pipeline)', cost: '£120K' },
-  { domain: 'Digital Engineering', fy26: 0, fy27: -3, fy28: -6, action: 'Bot + Buy (Phase 2)', cost: '£TBC' },
-];
-const tbody = document.getElementById('capabilityTable');
-gaps.forEach(g => {
-  const color = v => v < -6 ? 'text-red-400' : v < -3 ? 'text-amber-400' : v < 0 ? 'text-yellow-400' : 'text-emerald-400';
-  tbody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-800">
-    <td class="py-2 pr-4 font-medium text-white">${g.domain}</td>
-    <td class="py-2 px-3 text-center ${color(g.fy26)}">${g.fy26} FTE</td>
-    <td class="py-2 px-3 text-center ${color(g.fy27)}">${g.fy27} FTE</td>
-    <td class="py-2 px-3 text-center ${color(g.fy28)}">${g.fy28} FTE</td>
-    <td class="py-2 px-3 text-slate-300">${g.action}</td>
-    <td class="py-2 px-3 text-center text-slate-300">${g.cost}</td>
-  </tr>`;
-});
+  // Sort by priority
+  const pOrder = {Critical:0,High:1,Medium:2,Low:3};
+  ACTIONS.sort((a,b)=>pOrder[a.priority]-pOrder[b.priority]);
+}
 
-// ── Competency models ───────────────────────────────────────────────────────
-const models = [
-  {
-    name: 'Systems Thinking', role: 'Systems Engineer', source: 'INCOSE SECF', onet: '17-2199.00',
-    definition: 'The application of fundamental systems thinking concepts to understand how actions and decisions in one area affect another, and that optimisation of a system does not necessarily come from optimising individual components.',
-    why: 'Systems thinking is foundational to effective Systems Engineering in defense acquisition. Failure to apply it leads to sub-optimised solutions and missed integration opportunities.',
-    levels: [
-      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Explains what systems thinking is and why it is important. Describes emergence, system hierarchy, and system context.' },
-      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Identifies system properties with guidance. Contributes to team systems thinking activities with own insights.' },
-      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Identifies and manages complexity using appropriate techniques. Selects and applies systems thinking approaches independently.' },
-      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Recognised within the enterprise as an authority. Defines enterprise-level policies and best practice for systems thinking.' },
-      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised beyond the enterprise boundary. Champions introduction of novel techniques with measurable improvements.' },
-    ]
-  },
-  {
-    name: 'R&M Engineering Management', role: 'R&M Engineer', source: 'R&M BoK + INCOSE SECF', onet: '17-2112.00',
-    definition: 'Planning, definition, and implementation of Reliability and Maintainability activities across the defense acquisition lifecycle, from Materiel Solution Analysis through Operations and Support.',
-    why: 'R&M engineering is essential for achieving system operational availability and reducing lifecycle cost. Programs that do not implement an R&M program consistently fail IOT&E thresholds.',
-    levels: [
-      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Explains R&M parameters (reliability, maintainability, availability). Describes the R&M lifecycle phases and functional areas.' },
-      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Contributes to R&M analyses (FMECA, estimates) under supervision. Describes the RAM-C report structure and purpose.' },
-      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Prepares R&M allocations, block diagrams, and FMECA independently. Supports Milestone reviews with R&M data.' },
-      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Leads R&M program for a major acquisition program. Conducts program reviews and evaluates contractor compliance.' },
-      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised as authority across the defense acquisition community. Contributes to R&M BoK and policy development.' },
-    ]
-  },
-  {
-    name: 'Requirements Definition', role: 'Systems Engineer', source: 'INCOSE SECF + O*NET', onet: '17-2199.00',
-    definition: 'Analysis of stakeholder needs and expectations to establish, manage, and validate requirements for a system throughout its lifecycle.',
-    why: 'Poor requirements are cited as the leading cause of program cost and schedule growth. Effective requirements definition reduces rework, scope creep, and acceptance test failures.',
-    levels: [
-      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Describes types of requirements (functional, non-functional, business). Explains why requirements management is important.' },
-      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Assists with elicitation of requirements from stakeholders. Identifies potential requirement conflicts with guidance.' },
-      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Elicits and validates stakeholder requirements independently. Resolves conflicts to establish a complete, consistent set.' },
-      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Defines enterprise-level policies for requirements management. Reviews and judges completeness of requirements sets.' },
-      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised beyond enterprise boundary as authority. Champions novel techniques in requirements engineering.' },
-    ]
-  },
-];
+// ── Render all sections ────────────────────────────────────────────────────
+function renderAll() {
+  renderOverview();
+  renderDelivery();
+  renderRetain();
+  renderOptimize();
+  renderAcquire();
+  renderDevelop();
+  renderActions('all');
+  renderPeople();
+  populateDeptFilter();
+}
 
-const bloomColor = b => ({
-  'Remember': 'bg-slate-700 text-slate-300',
-  'Understand': 'bg-blue-900 text-blue-300',
-  'Apply': 'bg-emerald-900 text-emerald-300',
-  'Analyse': 'bg-purple-900 text-purple-300',
-  'Evaluate / Create': 'bg-rose-900 text-rose-300',
-}[b] || 'bg-slate-700 text-slate-300');
+// ── OVERVIEW ───────────────────────────────────────────────────────────────
+function renderOverview() {
+  const highFR = EMP.filter(e=>e.flight_risk_score>=60).length;
+  const regret = EMP.filter(e=>e.would_be_regrettable).length;
+  const regAtt = ATT.filter(a=>a.regrettability==='Regrettable').length;
+  const critMiles = PROG.reduce((s,p)=>(p.milestones||[]).filter(m=>m.status!='On Track').length+s,0);
+  const avgEngage = Math.round(EMP.reduce((s,e)=>s+e.engagement_score,0)/Math.max(1,EMP.length));
 
-const list = document.getElementById('modelList');
-models.forEach((m, i) => {
-  list.innerHTML += `<button onclick="showModel(${i})" class="model-btn w-full text-left p-3 rounded-lg hover:bg-slate-800 border border-transparent hover:border-slate-700 text-xs">
-    <p class="font-medium text-white">${m.name}</p>
-    <p class="text-slate-400">${m.role}</p>
-  </button>`;
-});
+  const kpiEl = document.getElementById('kpiRow');
+  if(kpiEl) kpiEl.innerHTML = [
+    kpiCard('Workforce Readiness Score','67<span class="text-lg text-gray-400">/100</span>','Down 3 points this quarter','text-white'),
+    kpiCard('High Flight Risk',highFR,'Would be regrettable to lose','text-red-400'),
+    kpiCard('Milestones at Risk',critMiles,'Across all active programmes','text-amber-400'),
+    kpiCard('Regrettable Attrition<br>(Last 18mo)',regAtt+' of '+ATT.length,''+Math.round(regAtt/Math.max(1,ATT.length)*100)+'% regrettability rate','text-amber-400'),
+    kpiCard('Team Engagement',avgEngage+'<span class="text-lg text-gray-400">/100</span>','Average across all departments','text-emerald-400'),
+  ].join('');
 
-function showModel(i) {
-  const m = models[i];
-  document.getElementById('modelDetail').innerHTML = `
-    <div class="flex items-start justify-between mb-4">
-      <div>
-        <h3 class="text-lg font-bold text-white">${m.name}</h3>
-        <p class="text-xs text-slate-400 mt-0.5">Role: ${m.role}  ·  Source: ${m.source}  ·  O*NET: ${m.onet}</p>
+  // ROAD health bars
+  const roadEl = document.getElementById('roadHealth');
+  if(roadEl) {
+    const avgFR = Math.round(EMP.reduce((s,e)=>s+e.flight_risk_score,0)/Math.max(1,EMP.length));
+    const starOvr= Math.round(EMP.reduce((s,e)=>s+e.star_overall,0)/Math.max(1,EMP.length));
+    const pipeHealth = Math.round((LOG.filter(l=>l.risk_label==='Low').length/Math.max(1,LOG.length))*100);
+    const compMatch  = Math.round(EMP.reduce((s,e)=>s+e.competency_match_pct,0)/Math.max(1,EMP.length));
+    roadEl.innerHTML = [
+      ['Retain — Stabilize critical skills',100-avgFR,'bg-amber-400'],
+      ['Optimize — Org performance & productivity',starOvr,'bg-purple-400'],
+      ['Acquire — Talent on time at right cost',pipeHealth,'bg-blue-400'],
+      ['Develop — Build skills, empower leaders',compMatch,'bg-emerald-400'],
+    ].map(([label,val,col])=>`<div>
+      <div class="flex justify-between text-xs mb-1"><span class="text-gray-300">${label}</span><span class="${col.replace('bg-','text-')}">${val}</span></div>
+      ${bar(val,100,col)}
+    </div>`).join('');
+  }
+
+  // Delivery snapshot
+  const delEl = document.getElementById('deliverySnapshot');
+  if(delEl) delEl.innerHTML = PROG.map(p=>`
+    <div class="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
+      <div class="flex-1 min-w-0"><p class="text-xs font-medium text-white truncate">${p.name}</p><p class="text-xs text-gray-400">${p.phase_short} · £${p.value_gbp}M</p></div>
+      <span class="pill ${riskColor(p.delivery_risk_score)} ml-2 flex-shrink-0">${riskLabel(p.delivery_risk_score)}</span>
+    </div>`).join('');
+
+  // Top actions
+  const topEl = document.getElementById('topActions');
+  if(topEl) topEl.innerHTML = ACTIONS.slice(0,3).map(a=>`
+    <div class="flex items-start gap-3 p-3 ${roadBg(a.road)} border rounded-lg">
+      <span class="pill ${a.priority==='Critical'?'risk-critical':'risk-high'} flex-shrink-0 mt-0.5">${a.priority}</span>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-white">${a.title}</p>
+        <p class="text-xs text-gray-400 mt-0.5">${a.driver.substring(0,120)}...</p>
       </div>
-      <span class="text-xs bg-emerald-900 text-emerald-300 border border-emerald-800 px-2 py-1 rounded">UGESP Ready</span>
+      <div class="flex-shrink-0 text-right">
+        <p class="text-xs font-bold ${roadColor(a.road)}">${a.road}</p>
+        <p class="text-xs text-gray-400">${a.owner.split(' — ')[0]}</p>
+      </div>
+    </div>`).join('');
+}
+
+// ── PROGRAM DELIVERY ───────────────────────────────────────────────────────
+function renderDelivery() {
+  // Ahead of Ready
+  const aheadEl = document.getElementById('aheadOfReady');
+  if(aheadEl && PROG.length>0) {
+    aheadEl.innerHTML = PROG.map(p=>{
+      const roles = Object.keys(p.headcount_needed||{});
+      const rows = roles.map(r=>{
+        const needed = p.headcount_needed[r];
+        const current= p.headcount_current[r];
+        const gap    = p.headcount_gap[r];
+        const lead   = p.lead_time_months[r];
+        const pct    = Math.round((current/needed)*100);
+        const status = gap<=0?'Ahead of Ready':lead>9?'Behind — Start Now':'At Risk';
+        const col    = gap<=0?'bg-emerald-700':'bg-red-800';
+        return `<div class="flex items-center gap-3 mb-1">
+          <span class="text-xs text-gray-400 w-40">${r}</span>
+          <div class="flex-1 bg-gray-800 rounded h-7 overflow-hidden">
+            <div class="ahead-bar ${col}" style="width:${pct}%">${current}/${needed}</div>
+          </div>
+          <span class="text-xs w-24 text-right ${gap<=0?'text-emerald-400':lead>9?'text-red-400':'text-amber-400'}">${status}</span>
+          <span class="text-xs text-gray-500 w-28">Lead time: ${lead}mo</span>
+        </div>`;
+      }).join('');
+      return `<div class="bg-gray-800 rounded-lg p-3">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-semibold text-white">${p.name}</p>
+          <span class="pill ${riskColor(p.delivery_risk_score)}">${riskLabel(p.delivery_risk_score)} delivery risk</span>
+        </div>${rows}
+      </div>`;
+    }).join('');
+  }
+
+  // TOC Constraints
+  const bottleneck = LOG.sort((a,b)=>b.days_open-a.days_open).slice(0,3);
+  const tocP = document.getElementById('tocProcess');
+  if(tocP) tocP.innerHTML = [
+    {label:'Security Clearance Initiated → Cleared',days:65,bench:20,note:'DV clearance average 14 months'},
+    {label:'Requisition Raised → Job Posted',days:18,bench:5,note:'Hiring Manager approval delays'},
+    {label:'Final Interview → Offer Extended',days:12,bench:3,note:'Internal approval chain too long'},
+  ].map(b=>`<div class="p-2 bg-gray-800 rounded-lg">
+    <p class="text-xs font-medium text-white">${b.label}</p>
+    <div class="flex items-center gap-2 mt-1">
+      <span class="text-xs text-red-400 font-bold">${b.days} days avg</span>
+      <span class="text-xs text-gray-500">vs ${b.bench} day target</span>
     </div>
-    <div class="bg-slate-800 rounded-lg p-3 mb-4">
-      <p class="text-xs text-slate-400 font-medium mb-1">Definition</p>
-      <p class="text-sm text-slate-200">${m.definition}</p>
+    <p class="text-xs text-gray-400 mt-0.5">${b.note}</p>
+  </div>`).join('');
+
+  const scarce = [
+    {skill:'Developed Vetting (DV) Cleared Engineers',avail:'6 in market',demand:'14 needed',score:91},
+    {skill:'R&M Engineering — Lead Practitioner',avail:'12 in market',demand:'8 needed',score:74},
+    {skill:'Mission Systems Architecture',avail:'22 in market',demand:'11 needed',score:58},
+  ];
+  const tocS = document.getElementById('tocSkills');
+  if(tocS) tocS.innerHTML = scarce.map(s=>`<div class="p-2 bg-gray-800 rounded-lg">
+    <p class="text-xs font-medium text-white">${s.skill}</p>
+    <div class="flex items-center gap-2 mt-1">
+      <span class="pill ${riskColor(s.score)}">${riskLabel(s.score)}</span>
+      <span class="text-xs text-gray-400">${s.avail} · ${s.demand}</span>
     </div>
-    <div class="bg-slate-800 rounded-lg p-3 mb-4">
-      <p class="text-xs text-slate-400 font-medium mb-1">Why it Matters</p>
-      <p class="text-sm text-slate-200">${m.why}</p>
-    </div>
-    <p class="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Proficiency Levels</p>
-    <div class="space-y-2">
-      ${m.levels.map((l,j) => `
-      <div class="bg-slate-800 border border-slate-700 rounded-lg p-3">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="text-xs font-bold text-white">${l.level}</span>
-          <span class="bloom-badge ${bloomColor(l.bloom)}">${l.bloom}</span>
-          <div class="flex-1 bg-slate-700 rounded-full h-1.5 ml-2">
-            <div class="level-bar bg-blue-500 h-1.5 rounded-full" style="width:${(j+1)*20}%"></div>
+  </div>`).join('');
+
+  const tocC = document.getElementById('tocCapacity');
+  if(tocC) {
+    const over = EMP.filter(e=>e.direct_reports>=10).slice(0,3);
+    tocC.innerHTML = over.length>0 ? over.map(e=>`<div class="p-2 bg-gray-800 rounded-lg">
+      <p class="text-xs font-medium text-white">${e.name}</p>
+      <p class="text-xs text-gray-400">${e.role} · ${e.direct_reports} direct reports</p>
+      <p class="text-xs text-amber-400 mt-0.5">Engagement: ${e.engagement_score}/100</p>
+    </div>`).join('') : '<p class="text-xs text-gray-400">No managers above threshold.</p>';
+  }
+
+  // Milestones
+  const msEl = document.getElementById('milestoneTable');
+  if(msEl) {
+    const rows = PROG.flatMap(p=>(p.milestones||[]).map(m=>({prog:p.name,short:p.phase_short,...m})));
+    msEl.innerHTML = `<table class="w-full text-xs"><thead class="bg-gray-800"><tr class="text-gray-400 text-left">
+      <th class="px-3 py-2">Programme</th><th class="px-3 py-2">Milestone</th><th class="px-3 py-2">Date</th><th class="px-3 py-2 text-center">Status</th><th class="px-3 py-2">Workforce Risk</th>
+    </tr></thead><tbody>${rows.map(m=>{
+      const col = m.status==='On Track'?'text-emerald-400':m.status==='Delayed'?'text-red-400':'text-amber-400';
+      const risk= m.status==='Delayed'?'HIGH — talent gap contributing to delay':m.status==='At Risk'?'MEDIUM — talent pipeline needs immediate action':'LOW — on track';
+      return `<tr class="border-b border-gray-800 hover:bg-gray-800">
+        <td class="px-3 py-2 text-white font-medium">${m.prog.substring(0,30)}</td>
+        <td class="px-3 py-2 text-gray-300">${m.name}</td>
+        <td class="px-3 py-2 text-gray-300">${m.date}</td>
+        <td class="px-3 py-2 text-center"><span class="${col} font-semibold">${m.status}</span></td>
+        <td class="px-3 py-2 text-gray-400">${risk}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+  }
+}
+
+// ── RETAIN ─────────────────────────────────────────────────────────────────
+function renderRetain() {
+  const highFR = EMP.filter(e=>e.flight_risk_score>=60).length;
+  const regretFR = EMP.filter(e=>e.flight_risk_score>=60 && e.would_be_regrettable).length;
+  const regAtt = ATT.filter(a=>a.regrettability==='Regrettable').length;
+  const avgEng = Math.round(EMP.reduce((s,e)=>s+e.engagement_score,0)/Math.max(1,EMP.length));
+
+  const el = document.getElementById('retainKpis');
+  if(el) el.innerHTML = [
+    kpiCard('High Flight Risk',highFR,'Employees with >60% flight risk score','text-red-400'),
+    kpiCard('Would Be Regrettable',regretFR,'High risk AND programme-critical','text-red-400'),
+    kpiCard('Regrettable Attrition<br>(18 months)',regAtt,'Departures that impacted delivery','text-amber-400'),
+    kpiCard('Average Engagement',avgEng+'/100','Across all departments','text-emerald-400'),
+  ].join('');
+
+  // Attrition chart
+  const months = [...new Set(ATT.map(a=>a.departure_date))].sort().slice(-12);
+  const regByMonth = months.map(m=>ATT.filter(a=>a.departure_date===m&&a.regrettability==='Regrettable').length);
+  const nonByMonth = months.map(m=>ATT.filter(a=>a.departure_date===m&&a.regrettability!=='Regrettable').length);
+
+  const ctx = document.getElementById('attritionChart');
+  if(ctx && !ctx._chartInst) {
+    ctx._chartInst = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels: months.length>0 ? months : ['No data'],
+        datasets:[
+          {label:'Regrettable',data:regByMonth,backgroundColor:'#ef4444',borderRadius:3},
+          {label:'Non-regrettable',data:nonByMonth,backgroundColor:'#374151',borderRadius:3},
+        ]
+      },
+      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'},stacked:true},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'},stacked:true}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+  }
+
+  // Contagion
+  const cEl = document.getElementById('contagionView');
+  if(cEl) {
+    const contagion = ATT.filter(a=>a.contagion_team_members_at_risk>0 && a.regrettability==='Regrettable');
+    cEl.innerHTML = contagion.length>0 ? contagion.map(a=>`
+      <div class="p-3 bg-red-950 border border-red-900 rounded-lg">
+        <p class="text-xs font-medium text-white">${a.name} left ${a.departure_date} — ${a.department}</p>
+        <p class="text-xs text-gray-300 mt-1">Reason: ${a.departure_reason}</p>
+        <div class="flex items-center gap-3 mt-2">
+          <span class="text-xs text-red-400 font-bold">${a.contagion_team_members_at_risk} teammate(s) at elevated risk</span>
+          <span class="text-xs text-gray-400">+${a.contagion_risk_uplift_pct}% flight risk uplift</span>
+        </div>
+        <p class="text-xs text-amber-300 mt-1">Action: Team pulse check + workload review</p>
+      </div>`).join('') : '<p class="text-xs text-gray-400 p-3">No active contagion events detected.</p>';
+  }
+
+  // Flight risk table
+  const frEl = document.getElementById('flightRiskTable');
+  if(frEl) {
+    const ranked = EMP.filter(e=>e.would_be_regrettable || e.flight_risk_score>=50)
+                      .sort((a,b)=>b.flight_risk_score-a.flight_risk_score).slice(0,10);
+    frEl.innerHTML = `<table class="w-full text-xs"><thead class="bg-gray-800"><tr class="text-gray-400 text-left">
+      <th class="px-3 py-2">Name</th><th class="px-3 py-2">Role</th><th class="px-3 py-2">Programme</th>
+      <th class="px-3 py-2 text-center">Flight Risk</th><th class="px-3 py-2 text-center">Compa-ratio</th>
+      <th class="px-3 py-2">Key Driver</th><th class="px-3 py-2 text-center">Regrettable?</th>
+    </tr></thead><tbody>${ranked.map(e=>{
+      const driver = e.compa_ratio<0.92?'Below market pay':e.months_since_promotion>36?'No promotion in 3+ years':e.engagement_score<60?'Low engagement':'Market demand for skills';
+      return `<tr class="border-b border-gray-800 hover:bg-gray-800">
+        <td class="px-3 py-2 font-medium text-white">${e.name}</td>
+        <td class="px-3 py-2 text-gray-300">${e.role.substring(0,30)}</td>
+        <td class="px-3 py-2 text-gray-400">${(e.programs||['—'])[0]}</td>
+        <td class="px-3 py-2 text-center"><span class="pill ${riskColor(e.flight_risk_score)}">${e.flight_risk_score}%</span></td>
+        <td class="px-3 py-2 text-center ${e.compa_ratio<0.92?'text-red-400':'text-gray-300'}">${e.compa_ratio}</td>
+        <td class="px-3 py-2 text-gray-400">${driver}</td>
+        <td class="px-3 py-2 text-center ${e.would_be_regrettable?'text-red-400 font-bold':'text-gray-500'}">${e.would_be_regrettable?'Yes':'No'}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+  }
+}
+
+// ── OPTIMIZE ───────────────────────────────────────────────────────────────
+function renderOptimize() {
+  const starDims = ['Strategy','Structure','Processes','Rewards','People'];
+  const starAvgs = starDims.map(d=>{
+    const key = 'star_'+d.toLowerCase();
+    return Math.round(EMP.reduce((s,e)=>s+(e[key]||0),0)/Math.max(1,EMP.length));
+  });
+  const colors = ['text-blue-400','text-purple-400','text-emerald-400','text-amber-400','text-cyan-400'];
+  const descs  = [
+    'Are workforce capabilities aligned to strategic programme objectives?',
+    'Is the organisational structure right-sized — span of control, layers, reporting?',
+    'Are information flows and decision rights supporting efficient delivery?',
+    'Is compensation and recognition driving the right behaviours and retaining talent?',
+    'Is development, succession, and hiring building the capability needed?',
+  ];
+  const sc = document.getElementById('starCards');
+  if(sc) sc.innerHTML = starDims.map((d,i)=>`
+    <div class="card p-4">
+      <p class="text-xs ${colors[i]} font-semibold mb-1">${d}</p>
+      <p class="text-2xl font-bold text-white">${starAvgs[i]}<span class="text-base text-gray-400">/100</span></p>
+      <p class="text-xs text-gray-400 mt-1">${descs[i]}</p>
+    </div>`).join('');
+
+  // Span chart
+  const ctx2 = document.getElementById('spanChart');
+  const spans = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
+  const spanCounts = spans.map(s=>EMP.filter(e=>e.direct_reports===s).length);
+  if(ctx2 && !ctx2._chartInst) {
+    ctx2._chartInst = new Chart(ctx2,{
+      type:'bar',
+      data:{labels:spans.map(s=>s===0?'IC':s+''),datasets:[{
+        label:'Number of managers',data:spanCounts,
+        backgroundColor:spans.map(s=>s>12?'#ef4444':s<4&&s>0?'#f59e0b':'#3b82f6'),borderRadius:3,
+      }]},
+      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}}},plugins:{legend:{display:false}}}
+    });
+  }
+
+  const siEl = document.getElementById('starInsights');
+  if(siEl) siEl.innerHTML = starDims.map((d,i)=>{
+    const score = starAvgs[i];
+    const action = score<55?'Immediate attention needed':score<70?'Improvement opportunity':score<85?'Monitor and maintain':'Strong — share practices';
+    const urgency = score<55?'text-red-400':score<70?'text-amber-400':'text-emerald-400';
+    return `<div class="flex items-start gap-3 p-2 bg-gray-800 rounded-lg">
+      <span class="text-sm font-bold ${urgency} w-8 flex-shrink-0">${score}</span>
+      <div><p class="text-xs font-medium text-white">${d}</p><p class="text-xs ${urgency}">${action}</p></div>
+    </div>`;
+  }).join('');
+
+  const laEl = document.getElementById('layerAnalysis');
+  if(laEl) {
+    const layers = [1,2,3,4,5];
+    const labels = ['Executive','Senior Manager','Manager / Lead','Professional','Junior'];
+    const counts = layers.map(l=>EMP.filter(e=>e.org_layer===l).length);
+    laEl.innerHTML = layers.map((l,i)=>`
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-gray-400 w-24">Layer ${l} — ${labels[i]}</span>
+        <div class="flex-1 bg-gray-800 rounded-full h-4 overflow-hidden">
+          <div class="h-4 bg-blue-600 rounded-full flex items-center justify-end pr-2" style="width:${Math.round(counts[i]/Math.max(1,...counts)*100)}%">
+            <span class="text-xs text-white font-bold">${counts[i]}</span>
           </div>
         </div>
-        <p class="text-xs text-slate-300">${l.indicator}</p>
-      </div>`).join('')}
-    </div>`;
+        <span class="text-xs text-gray-400 w-8">${pct(counts[i]/Math.max(1,EMP.length)*100)}</span>
+      </div>`).join('');
+  }
 }
 
-function generateModel() {
-  alert('In production: Claude API generates a complete INCOSE SECF-format competency model for any role, grounded in O*NET task inventories and framework backbone data.');
+// ── ACQUIRE ────────────────────────────────────────────────────────────────
+function renderAcquire() {
+  const active = LOG.filter(l=>l.status==='Active');
+  const high   = active.filter(l=>l.risk_label==='High');
+  const breach  = LOG.filter(l=>l.sla_breach).length;
+  const compBr  = LOG.filter(l=>l.compliance_breach).length;
+  const avgDays = Math.round(active.reduce((s,l)=>s+l.days_open,0)/Math.max(1,active.length));
+
+  const el = document.getElementById('acquireKpis');
+  if(el) el.innerHTML = [
+    kpiCard('Active Requisitions',active.length,'Across all programmes and roles','text-white'),
+    kpiCard('Average Days Open',avgDays,'Target: 40 days',avgDays>40?'text-amber-400':'text-emerald-400'),
+    kpiCard('High Risk Cases',high.length,'Likely to miss SLA target','text-red-400'),
+    kpiCard('Compliance Gaps',compBr,'Missing required steps','text-red-400'),
+  ].join('');
+
+  const ptEl = document.getElementById('pipelineTable');
+  if(ptEl) {
+    const sorted = [...LOG].sort((a,b)=>b.risk_score-a.risk_score).slice(0,8);
+    ptEl.innerHTML = `<table class="w-full text-xs"><thead class="bg-gray-800"><tr class="text-gray-400 text-left">
+      <th class="px-3 py-2">Role</th><th class="px-3 py-2">Dept</th><th class="px-3 py-2 text-center">Days Open</th>
+      <th class="px-3 py-2 text-center">Risk</th><th class="px-3 py-2">Compliance</th>
+    </tr></thead><tbody>${sorted.map(l=>`<tr class="border-b border-gray-800 hover:bg-gray-800">
+      <td class="px-3 py-2 font-medium text-white">${l.role}</td>
+      <td class="px-3 py-2 text-gray-400">${l.department}</td>
+      <td class="px-3 py-2 text-center ${l.days_open>40?'text-amber-400':'text-gray-300'}">${l.days_open}</td>
+      <td class="px-3 py-2 text-center"><span class="pill ${riskColor(l.risk_score)}">${l.risk_label}</span></td>
+      <td class="px-3 py-2 ${l.compliance_breach?'text-red-400':'text-gray-500'}">${l.compliance_breach||'OK'}</td>
+    </tr>`).join('')}</tbody></table>`;
+  }
+
+  const ltEl = document.getElementById('leadTimeView');
+  if(ltEl) {
+    const leadTimes = [
+      {role:'Developed Vetting (DV) Cleared Engineer',actual:16,target:12,note:'Clearance process is the constraint — start earlier'},
+      {role:'Security Check (SC) Cleared Specialist',actual:11,target:8,note:'Pre-screening cleared candidates reduces time'},
+      {role:'Baseline Cleared Professional',actual:6,target:5,note:'On track — standard pipeline'},
+      {role:'Contractor (immediate need)',actual:2,target:2,note:'Use as bridge while permanent hire progresses'},
+    ];
+    ltEl.innerHTML = leadTimes.map(l=>`
+      <div class="p-3 bg-gray-800 rounded-lg">
+        <div class="flex justify-between items-start">
+          <p class="text-xs font-medium text-white">${l.role}</p>
+          <span class="text-xs ${l.actual>l.target?'text-amber-400':'text-emerald-400'} font-bold">${l.actual} months</span>
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-xs text-gray-400">Target: ${l.target} months</span>
+          <span class="text-xs text-gray-500">·</span>
+          <span class="text-xs text-gray-400">${l.note}</span>
+        </div>
+      </div>`).join('');
+  }
 }
 
-// ── Framework cards ─────────────────────────────────────────────────────────
-const frameworks = [
-  { name: 'O*NET', full: 'Occupational Information Network', color: 'blue', desc: '900+ occupations with task inventories, KSAOs, work context, and wage data. Primary occupational taxonomy backbone.', stats: '900+ occupations · 125K+ data points · API access', badge: 'Live API' },
-  { name: 'NICE v2.2', full: 'Workforce Framework for Cybersecurity', color: 'emerald', desc: 'NIST cybersecurity workforce standard. 30+ work roles organised into 5 categories with TKS statements and competency areas.', stats: '30+ work roles · 5 categories · April 2025 release', badge: 'Ingested' },
-  { name: 'INCOSE SECF', full: 'Systems Engineering Competency Framework', color: 'purple', desc: 'Global standard for Systems Engineering competencies. 36 competencies × 5 proficiency levels × behavioural indicators. The platform\'s output format template.', stats: '36 competencies · 5 levels · 180 behavioural indicators', badge: 'Parsed' },
-  { name: 'R&M BoK', full: 'Reliability & Maintainability Body of Knowledge', color: 'orange', desc: 'DoW December 2025 release. Lifecycle-phase competency requirements for defense acquisition engineers across MSA, TMRR, EMD, P&D, and O&S phases.', stats: '5 lifecycle phases · 5 functional areas · Dec 2025', badge: 'Parsed' },
-  { name: "Bloom's Taxonomy", full: 'Cognitive Learning Framework', color: 'cyan', desc: 'Six cognitive levels (Remember → Understand → Apply → Analyse → Evaluate → Create) mapped to platform proficiency levels 1–5 for L&D alignment.', stats: '6 cognitive levels · Maps to INCOSE SECF levels 1–5', badge: 'Reference' },
-  { name: 'SIOP / UGESP', full: 'Society for I-O Psychology / Uniform Guidelines', color: 'rose', desc: 'Competency modeling methodology and legal defensibility requirements. Platform-generated documentation follows SHRM-SIOP (2024) standards for content validity evidence.', stats: 'Legal methodology · Content validity · Adverse impact', badge: 'Methodology' },
-];
-const fCards = document.getElementById('frameworkCards');
-const fColors = { blue: ['border-blue-900','bg-blue-950','text-blue-400'], emerald: ['border-emerald-900','bg-emerald-950','text-emerald-400'], purple: ['border-purple-900','bg-purple-950','text-purple-400'], orange: ['border-orange-900','bg-orange-950','text-orange-400'], cyan: ['border-cyan-900','bg-cyan-950','text-cyan-400'], rose: ['border-rose-900','bg-rose-950','text-rose-400'] };
-frameworks.forEach(f => {
-  const [border, bg, text] = fColors[f.color];
-  fCards.innerHTML += `<div class="card bg-slate-900 ${border} border rounded-xl p-5">
-    <div class="flex items-start justify-between mb-3">
-      <div>
-        <span class="text-lg font-bold ${text}">${f.name}</span>
-        <p class="text-xs text-slate-400 mt-0.5">${f.full}</p>
+// ── DEVELOP ────────────────────────────────────────────────────────────────
+function renderDevelop() {
+  const readyNow = EMP.filter(e=>e.succession_status==='Ready Now').length;
+  const pipeline = EMP.filter(e=>e.succession_status.includes('Development')).length;
+  const noSucc   = EMP.filter(e=>e.succession_status==='Not Nominated'&&e.direct_reports>0).length;
+  const avgMatch = Math.round(EMP.reduce((s,e)=>s+e.competency_match_pct,0)/Math.max(1,EMP.length));
+  const avgTrain = Math.round(EMP.reduce((s,e)=>s+e.training_hrs_ttm,0)/Math.max(1,EMP.length));
+
+  const el = document.getElementById('developKpis');
+  if(el) el.innerHTML = [
+    kpiCard('Succession Ready Now',readyNow,'Identified successor for a key role','text-emerald-400'),
+    kpiCard('Development Pipeline',pipeline,'In succession development (12-36mo)','text-blue-400'),
+    kpiCard('Avg Competency Match',avgMatch+'%','How well people fit their role requirements',avgMatch>75?'text-emerald-400':'text-amber-400'),
+    kpiCard('Avg Training Hours',avgTrain,'Trailing 12 months per person',avgTrain>30?'text-emerald-400':'text-amber-400'),
+  ].join('');
+
+  // Match chart
+  const ctx3 = document.getElementById('matchChart');
+  const buckets = ['< 60%','60-70%','70-80%','80-90%','90%+'];
+  const bCounts = [
+    EMP.filter(e=>e.competency_match_pct<60).length,
+    EMP.filter(e=>e.competency_match_pct>=60&&e.competency_match_pct<70).length,
+    EMP.filter(e=>e.competency_match_pct>=70&&e.competency_match_pct<80).length,
+    EMP.filter(e=>e.competency_match_pct>=80&&e.competency_match_pct<90).length,
+    EMP.filter(e=>e.competency_match_pct>=90).length,
+  ];
+  if(ctx3&&!ctx3._chartInst) {
+    ctx3._chartInst = new Chart(ctx3,{
+      type:'bar',
+      data:{labels:buckets,datasets:[{label:'Employees',data:bCounts,backgroundColor:['#ef4444','#f97316','#eab308','#22c55e','#10b981'],borderRadius:4}]},
+      options:{scales:{x:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}},y:{ticks:{color:'#6b7280',font:{size:9}},grid:{color:'#1f2937'}}},plugins:{legend:{display:false}}}
+    });
+  }
+
+  // Succession
+  const sEl = document.getElementById('successionView');
+  if(sEl) {
+    const depts = [...new Set(EMP.map(e=>e.department))];
+    sEl.innerHTML = depts.map(d=>{
+      const managers = EMP.filter(e=>e.department===d&&e.direct_reports>0);
+      if(managers.length===0) return '';
+      const withSucc = managers.filter(e=>e.succession_status!=='Not Nominated').length;
+      const covPct   = Math.round(withSucc/managers.length*100);
+      return `<div class="flex items-center gap-3">
+        <span class="text-xs text-gray-400 w-36 truncate">${d}</span>
+        <div class="flex-1 bg-gray-800 rounded-full h-2"><div class="bar ${covPct>70?'bg-emerald-500':covPct>40?'bg-amber-500':'bg-red-500'} h-2 rounded-full" style="width:${covPct}%"></div></div>
+        <span class="text-xs ${covPct>70?'text-emerald-400':covPct>40?'text-amber-400':'text-red-400'} w-10 text-right">${covPct}%</span>
+      </div>`;
+    }).filter(Boolean).join('');
+  }
+}
+
+// ── ACTION PLANS ───────────────────────────────────────────────────────────
+function renderActions(filter) {
+  const list = document.getElementById('actionPlansList');
+  if(!list) return;
+  const filtered = filter==='all' ? ACTIONS : ACTIONS.filter(a=>a.road===filter);
+  list.innerHTML = filtered.map((a,i)=>`
+    <div class="${roadBg(a.road)} border rounded-xl p-5">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="pill ${a.priority==='Critical'?'risk-critical':'risk-high'}">${a.priority}</span>
+          <span class="${roadColor(a.road)} text-sm font-bold">${a.road}</span>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-gray-400">${a.owner}</p>
+          <p class="text-xs ${roadColor(a.road)} font-semibold mt-0.5">Return on impact: ${a.roi}x</p>
+        </div>
       </div>
-      <span class="text-xs ${bg} ${text} border ${border} px-2 py-1 rounded">${f.badge}</span>
-    </div>
-    <p class="text-sm text-slate-300 mb-3">${f.desc}</p>
-    <p class="text-xs text-slate-500">${f.stats}</p>
-  </div>`;
-});
+      <h3 class="font-semibold text-white mb-2">${a.title}</h3>
+      <div class="grid grid-cols-3 gap-3 mb-3">
+        <div class="bg-black bg-opacity-20 rounded-lg p-3">
+          <p class="text-xs text-gray-400 font-medium mb-1">Driving indicators</p>
+          <p class="text-xs text-gray-300">${a.driver}</p>
+        </div>
+        <div class="bg-black bg-opacity-20 rounded-lg p-3">
+          <p class="text-xs text-gray-400 font-medium mb-1">If no action taken</p>
+          <p class="text-xs text-gray-300">${a.impact}</p>
+        </div>
+        <div class="bg-black bg-opacity-20 rounded-lg p-3">
+          <p class="text-xs text-gray-400 font-medium mb-1">Recommended actions</p>
+          <p class="text-xs text-gray-300">${a.action}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 pt-3 border-t border-white border-opacity-10">
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-400">Cost of action:</span>
+          <span class="text-xs font-bold text-white">£${fmt(a.cost_action)}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-400">Cost of inaction:</span>
+          <span class="text-xs font-bold text-red-400">£${fmt(a.cost_inaction)}</span>
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+          <span class="text-xs text-gray-400">Return on impact:</span>
+          <span class="text-xs font-bold ${roadColor(a.road)} text-lg">${a.roi}x</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
 
-// ── AI Agent mock ───────────────────────────────────────────────────────────
-const presets = [
-  "What are our biggest capability gaps?",
-  "Generate a competency model for R&M Engineer",
-  "Why is case H2R-2024-1142 high risk?",
-  "Build/buy/borrow recommendation for Cybersecurity Architect?"
-];
-const responses = [
-  `Based on today's strategic workforce analysis, your three most critical capability gaps are:\n\n**1. R&M Engineering — Severity: Critical (FY2028 gap: -12 FTE)**\nThe R&M BoK lifecycle analysis shows insufficient Practitioner-level R&M engineers for programme demands in the TMRR and EMD phases scheduled FY2026–2028. Recommendation: Build via targeted L&D programme (6 engineers) + Buy 2 Senior R&M Engineers externally.\n\n**2. Cybersecurity Architecture — Severity: High (FY2028 gap: -7 FTE)**\nNICE Framework mapping shows DV-cleared Cyber Architects are critically scarce. Market demand is 3× supply. Recommendation: Buy 2 + Borrow 2 contractor positions.\n\n**3. Systems Engineering — Severity: Medium (FY2028 gap: -5 FTE)**\nINCOSE SECF mapping shows Lead Practitioner level shortage in Requirements Definition and System Architecting competencies. Recommendation: Internal development pipeline — identify 5 candidates at Practitioner level for accelerated development.`,
-  `**Competency Model: Reliability & Maintainability Engineer**\n*Grounded in R&M BoK (Dec 2025), INCOSE SECF, O*NET 17-2112.00*\n\n**Competency: R&M Engineering Management**\n\n*Definition:* Planning, definition, and implementation of R&M activities across the defense acquisition lifecycle to achieve system reliability and maintainability requirements, aligned to DoD acquisition policy (DoDI 5000.88).\n\n*Why it matters:* Programs without an effective R&M program consistently fail IOT&E. Early R&M investment reduces O&S cost by 30–50% over the system lifecycle.\n\n**Level 3 (Practitioner — Bloom's: Apply):** Prepares R&M allocations, block diagrams, math models, and FMECA independently. Supports CDR and Milestone reviews with validated R&M data. Manages FRACAS.\n\n**Level 4 (Lead — Bloom's: Analyse):** Leads R&M program for a major acquisition. Evaluates contractor R&M plans for EMD compliance. Presents at DAES reviews.\n\n*UGESP note: Content validity evidence links this competency to O*NET Task ID T5.3 (Verify design or system compliance with regulations or specifications) and Work Activity 4.A.2.b.1 (Evaluating information to determine compliance).*`,
-  `**Case H2R-2024-1142 — Risk Analysis**\n*Case: Senior R&M Engineer · Days open: 62 · Risk score: 91%*\n\n**SHAP Top Risk Factors:**\n\n1. **SC clearance requirement (weight: 0.34)** — Only 12% of R&M Engineer applicants hold active SC clearance. Average additional time-to-clear: 18 weeks.\n\n2. **Competency rarity (weight: 0.28)** — INCOSE SECF Level 4 (Lead Practitioner) R&M Engineering Management competency required. Market availability: critically low — O*NET wage data shows 40th percentile supply/demand ratio.\n\n3. **Consecutive offer declines (weight: 0.19)** — 2 previous candidates declined at offer stage. SHAP pattern matches compensation band mismatch — Grade Band F may need reassessment.\n\n**Recommended actions:** (1) Escalate to HR VP — compensation review required. (2) Parallel-track internal candidate from succession pool. (3) Consider contractor bridge (Borrow) to fill capability gap while search continues.`,
-  `**Build/Buy/Borrow/Bot Analysis: Cybersecurity Architect (DV Cleared)**\n\n| Option | Timeline | Cost | Risk |\n|--------|----------|------|------|\n| **Buy** (external hire) | 9–14 months | £185K + £45K clearance | High — market scarcity, 3 recent declines |\n| **Build** (internal dev) | 18–24 months | £65K L&D | Medium — 1 viable candidate identified |\n| **Borrow** (contractor) | 6–8 weeks | £95K p.a. | Low — bridge capability immediately |\n| **Bot** (automation) | Not viable | N/A | This role requires human judgment |\n\n**Recommendation: Borrow + Build in parallel.**\nEngage a DV-cleared Cybersecurity Architect contractor immediately (estimated 6-week lead time) to bridge the capability gap. Simultaneously develop the internal candidate — estimated 18 months to Practitioner level based on current INCOSE SECF profile. Revisit Buy in 12 months if internal development tracks behind plan.`
+function filterActions(f) {
+  document.querySelectorAll('.action-filter').forEach(b=>{
+    b.className = 'action-filter text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300';
+  });
+  document.getElementById('af-'+f).className = 'action-filter text-xs px-3 py-1.5 rounded-lg bg-blue-700 text-white';
+  renderActions(f);
+}
+
+// ── PEOPLE DATA ────────────────────────────────────────────────────────────
+function populateDeptFilter() {
+  const sel = document.getElementById('deptFilter');
+  if(!sel) return;
+  const depts = [...new Set(EMP.map(e=>e.department))].sort();
+  sel.innerHTML = '<option value="">All Departments</option>'+depts.map(d=>`<option value="${d}">${d}</option>`).join('');
+}
+
+function filterPeople() {
+  const q    = (document.getElementById('peopleSearch')?.value||'').toLowerCase();
+  const dept = document.getElementById('deptFilter')?.value||'';
+  const filtered = EMP.filter(e=>{
+    const matchQ = !q || e.name.toLowerCase().includes(q)||e.role.toLowerCase().includes(q)||(e.programs||[]).join(' ').toLowerCase().includes(q);
+    const matchD = !dept || e.department===dept;
+    return matchQ && matchD;
+  });
+  renderPeopleTable(filtered);
+  const cnt = document.getElementById('peopleCount');
+  if(cnt) cnt.textContent = `Showing ${filtered.length} of ${EMP.length} employees`;
+}
+
+function renderPeople() {
+  renderPeopleTable(EMP);
+  const cnt = document.getElementById('peopleCount');
+  if(cnt) cnt.textContent = `Showing ${EMP.length} of ${EMP.length} employees`;
+}
+
+function renderPeopleTable(data) {
+  const tb = document.getElementById('peopleTbody');
+  if(!tb) return;
+  const succColor = s => s==='Ready Now'?'text-emerald-400':s.includes('Development')?'text-blue-400':s.includes('Nominated')?'text-amber-400':'text-gray-500';
+  tb.innerHTML = data.slice(0,50).map(e=>`
+    <tr class="border-b border-gray-800 hover:bg-gray-800">
+      <td class="px-3 py-2 font-medium text-white">${e.name}</td>
+      <td class="px-3 py-2 text-gray-400">${e.department}</td>
+      <td class="px-3 py-2 text-gray-300">${e.grade?.split(' — ')[0]||''}</td>
+      <td class="px-3 py-2 text-gray-400">${e.location}</td>
+      <td class="px-3 py-2 text-gray-300 text-xs">${e.clearance}</td>
+      <td class="px-3 py-2 text-center ${e.compa_ratio<0.92?'text-red-400':e.compa_ratio>1.05?'text-emerald-400':'text-gray-300'}">${e.compa_ratio}</td>
+      <td class="px-3 py-2 text-center"><span class="pill ${riskColor(e.flight_risk_score)}">${e.flight_risk_score}%</span></td>
+      <td class="px-3 py-2 text-center text-gray-300">${e.performance_current}</td>
+      <td class="px-3 py-2 text-xs ${succColor(e.succession_status||'')}">${(e.succession_status||'').split(' ')[0]}</td>
+      <td class="px-3 py-2 text-center ${e.would_be_regrettable?'text-red-400 font-bold':'text-gray-600'}">${e.would_be_regrettable?'Yes':'—'}</td>
+    </tr>`).join('');
+}
+
+// ── AI AGENT ───────────────────────────────────────────────────────────────
+const PRESETS = [
+  'Which programs are at most risk from talent gaps?',
+  'Who are we most at risk of losing this quarter?',
+  'What is our biggest hiring bottleneck right now?',
+  'Show me return on impact for the top retention actions',
 ];
 
-function sendPreset(i) {
-  addMessage(presets[i], true);
-  setTimeout(() => addMessage(responses[i], false), 900);
+const RESPONSES = [
+  () => {
+    const critical = PROG.filter(p=>p.delivery_risk_score>65).map(p=>p.name);
+    const gaps = PROG.map(p=>[p.name,Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0)]).sort((a,b)=>b[1]-a[1]);
+    return `Based on today's data, here are the programmes at highest delivery risk from talent gaps:\n\n${PROG.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score).slice(0,3).map((p,i)=>`${i+1}. **${p.name}** — Delivery risk: ${p.delivery_risk_score} (${p.delivery_risk_label})\n   Gap: ${Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).map(([k,v])=>v+' '+k).join(', ')}\n   Critical milestones at risk: ${(p.milestones||[]).filter(m=>m.status!='On Track').length}`).join('\n\n')}\n\nThe binding constraint across all three programmes is **Developed Vetting (DV) cleared engineering talent** — lead time to fill these roles is 14-18 months. If you need capability for a milestone in 12 months, you are already behind. Recommend opening requisitions immediately and engaging cleared contractor pool as bridge.`;
+  },
+  () => {
+    const top = EMP.filter(e=>e.flight_risk_score>=60&&e.would_be_regrettable).sort((a,b)=>b.flight_risk_score-a.flight_risk_score).slice(0,4);
+    return `There are ${EMP.filter(e=>e.flight_risk_score>=60&&e.would_be_regrettable).length} people at high flight risk whose departure would be regrettable based on programme execution impact:\n\n${top.map(e=>`**${e.name}** (${e.role}, ${e.department})\n   Flight risk: ${e.flight_risk_score}% | Compa-ratio: ${e.compa_ratio} | ${e.months_since_promotion} months since promotion\n   On critical path: ${e.on_critical_path?'Yes':'No'} | Programme: ${(e.programs||['—'])[0]}\n   Primary driver: ${e.compa_ratio<0.92?'Below-market pay ('+Math.round(e.compa_ratio*100)+'% of peer midpoint)':e.months_since_promotion>36?'No career progression in 3+ years':'Market demand for skills'}`).join('\n\n')}\n\nContagion warning: ${ATT.filter(a=>a.regrettability==='Regrettable'&&a.contagion_team_members_at_risk>0).length} recent regrettable departure(s) have elevated the flight risk of their team members. Recommend prioritising team engagement checks in R&M Engineering this month.`;
+  },
+  () => {
+    return `The single biggest bottleneck in your hiring pipeline right now is **security clearance processing time**.\n\nAverage DV clearance lead time: 14-18 months (your process average: 16 months vs. 12 month target)\nAverage SC clearance lead time: 9-11 months (your process average: 11 months vs. 8 month target)\n\nThis is a Theory of Constraints problem. The clearance process is the binding constraint on throughput — every other improvement you make to the hiring process is limited by this bottleneck.\n\n**What to subordinate to the constraint:**\n1. Start clearance initiation earlier — as soon as a programme need is forecast, not when requisition is raised\n2. Build a pipeline of pre-cleared candidates through contractor relationships\n3. Prioritise cleared internal redeployment before external hire\n\n**What to elevate the constraint:**\n1. Engage with MOD sponsoring officer to streamline case submission quality\n2. Assign a dedicated clearance coordinator to chase cases proactively\n3. Track clearance lead time as a primary ACQUIRE KPI, not just time-to-fill\n\nCurrent pipeline: ${LOG.filter(l=>l.clearance_required!='Baseline').length} active cases requiring SC or DV clearance.`;
+  },
+  () => {
+    const top3 = ACTIONS.filter(a=>a.road==='Retain').slice(0,3);
+    const total_action = top3.reduce((s,a)=>s+a.cost_action,0);
+    const total_inaction = top3.reduce((s,a)=>s+a.cost_inaction,0);
+    return `Top retention actions with return on impact:\n\n${top3.map((a,i)=>`${i+1}. **${a.title}**\n   Cost of action: £${fmt(a.cost_action)} | Cost of inaction: £${fmt(a.cost_inaction)} | ROI: ${a.roi}x\n   ${a.action.split('.')[0]}.`).join('\n\n')}\n\n**Portfolio summary:**\nTotal investment across top 3 retention actions: £${fmt(total_action)}\nTotal estimated cost if no action taken: £${fmt(total_inaction)}\nCombined return on impact: ${Math.round(total_inaction/total_action)}x\n\nNote: These calculations use replacement cost (salary × 1.4) plus programme delay cost. The actual return is likely higher when you include knowledge loss, team contagion effects, and customer confidence impact on programme delivery.`;
+  },
+];
+
+function preset(i) {
+  addMsg(PRESETS[i], true);
+  setTimeout(()=>addMsg(RESPONSES[i](), false), 900);
 }
 
 function sendChat() {
-  const input = document.getElementById('chatInput');
-  const val = input.value.trim();
-  if (!val) return;
-  addMessage(val, true);
-  input.value = '';
-  setTimeout(() => {
-    addMessage("I'm processing your query against today's workforce data and the framework backbone. In production, the Claude API would retrieve relevant context from ChromaDB (framework definitions, process mining outputs, competency profiles) and generate a grounded response. This demo shows pre-computed responses — the live platform supports any free-text workforce planning question.", false);
-  }, 800);
+  const inp = document.getElementById('chatIn');
+  if(!inp?.value.trim()) return;
+  const q = inp.value.trim(); inp.value='';
+  addMsg(q, true);
+  setTimeout(()=>addMsg(`I'm analysing your question against today's workforce data. In production, the Claude API retrieves relevant context from the vector store (framework backbone, programme data, employee profiles, attrition records) and generates a grounded response.\n\nTry one of the pre-set questions above to see full responses grounded in the synthetic dataset.`, false), 700);
 }
 
-function addMessage(text, isUser) {
-  const msgs = document.getElementById('chatMessages');
-  const bubble = isUser
-    ? `<div class="flex gap-3 justify-end"><div class="chat-bubble-user p-3 max-w-2xl"><p class="text-sm text-white whitespace-pre-wrap">${text}</p></div><div class="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">MT</div></div>`
-    : `<div class="flex gap-3"><div class="w-7 h-7 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div><div class="chat-bubble-ai p-3 max-w-2xl"><p class="text-sm text-slate-200 whitespace-pre-wrap">${text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p></div></div>`;
-  msgs.innerHTML += bubble;
+function addMsg(txt, isUser) {
+  const msgs = document.getElementById('chatMsgs');
+  if(!msgs) return;
+  const sanitised = txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  msgs.innerHTML += isUser
+    ? `<div class="flex gap-2 justify-end"><div class="chat-user p-3 max-w-2xl"><p class="text-sm text-white">${sanitised}</p></div><div class="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">MT</div></div>`
+    : `<div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div><div class="chat-ai p-3 max-w-2xl"><p class="text-sm text-gray-200">${sanitised}</p></div></div>`;
   msgs.scrollTop = msgs.scrollHeight;
 }
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+loadData();
 </script>
 </body>
 </html>

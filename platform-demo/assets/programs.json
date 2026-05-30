@@ -1,0 +1,276 @@
+[
+  {
+    "id": "P001",
+    "name": "Typhoon Modernisation Block 20",
+    "phase": "Engineering & Manufacturing Development",
+    "phase_short": "EMD",
+    "start": "2023-04",
+    "end": "2027-06",
+    "value_gbp": 420,
+    "customer": "Royal Air Force",
+    "milestones": [
+      {
+        "name": "Critical Design Review",
+        "date": "2025-03",
+        "status": "At Risk",
+        "days_delta": 14
+      },
+      {
+        "name": "System Integration Test",
+        "date": "2025-09",
+        "status": "On Track",
+        "days_delta": 0
+      },
+      {
+        "name": "Operational Test & Eval",
+        "date": "2026-06",
+        "status": "On Track",
+        "days_delta": 0
+      },
+      {
+        "name": "First Aircraft Delivery",
+        "date": "2027-02",
+        "status": "At Risk",
+        "days_delta": 28
+      }
+    ],
+    "headcount_needed": {
+      "Systems Engineering": 4,
+      "R&M Engineering": 5,
+      "Cybersecurity": 1,
+      "Programme Management": 5
+    },
+    "headcount_current": {
+      "Systems Engineering": 2,
+      "R&M Engineering": 4,
+      "Cybersecurity": 0,
+      "Programme Management": 3
+    },
+    "headcount_gap": {
+      "Systems Engineering": 2,
+      "R&M Engineering": 1,
+      "Cybersecurity": 1,
+      "Programme Management": 2
+    },
+    "lead_time_months": {
+      "Systems Engineering": 6,
+      "R&M Engineering": 9,
+      "Cybersecurity": 12,
+      "Programme Management": 5
+    },
+    "delivery_risk_score": 61,
+    "delivery_risk_label": "High"
+  },
+  {
+    "id": "P002",
+    "name": "Future Combat Air System",
+    "phase": "Materiel Solution Analysis",
+    "phase_short": "MSA",
+    "start": "2024-01",
+    "end": "2030-12",
+    "value_gbp": 890,
+    "customer": "MOD / Partner Nations",
+    "milestones": [
+      {
+        "name": "Capability Development Document",
+        "date": "2025-06",
+        "status": "On Track",
+        "days_delta": 0
+      },
+      {
+        "name": "Milestone A Review",
+        "date": "2026-01",
+        "status": "At Risk",
+        "days_delta": 21
+      },
+      {
+        "name": "Technology Demonstrator Fly-Off",
+        "date": "2027-09",
+        "status": "At Risk",
+        "days_delta": 45
+      }
+    ],
+    "headcount_needed": {
+      "Systems Engineering": 4,
+      "R&M Engineering": 4,
+      "Cybersecurity": 2,
+      "Programme Management": 4
+    },
+    "headcount_current": {
+      "Systems Engineering": 3,
+      "R&M Engineering": 3,
+      "Cybersecurity": 1,
+      "Programme Management": 3
+    },
+    "headcount_gap": {
+      "Systems Engineering": 1,
+      "R&M Engineering": 1,
+      "Cybersecurity": 1,
+      "Programme Management": 1
+    },
+    "lead_time_months": {
+      "Systems Engineering": 6,
+      "R&M Engineering": 9,
+      "Cybersecurity": 12,
+      "Programme Management": 5
+    },
+    "delivery_risk_score": 57,
+    "delivery_risk_label": "High"
+  },
+  {
+    "id": "P003",
+    "name": "Air Defence Ground Environment",
+    "phase": "Production & Deployment",
+    "phase_short": "P&D",
+    "start": "2022-06",
+    "end": "2026-03",
+    "value_gbp": 185,
+    "customer": "Army Air Corps",
+    "milestones": [
+      {
+        "name": "Low Rate Initial Production",
+        "date": "2025-02",
+        "status": "Delayed",
+        "days_delta": 52
+      },
+      {
+        "name": "Full Rate Production Decision",
+        "date": "2025-10",
+        "status": "At Risk",
+        "days_delta": 30
+      },
+      {
+        "name": "Final Delivery",
+        "date": "2026-03",
+        "status": "At Risk",
+        "days_delta": 35
+      }
+    ],
+    "headcount_needed": {
+      "Systems Engineering": 11,
+      "R&M Engineering": 8,
+      "Cybersecurity": 3,
+      "Programme Management": 2
+    },
+    "headcount_current": {
+      "Systems Engineering": 9,
+      "R&M Engineering": 5,
+      "Cybersecurity": 2,
+      "Programme Management": 1
+    },
+    "headcount_gap": {
+      "Systems Engineering": 2,
+      "R&M Engineering": 3,
+      "Cybersecurity": 1,
+      "Programme Management": 1
+    },
+    "lead_time_months": {
+      "Systems Engineering": 6,
+      "R&M Engineering": 9,
+      "Cybersecurity": 12,
+      "Programme Management": 5
+    },
+    "delivery_risk_score": 71,
+    "delivery_risk_label": "Critical"
+  },
+  {
+    "id": "P004",
+    "name": "Eurofighter Sustainment",
+    "phase": "Operations & Support",
+    "phase_short": "O&S",
+    "start": "2020-01",
+    "end": "2028-12",
+    "value_gbp": 310,
+    "customer": "Multi-Nation Consortium",
+    "milestones": [
+      {
+        "name": "Mid-Life Upgrade Package",
+        "date": "2025-04",
+        "status": "On Track",
+        "days_delta": 0
+      },
+      {
+        "name": "Fleet Availability Review",
+        "date": "2025-11",
+        "status": "On Track",
+        "days_delta": 0
+      }
+    ],
+    "headcount_needed": {
+      "Systems Engineering": 11,
+      "R&M Engineering": 3,
+      "Cybersecurity": 3,
+      "Programme Management": 5
+    },
+    "headcount_current": {
+      "Systems Engineering": 8,
+      "R&M Engineering": 2,
+      "Cybersecurity": 2,
+      "Programme Management": 3
+    },
+    "headcount_gap": {
+      "Systems Engineering": 3,
+      "R&M Engineering": 1,
+      "Cybersecurity": 1,
+      "Programme Management": 2
+    },
+    "lead_time_months": {
+      "Systems Engineering": 6,
+      "R&M Engineering": 9,
+      "Cybersecurity": 12,
+      "Programme Management": 5
+    },
+    "delivery_risk_score": 69,
+    "delivery_risk_label": "High"
+  },
+  {
+    "id": "P005",
+    "name": "Project SKYSHIELD",
+    "phase": "Technology Maturation & Risk Reduction",
+    "phase_short": "TMRR",
+    "start": "2024-09",
+    "end": "2028-06",
+    "value_gbp": 245,
+    "customer": "Defence Science & Technology Lab",
+    "milestones": [
+      {
+        "name": "System Requirements Review",
+        "date": "2025-05",
+        "status": "On Track",
+        "days_delta": 0
+      },
+      {
+        "name": "Preliminary Design Review",
+        "date": "2026-02",
+        "status": "At Risk",
+        "days_delta": 18
+      }
+    ],
+    "headcount_needed": {
+      "Systems Engineering": 5,
+      "R&M Engineering": 8,
+      "Cybersecurity": 3,
+      "Programme Management": 6
+    },
+    "headcount_current": {
+      "Systems Engineering": 3,
+      "R&M Engineering": 6,
+      "Cybersecurity": 2,
+      "Programme Management": 3
+    },
+    "headcount_gap": {
+      "Systems Engineering": 2,
+      "R&M Engineering": 2,
+      "Cybersecurity": 1,
+      "Programme Management": 3
+    },
+    "lead_time_months": {
+      "Systems Engineering": 6,
+      "R&M Engineering": 9,
+      "Cybersecurity": 12,
+      "Programme Management": 5
+    },
+    "delivery_risk_score": 86,
+    "delivery_risk_label": "Critical"
+  }
+]
