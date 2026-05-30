@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workforce Intelligence Platform — AeroDefend Group</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { font-family: 'Inter', sans-serif; }
+  .nav-link { transition: all 0.15s; }
+  .nav-link.active { background: #1d4ed8; color: #fff; }
+  .nav-link:not(.active):hover { background: #1e3a5f; }
+  .card { transition: transform 0.15s, box-shadow 0.15s; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .tab-btn.active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .level-bar { transition: width 0.6s ease; }
+  .bloom-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 999px; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  .chat-bubble-user { background: #1d4ed8; border-radius: 12px 12px 4px 12px; }
+  .chat-bubble-ai { background: #1e293b; border-radius: 12px 12px 12px 4px; border: 1px solid #334155; }
+  .cascade-line { stroke: #3b82f6; stroke-width: 2; stroke-dasharray: 6 3; animation: dash 2s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -18; } }
+  .new-badge { background: linear-gradient(135deg, #1d4ed8, #7c3aed); font-size: 0.6rem; padding: 1px 6px; border-radius: 999px; color: white; font-weight: 700; }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- ── Top bar ─────────────────────────────────────────────────────────── -->
+<header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+    </div>
+    <div>
+      <div class="font-bold text-white text-sm">Workforce Intelligence Platform</div>
+      <div class="text-slate-400 text-xs">AeroDefend Group  ·  WIP-SRNA-001 v1.0  ·  Illustrative Demo</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="text-xs text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1 rounded-full">● Pipeline complete 00:47</span>
+    <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-xs font-bold">MT</div>
+  </div>
+</header>
+
+<div class="flex h-[calc(100vh-53px)]">
+
+<!-- ── Sidebar navigation ─────────────────────────────────────────────── -->
+<nav class="w-56 bg-slate-900 border-r border-slate-800 flex flex-col py-4 flex-shrink-0 overflow-y-auto">
+  <div class="px-3 mb-2">
+    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Planning Horizons</p>
+    <button onclick="showSection('overview')" class="nav-link active w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-200 mb-1">
+      <span>🏠</span> Overview
+    </button>
+    <button onclick="showSection('strategic')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>🎯</span> Strategic WFP
+      <span class="ml-auto new-badge">3–5 yr</span>
+    </button>
+    <button onclick="showSection('operational')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>📋</span> Operational WFP
+      <span class="ml-auto text-xs text-slate-500">1–3 yr</span>
+    </button>
+    <button onclick="showSection('tactical')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>⚡</span> Tactical / H2R
+      <span class="ml-auto text-xs text-slate-500">0–12 mo</span>
+    </button>
+  </div>
+  <div class="px-3 mb-2 mt-2">
+    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Intelligence</p>
+    <button onclick="showSection('competency')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>🧠</span> Competency Models
+    </button>
+    <button onclick="showSection('cascade')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>🔗</span> Cascade Engine
+      <span class="ml-auto new-badge">NEW</span>
+    </button>
+    <button onclick="showSection('agent')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>🤖</span> AI Agent
+    </button>
+  </div>
+  <div class="px-3 mt-2">
+    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2 px-2">Platform</p>
+    <button onclick="showSection('architecture')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>🏗️</span> Architecture
+    </button>
+    <button onclick="showSection('frameworks')" class="nav-link w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-slate-300 mb-1">
+      <span>📚</span> Framework Backbone
+    </button>
+  </div>
+</nav>
+
+<!-- ── Main content ───────────────────────────────────────────────────── -->
+<main class="flex-1 overflow-y-auto bg-slate-950 p-6">
+
+<!-- OVERVIEW ──────────────────────────────────────────────────────────── -->
+<section id="section-overview" class="tab-panel active">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Workforce Intelligence Dashboard</h1>
+    <p class="text-slate-400 text-sm mt-1">Good morning. Pipeline completed at 00:47. All 4 planning horizons current as of today.</p>
+  </div>
+
+  <!-- KPI row -->
+  <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400 mb-1">Workforce Readiness Index</p>
+      <p class="text-3xl font-bold text-white">67<span class="text-lg text-slate-400">/100</span></p>
+      <p class="text-xs text-amber-400 mt-1">▼ 3 pts vs last quarter</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400 mb-1">3-Year Capability Gaps</p>
+      <p class="text-3xl font-bold text-red-400">14</p>
+      <p class="text-xs text-slate-400 mt-1">Across 4 competency domains</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400 mb-1">H2R Conformance Fitness</p>
+      <p class="text-3xl font-bold text-emerald-400">81<span class="text-lg text-slate-400">%</span></p>
+      <p class="text-xs text-emerald-400 mt-1">▲ 4% vs last month</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400 mb-1">Active Compliance Breaches</p>
+      <p class="text-3xl font-bold text-red-400">3</p>
+      <p class="text-xs text-red-400 mt-1">RTW missing on 2 cases</p>
+    </div>
+  </div>
+
+  <!-- Planning horizon status -->
+  <div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-blue-500"></span> Planning Cascade Health
+      </h3>
+      <div class="space-y-3">
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Strategic → Operational</span><span class="text-emerald-400">92% covered</span></div>
+          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-emerald-500 h-2 rounded-full" style="width:92%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Operational → Tactical</span><span class="text-amber-400">74% covered</span></div>
+          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-amber-500 h-2 rounded-full" style="width:74%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Tactical → H2R Execution</span><span class="text-emerald-400">88% covered</span></div>
+          <div class="w-full bg-slate-800 rounded-full h-2"><div class="level-bar bg-emerald-500 h-2 rounded-full" style="width:88%"></div></div>
+        </div>
+        <div class="pt-2 border-t border-slate-800 text-xs text-amber-300">⚠ 4 cascade breaks detected — see Cascade Engine view</div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-purple-500"></span> Capability Gap by Domain
+      </h3>
+      <canvas id="gapChart" height="160"></canvas>
+    </div>
+  </div>
+
+  <!-- Action items -->
+  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <h3 class="font-semibold text-white mb-4">Top Action Items  <span class="text-xs text-slate-400 font-normal">Generated by AI Agent · Updated 00:47</span></h3>
+    <div class="space-y-3">
+      <div class="flex items-start gap-3 p-3 bg-red-950 border border-red-900 rounded-lg">
+        <span class="text-red-400 text-sm mt-0.5">🔴</span>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-white">Critical: Compliance breach — 2 cases missing Right-to-Work documentation</p>
+          <p class="text-xs text-slate-400 mt-0.5">Owner: HR Operations  ·  Estimated impact: Legal risk  ·  Action by: Today</p>
+        </div>
+        <span class="text-xs text-red-400 bg-red-950 border border-red-800 px-2 py-1 rounded">Must</span>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-amber-950 border border-amber-900 rounded-lg">
+        <span class="text-amber-400 text-sm mt-0.5">🟡</span>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-white">Strategic gap: R&M Engineering capability insufficient for 2026 programme demands</p>
+          <p class="text-xs text-slate-400 mt-0.5">Owner: CPO  ·  Recommendation: Build (L&D) + Buy (2 external hires)  ·  Action by: Q3 planning</p>
+        </div>
+        <span class="text-xs text-amber-400 bg-amber-950 border border-amber-800 px-2 py-1 rounded">High</span>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-slate-800 border border-slate-700 rounded-lg">
+        <span class="text-blue-400 text-sm mt-0.5">🔵</span>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-white">Cascade break: 3 approved headcount positions have no active requisition in tactical plan</p>
+          <p class="text-xs text-slate-400 mt-0.5">Owner: TA Lead  ·  Impact: 3 roles not progressing  ·  Action by: End of week</p>
+        </div>
+        <span class="text-xs text-blue-400 bg-blue-950 border border-blue-800 px-2 py-1 rounded">Medium</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGIC WFP ──────────────────────────────────────────────────────── -->
+<section id="section-strategic" class="tab-panel">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Strategic Workforce Plan</h1>
+      <p class="text-slate-400 text-sm mt-1">3-year capability analysis  ·  FY2026–FY2028  ·  Last updated: Annual cycle Sep 2025</p>
+    </div>
+    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Run New Scenario</button>
+  </div>
+
+  <!-- Workforce Readiness -->
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-5 col-span-2">
+      <h3 class="font-semibold text-white mb-1">Workforce Readiness Index — 3-Year Trend</h3>
+      <p class="text-xs text-slate-400 mb-4">Combined capability coverage, pipeline strength, and attrition risk</p>
+      <canvas id="wriChart" height="120"></canvas>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4">Scenario Comparison</h3>
+      <div class="space-y-3">
+        <div class="p-3 bg-slate-800 rounded-lg">
+          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Status Quo</span><span class="text-amber-400">WRI: 58</span></div>
+          <p class="text-xs text-slate-400">No intervention — capability gap widens</p>
+        </div>
+        <div class="p-3 bg-blue-950 border border-blue-800 rounded-lg">
+          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Recommended ★</span><span class="text-emerald-400">WRI: 79</span></div>
+          <p class="text-xs text-slate-400">Build + Buy + 2 Bot substitutions</p>
+        </div>
+        <div class="p-3 bg-slate-800 rounded-lg">
+          <div class="flex justify-between text-xs mb-1"><span class="font-medium text-white">Restructure</span><span class="text-blue-400">WRI: 71</span></div>
+          <p class="text-xs text-slate-400">Consolidate job families, higher FTE cost</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capability gap heatmap -->
+  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
+    <h3 class="font-semibold text-white mb-4">Capability Gap Matrix — FY2026 to FY2028</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-xs">
+        <thead>
+          <tr class="text-slate-400 border-b border-slate-800">
+            <th class="text-left py-2 pr-4 font-medium">Competency Domain</th>
+            <th class="py-2 px-3 font-medium">FY2026 Gap</th>
+            <th class="py-2 px-3 font-medium">FY2027 Gap</th>
+            <th class="py-2 px-3 font-medium">FY2028 Gap</th>
+            <th class="text-left py-2 px-3 font-medium">Recommended Action</th>
+            <th class="py-2 px-3 font-medium">Est. Cost</th>
+          </tr>
+        </thead>
+        <tbody id="capabilityTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Build/Buy/Borrow/Bot summary -->
+  <div class="grid grid-cols-4 gap-4">
+    <div class="bg-slate-900 border border-emerald-900 rounded-xl p-4 text-center">
+      <div class="text-2xl mb-1">🔨</div>
+      <p class="font-bold text-emerald-400 text-lg">Build</p>
+      <p class="text-2xl font-bold text-white">6</p>
+      <p class="text-xs text-slate-400">roles via L&D</p>
+      <p class="text-xs text-emerald-400 mt-1">~£420K investment</p>
+    </div>
+    <div class="bg-slate-900 border border-blue-900 rounded-xl p-4 text-center">
+      <div class="text-2xl mb-1">💼</div>
+      <p class="font-bold text-blue-400 text-lg">Buy</p>
+      <p class="text-2xl font-bold text-white">4</p>
+      <p class="text-xs text-slate-400">external hires</p>
+      <p class="text-xs text-blue-400 mt-1">~£680K total cost</p>
+    </div>
+    <div class="bg-slate-900 border border-purple-900 rounded-xl p-4 text-center">
+      <div class="text-2xl mb-1">🤝</div>
+      <p class="font-bold text-purple-400 text-lg">Borrow</p>
+      <p class="text-2xl font-bold text-white">3</p>
+      <p class="text-xs text-slate-400">contractors / partners</p>
+      <p class="text-xs text-purple-400 mt-1">~£310K p.a.</p>
+    </div>
+    <div class="bg-slate-900 border border-cyan-900 rounded-xl p-4 text-center">
+      <div class="text-2xl mb-1">🤖</div>
+      <p class="font-bold text-cyan-400 text-lg">Bot</p>
+      <p class="text-2xl font-bold text-white">2</p>
+      <p class="text-xs text-slate-400">AI/automation substitute</p>
+      <p class="text-xs text-cyan-400 mt-1">~£85K tooling</p>
+    </div>
+  </div>
+</section>
+
+<!-- OPERATIONAL WFP ────────────────────────────────────────────────────── -->
+<section id="section-operational" class="tab-panel">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Operational Workforce Plan</h1>
+    <p class="text-slate-400 text-sm mt-1">Annual headcount plan · FY2026 · Q3 review · Budget cycle: Sep–Nov 2025</p>
+  </div>
+
+  <!-- Headcount summary -->
+  <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">Approved HC Budget</p>
+      <p class="text-3xl font-bold text-white">847</p>
+      <p class="text-xs text-slate-400 mt-1">FTE across all departments</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">Current Headcount</p>
+      <p class="text-3xl font-bold text-amber-400">819</p>
+      <p class="text-xs text-amber-400 mt-1">▼ 28 vs plan</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">Open Positions</p>
+      <p class="text-3xl font-bold text-blue-400">31</p>
+      <p class="text-xs text-slate-400 mt-1">17 in active recruitment</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">Critical Succession Gaps</p>
+      <p class="text-3xl font-bold text-red-400">7</p>
+      <p class="text-xs text-red-400 mt-1">No ready-now successor</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4">Headcount: Plan vs Budget vs Actual</h3>
+      <canvas id="hcChart" height="180"></canvas>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4">Succession Risk Matrix</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3 p-2 bg-red-950 border border-red-900 rounded-lg">
+          <span class="text-red-400 text-xs w-4">🔴</span>
+          <div class="flex-1 text-xs"><span class="font-medium text-white">Chief Systems Engineer</span> <span class="text-slate-400">— No successor identified</span></div>
+        </div>
+        <div class="flex items-center gap-3 p-2 bg-red-950 border border-red-900 rounded-lg">
+          <span class="text-red-400 text-xs w-4">🔴</span>
+          <div class="flex-1 text-xs"><span class="font-medium text-white">Head of R&M Engineering</span> <span class="text-slate-400">— Successor 12–18mo away</span></div>
+        </div>
+        <div class="flex items-center gap-3 p-2 bg-amber-950 border border-amber-900 rounded-lg">
+          <span class="text-amber-400 text-xs w-4">🟡</span>
+          <div class="flex-1 text-xs"><span class="font-medium text-white">Lead Cybersecurity Architect</span> <span class="text-slate-400">— 1 candidate in development</span></div>
+        </div>
+        <div class="flex items-center gap-3 p-2 bg-amber-950 border border-amber-900 rounded-lg">
+          <span class="text-amber-400 text-xs w-4">🟡</span>
+          <div class="flex-1 text-xs"><span class="font-medium text-white">Programme Director (TMRR)</span> <span class="text-slate-400">— External hire recommended</span></div>
+        </div>
+        <div class="flex items-center gap-3 p-2 bg-slate-800 rounded-lg">
+          <span class="text-emerald-400 text-xs w-4">🟢</span>
+          <div class="flex-1 text-xs"><span class="font-medium text-white">HR Business Partner (Lead)</span> <span class="text-slate-400">— 2 ready-now candidates</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TACTICAL / H2R ─────────────────────────────────────────────────────── -->
+<section id="section-tactical" class="tab-panel">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Tactical Workforce Plan & H2R Execution</h1>
+    <p class="text-slate-400 text-sm mt-1">0–12 month horizon  ·  Process mining active  ·  31 open requisitions  ·  Pipeline updated 00:47</p>
+  </div>
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">Mean Time-to-Fill</p>
+      <p class="text-3xl font-bold text-amber-400">47<span class="text-lg text-slate-400"> days</span></p>
+      <p class="text-xs text-amber-400 mt-1">SLA target: 40 days</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">SLA Breach Rate</p>
+      <p class="text-3xl font-bold text-red-400">23<span class="text-lg text-slate-400">%</span></p>
+      <p class="text-xs text-red-400 mt-1">▲ 6% vs last month</p>
+    </div>
+    <div class="card bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400">High-Risk Active Cases</p>
+      <p class="text-3xl font-bold text-red-400">8</p>
+      <p class="text-xs text-slate-400 mt-1">Risk score &gt;70%</p>
+    </div>
+  </div>
+  <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
+    <h3 class="font-semibold text-white mb-4">Active Case Risk Scores</h3>
+    <table class="w-full text-xs">
+      <thead><tr class="text-slate-400 border-b border-slate-800">
+        <th class="text-left py-2">Case ID</th><th class="text-left py-2">Role</th><th class="text-left py-2">Department</th><th class="py-2">Days Open</th><th class="py-2">Risk Score</th><th class="text-left py-2">SHAP Top Factor</th>
+      </tr></thead>
+      <tbody>
+        <tr class="border-b border-slate-800 hover:bg-slate-800">
+          <td class="py-2 text-slate-300">H2R-2024-1142</td><td class="py-2 text-white font-medium">Senior R&M Engineer</td><td class="py-2 text-slate-300">Engineering</td><td class="py-2 text-center text-amber-400">62</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">91%</span></td><td class="py-2 text-slate-400">SC clearance requirement</td>
+        </tr>
+        <tr class="border-b border-slate-800 hover:bg-slate-800">
+          <td class="py-2 text-slate-300">H2R-2024-1156</td><td class="py-2 text-white font-medium">Cybersecurity Architect</td><td class="py-2 text-slate-300">IT Security</td><td class="py-2 text-center text-amber-400">54</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">84%</span></td><td class="py-2 text-slate-400">Niche skill scarcity</td>
+        </tr>
+        <tr class="border-b border-slate-800 hover:bg-slate-800">
+          <td class="py-2 text-slate-300">H2R-2024-1163</td><td class="py-2 text-white font-medium">Systems Engineer (TMRR)</td><td class="py-2 text-slate-300">Programme</td><td class="py-2 text-center text-red-400">71</td><td class="py-2 text-center"><span class="bg-red-900 text-red-300 px-2 py-0.5 rounded text-xs">78%</span></td><td class="py-2 text-slate-400">Pending offer decision &gt;10 days</td>
+        </tr>
+        <tr class="border-b border-slate-800 hover:bg-slate-800">
+          <td class="py-2 text-slate-300">H2R-2024-1171</td><td class="py-2 text-white font-medium">Programme Manager</td><td class="py-2 text-slate-300">PMO</td><td class="py-2 text-center text-amber-400">38</td><td class="py-2 text-center"><span class="bg-amber-900 text-amber-300 px-2 py-0.5 rounded text-xs">61%</span></td><td class="py-2 text-slate-400">3 offers declined this role</td>
+        </tr>
+        <tr class="hover:bg-slate-800">
+          <td class="py-2 text-slate-300">H2R-2024-1178</td><td class="py-2 text-white font-medium">R&M Planning Lead</td><td class="py-2 text-slate-300">Engineering</td><td class="py-2 text-center text-slate-300">22</td><td class="py-2 text-center"><span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-xs">34%</span></td><td class="py-2 text-slate-400">On track</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- COMPETENCY MODELS ──────────────────────────────────────────────────── -->
+<section id="section-competency" class="tab-panel">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Competency Intelligence</h1>
+      <p class="text-slate-400 text-sm mt-1">AI-generated models · INCOSE SECF format · Grounded in O*NET, NICE, INCOSE SECF, R&M BoK</p>
+    </div>
+    <button onclick="generateModel()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Generate New Model</button>
+  </div>
+
+  <!-- Framework backbone strip -->
+  <div class="grid grid-cols-6 gap-2 mb-6">
+    <div class="bg-slate-900 border border-blue-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-blue-400">O*NET</p><p class="text-xs text-slate-400 mt-1">900+ occupations</p>
+    </div>
+    <div class="bg-slate-900 border border-emerald-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-emerald-400">NICE v2.2</p><p class="text-xs text-slate-400 mt-1">30+ work roles</p>
+    </div>
+    <div class="bg-slate-900 border border-purple-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-purple-400">INCOSE SECF</p><p class="text-xs text-slate-400 mt-1">36 competencies</p>
+    </div>
+    <div class="bg-slate-900 border border-orange-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-orange-400">R&M BoK</p><p class="text-xs text-slate-400 mt-1">5 lifecycle phases</p>
+    </div>
+    <div class="bg-slate-900 border border-cyan-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-cyan-400">Bloom's</p><p class="text-xs text-slate-400 mt-1">6 cognitive levels</p>
+    </div>
+    <div class="bg-slate-900 border border-rose-900 rounded-lg p-3 text-center">
+      <p class="text-xs font-bold text-rose-400">UGESP</p><p class="text-xs text-slate-400 mt-1">Legal methodology</p>
+    </div>
+  </div>
+
+  <!-- Competency model viewer -->
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <p class="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">Model Library</p>
+      <div id="modelList" class="space-y-1"></div>
+    </div>
+    <div class="col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5" id="modelDetail">
+      <div class="text-slate-500 text-center py-8">Select a competency model from the list</div>
+    </div>
+  </div>
+</section>
+
+<!-- CASCADE ENGINE ─────────────────────────────────────────────────────── -->
+<section id="section-cascade" class="tab-panel">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Cascade Engine <span class="new-badge ml-2">NEW</span></h1>
+    <p class="text-slate-400 text-sm mt-1">Bidirectional planning layer synchronisation · Top-down propagation + bottom-up feedback · Updated 00:47</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-6 mb-6">
+    <!-- Cascade diagram -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4">Cascade Flow</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-indigo-900 border border-indigo-700 rounded-lg p-3">
+            <p class="text-xs font-bold text-indigo-300">STRATEGIC</p>
+            <p class="text-xs text-slate-400">14 capability gaps identified</p>
+          </div>
+          <div class="text-blue-400 text-lg">↓</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-blue-900 border border-blue-700 rounded-lg p-3">
+            <p class="text-xs font-bold text-blue-300">OPERATIONAL</p>
+            <p class="text-xs text-slate-400">13/14 gaps have HC positions  ·  1 cascade break</p>
+          </div>
+          <div class="text-blue-400 text-lg">↓</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-cyan-900 border border-cyan-700 rounded-lg p-3">
+            <p class="text-xs font-bold text-cyan-300">TACTICAL</p>
+            <p class="text-xs text-slate-400">10/13 positions have requisitions  ·  3 cascade breaks</p>
+          </div>
+          <div class="text-blue-400 text-lg">↓</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-emerald-900 border border-emerald-700 rounded-lg p-3">
+            <p class="text-xs font-bold text-emerald-300">H2R EXECUTION</p>
+            <p class="text-xs text-slate-400">31 active cases  ·  8 high-risk  ·  3 compliance breaches</p>
+          </div>
+          <div class="text-slate-500 text-lg">↑</div>
+        </div>
+        <div class="text-center text-xs text-slate-500 italic mt-1">Bottom-up feedback active — execution data updates tactical actuals nightly</div>
+      </div>
+    </div>
+
+    <!-- Cascade breaks -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h3 class="font-semibold text-white mb-4">Cascade Breaks — Action Required</h3>
+      <div class="space-y-3">
+        <div class="p-3 bg-amber-950 border border-amber-800 rounded-lg">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-medium text-amber-300">Operational → Strategic</span>
+            <span class="text-amber-400">1 break</span>
+          </div>
+          <p class="text-xs text-slate-300">Cybersecurity Architect (DV cleared) — strategic requirement has no approved HC position. Owner: CPO.</p>
+        </div>
+        <div class="p-3 bg-red-950 border border-red-800 rounded-lg">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-medium text-red-300">Tactical → Operational</span>
+            <span class="text-red-400">3 breaks</span>
+          </div>
+          <p class="text-xs text-slate-300">3 approved HC positions have no active requisition: R&M Lead, TMRR Systems Engr x2. Owner: TA Lead — action by end of week.</p>
+        </div>
+        <div class="p-3 bg-slate-800 border border-slate-700 rounded-lg">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-medium text-slate-300">Cascade Health Score</span>
+            <span class="text-amber-400">74%</span>
+          </div>
+          <div class="w-full bg-slate-700 rounded-full h-2 mt-1">
+            <div class="level-bar bg-amber-500 h-2 rounded-full" style="width:74%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI AGENT ───────────────────────────────────────────────────────────── -->
+<section id="section-agent" class="tab-panel">
+  <div class="mb-4">
+    <h1 class="text-2xl font-bold text-white">AI Workforce Agent</h1>
+    <p class="text-slate-400 text-sm mt-1">Claude API · RAG over framework backbone + process mining outputs · PII-stripped before transmission</p>
+  </div>
+  <div class="bg-slate-900 border border-slate-800 rounded-xl flex flex-col" style="height: calc(100vh - 220px)">
+    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+      <div class="flex gap-3">
+        <div class="w-7 h-7 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div>
+        <div class="chat-bubble-ai p-3 max-w-2xl">
+          <p class="text-sm text-slate-200">Good morning. I'm your Workforce Intelligence Agent, grounded on today's data — pipeline completed at 00:47.</p>
+          <p class="text-sm text-slate-200 mt-2">I can help with: <span class="text-blue-300">capability gap analysis</span>, <span class="text-blue-300">competency model generation</span>, <span class="text-blue-300">H2R process questions</span>, <span class="text-blue-300">build/buy/borrow recommendations</span>, or <span class="text-blue-300">UGESP documentation</span>.</p>
+          <p class="text-sm text-slate-200 mt-2">What would you like to know?</p>
+        </div>
+      </div>
+    </div>
+    <div class="p-3 border-t border-slate-800 flex gap-2">
+      <div class="flex-1 flex flex-wrap gap-2 mb-2">
+        <button onclick="sendPreset(0)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">What are our biggest capability gaps?</button>
+        <button onclick="sendPreset(1)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Generate competency model for R&M Engineer</button>
+        <button onclick="sendPreset(2)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Why is case H2R-2024-1142 high risk?</button>
+        <button onclick="sendPreset(3)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Build/buy/borrow for Cybersecurity Architect?</button>
+      </div>
+    </div>
+    <div class="p-3 border-t border-slate-800 flex gap-2">
+      <input id="chatInput" type="text" placeholder="Ask anything about workforce planning, competencies, or H2R processes..."
+        class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+        onkeydown="if(event.key==='Enter') sendChat()">
+      <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium">Send</button>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE ───────────────────────────────────────────────────────── -->
+<section id="section-architecture" class="tab-panel">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Platform Architecture</h1>
+    <p class="text-slate-400 text-sm mt-1">WIP-SRNA-001 v1.0 · Nine-layer stack · Extends H2R-SRNA-001 with L5 Strategic Intelligence and L6 Cascade Engine</p>
+  </div>
+  <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <img src="assets/architecture.png" alt="Workforce Intelligence Platform Architecture" class="w-full rounded-lg" onerror="this.parentElement.innerHTML='<p class=\'text-slate-400 text-center py-8 text-sm\'>Architecture diagram — run generate_diagram.py to generate assets/architecture.png</p>'">
+  </div>
+</section>
+
+<!-- FRAMEWORKS ─────────────────────────────────────────────────────────── -->
+<section id="section-frameworks" class="tab-panel">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Framework Backbone</h1>
+    <p class="text-slate-400 text-sm mt-1">Six authoritative occupational frameworks that seed the platform ontology and competency models</p>
+  </div>
+  <div class="grid grid-cols-2 gap-4" id="frameworkCards"></div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ── Navigation ──────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── Charts ──────────────────────────────────────────────────────────────────
+const chartDefaults = {
+  color: '#94a3b8',
+  borderColor: '#334155',
+  plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+  scales: {
+    x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } },
+    y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+  }
+};
+
+// Gap chart (overview)
+new Chart(document.getElementById('gapChart'), {
+  type: 'bar',
+  data: {
+    labels: ['R&M Eng', 'Cyber', 'Sys Eng', 'Prog Mgmt'],
+    datasets: [{
+      label: 'Gap Severity',
+      data: [8, 6, 5, 4],
+      backgroundColor: ['#ef4444','#f97316','#eab308','#3b82f6'],
+      borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults, plugins: { legend: { display: false } } }
+});
+
+// WRI trend chart
+new Chart(document.getElementById('wriChart'), {
+  type: 'line',
+  data: {
+    labels: ['Q1 24','Q2 24','Q3 24','Q4 24','Q1 25','Q2 25','Q3 25','NOW','Q1 26','Q2 26','Q3 26','Q4 26'],
+    datasets: [
+      { label: 'Actual WRI', data: [71,69,70,68,66,65,67,67,null,null,null,null], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3, pointRadius: 3 },
+      { label: 'Recommended Scenario', data: [null,null,null,null,null,null,null,67,70,73,76,79], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', borderDash: [4,4], tension: 0.3, pointRadius: 3 },
+      { label: 'Status Quo', data: [null,null,null,null,null,null,null,67,64,62,60,58], borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', borderDash: [4,4], tension: 0.3, pointRadius: 3 },
+    ]
+  },
+  options: { ...chartDefaults, scales: { x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } } } }
+});
+
+// Headcount chart
+new Chart(document.getElementById('hcChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Sys Eng', 'R&M Eng', 'Cyber', 'PMO', 'HR', 'Finance'],
+    datasets: [
+      { label: 'Budget', data: [180,145,95,120,65,42], backgroundColor: 'rgba(59,130,246,0.3)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 2 },
+      { label: 'Actual', data: [172,138,88,115,64,41], backgroundColor: 'rgba(16,185,129,0.3)', borderColor: '#10b981', borderWidth: 1, borderRadius: 2 },
+      { label: 'Planned', data: [185,152,102,124,67,44], backgroundColor: 'rgba(168,85,247,0.3)', borderColor: '#a855f7', borderWidth: 1, borderRadius: 2 },
+    ]
+  },
+  options: { ...chartDefaults }
+});
+
+// ── Capability gap table ────────────────────────────────────────────────────
+const gaps = [
+  { domain: 'R&M Engineering', fy26: -5, fy27: -8, fy28: -12, action: 'Build + Buy (2 hires)', cost: '£680K' },
+  { domain: 'Cybersecurity', fy26: -3, fy27: -5, fy28: -7, action: 'Buy + Borrow', cost: '£520K' },
+  { domain: 'Systems Engineering', fy26: -2, fy27: -4, fy28: -5, action: 'Build via L&D', cost: '£280K' },
+  { domain: 'Programme Management', fy26: -1, fy27: -2, fy28: -3, action: 'Build (internal pipeline)', cost: '£120K' },
+  { domain: 'Digital Engineering', fy26: 0, fy27: -3, fy28: -6, action: 'Bot + Buy (Phase 2)', cost: '£TBC' },
+];
+const tbody = document.getElementById('capabilityTable');
+gaps.forEach(g => {
+  const color = v => v < -6 ? 'text-red-400' : v < -3 ? 'text-amber-400' : v < 0 ? 'text-yellow-400' : 'text-emerald-400';
+  tbody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-800">
+    <td class="py-2 pr-4 font-medium text-white">${g.domain}</td>
+    <td class="py-2 px-3 text-center ${color(g.fy26)}">${g.fy26} FTE</td>
+    <td class="py-2 px-3 text-center ${color(g.fy27)}">${g.fy27} FTE</td>
+    <td class="py-2 px-3 text-center ${color(g.fy28)}">${g.fy28} FTE</td>
+    <td class="py-2 px-3 text-slate-300">${g.action}</td>
+    <td class="py-2 px-3 text-center text-slate-300">${g.cost}</td>
+  </tr>`;
+});
+
+// ── Competency models ───────────────────────────────────────────────────────
+const models = [
+  {
+    name: 'Systems Thinking', role: 'Systems Engineer', source: 'INCOSE SECF', onet: '17-2199.00',
+    definition: 'The application of fundamental systems thinking concepts to understand how actions and decisions in one area affect another, and that optimisation of a system does not necessarily come from optimising individual components.',
+    why: 'Systems thinking is foundational to effective Systems Engineering in defense acquisition. Failure to apply it leads to sub-optimised solutions and missed integration opportunities.',
+    levels: [
+      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Explains what systems thinking is and why it is important. Describes emergence, system hierarchy, and system context.' },
+      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Identifies system properties with guidance. Contributes to team systems thinking activities with own insights.' },
+      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Identifies and manages complexity using appropriate techniques. Selects and applies systems thinking approaches independently.' },
+      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Recognised within the enterprise as an authority. Defines enterprise-level policies and best practice for systems thinking.' },
+      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised beyond the enterprise boundary. Champions introduction of novel techniques with measurable improvements.' },
+    ]
+  },
+  {
+    name: 'R&M Engineering Management', role: 'R&M Engineer', source: 'R&M BoK + INCOSE SECF', onet: '17-2112.00',
+    definition: 'Planning, definition, and implementation of Reliability and Maintainability activities across the defense acquisition lifecycle, from Materiel Solution Analysis through Operations and Support.',
+    why: 'R&M engineering is essential for achieving system operational availability and reducing lifecycle cost. Programs that do not implement an R&M program consistently fail IOT&E thresholds.',
+    levels: [
+      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Explains R&M parameters (reliability, maintainability, availability). Describes the R&M lifecycle phases and functional areas.' },
+      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Contributes to R&M analyses (FMECA, estimates) under supervision. Describes the RAM-C report structure and purpose.' },
+      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Prepares R&M allocations, block diagrams, and FMECA independently. Supports Milestone reviews with R&M data.' },
+      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Leads R&M program for a major acquisition program. Conducts program reviews and evaluates contractor compliance.' },
+      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised as authority across the defense acquisition community. Contributes to R&M BoK and policy development.' },
+    ]
+  },
+  {
+    name: 'Requirements Definition', role: 'Systems Engineer', source: 'INCOSE SECF + O*NET', onet: '17-2199.00',
+    definition: 'Analysis of stakeholder needs and expectations to establish, manage, and validate requirements for a system throughout its lifecycle.',
+    why: 'Poor requirements are cited as the leading cause of program cost and schedule growth. Effective requirements definition reduces rework, scope creep, and acceptance test failures.',
+    levels: [
+      { level: 'Level 1 — Awareness', bloom: 'Remember', indicator: 'Describes types of requirements (functional, non-functional, business). Explains why requirements management is important.' },
+      { level: 'Level 2 — Supervised Practitioner', bloom: 'Understand', indicator: 'Assists with elicitation of requirements from stakeholders. Identifies potential requirement conflicts with guidance.' },
+      { level: 'Level 3 — Practitioner', bloom: 'Apply', indicator: 'Elicits and validates stakeholder requirements independently. Resolves conflicts to establish a complete, consistent set.' },
+      { level: 'Level 4 — Lead Practitioner', bloom: 'Analyse', indicator: 'Defines enterprise-level policies for requirements management. Reviews and judges completeness of requirements sets.' },
+      { level: 'Level 5 — Expert', bloom: 'Evaluate / Create', indicator: 'Recognised beyond enterprise boundary as authority. Champions novel techniques in requirements engineering.' },
+    ]
+  },
+];
+
+const bloomColor = b => ({
+  'Remember': 'bg-slate-700 text-slate-300',
+  'Understand': 'bg-blue-900 text-blue-300',
+  'Apply': 'bg-emerald-900 text-emerald-300',
+  'Analyse': 'bg-purple-900 text-purple-300',
+  'Evaluate / Create': 'bg-rose-900 text-rose-300',
+}[b] || 'bg-slate-700 text-slate-300');
+
+const list = document.getElementById('modelList');
+models.forEach((m, i) => {
+  list.innerHTML += `<button onclick="showModel(${i})" class="model-btn w-full text-left p-3 rounded-lg hover:bg-slate-800 border border-transparent hover:border-slate-700 text-xs">
+    <p class="font-medium text-white">${m.name}</p>
+    <p class="text-slate-400">${m.role}</p>
+  </button>`;
+});
+
+function showModel(i) {
+  const m = models[i];
+  document.getElementById('modelDetail').innerHTML = `
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <h3 class="text-lg font-bold text-white">${m.name}</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Role: ${m.role}  ·  Source: ${m.source}  ·  O*NET: ${m.onet}</p>
+      </div>
+      <span class="text-xs bg-emerald-900 text-emerald-300 border border-emerald-800 px-2 py-1 rounded">UGESP Ready</span>
+    </div>
+    <div class="bg-slate-800 rounded-lg p-3 mb-4">
+      <p class="text-xs text-slate-400 font-medium mb-1">Definition</p>
+      <p class="text-sm text-slate-200">${m.definition}</p>
+    </div>
+    <div class="bg-slate-800 rounded-lg p-3 mb-4">
+      <p class="text-xs text-slate-400 font-medium mb-1">Why it Matters</p>
+      <p class="text-sm text-slate-200">${m.why}</p>
+    </div>
+    <p class="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Proficiency Levels</p>
+    <div class="space-y-2">
+      ${m.levels.map((l,j) => `
+      <div class="bg-slate-800 border border-slate-700 rounded-lg p-3">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold text-white">${l.level}</span>
+          <span class="bloom-badge ${bloomColor(l.bloom)}">${l.bloom}</span>
+          <div class="flex-1 bg-slate-700 rounded-full h-1.5 ml-2">
+            <div class="level-bar bg-blue-500 h-1.5 rounded-full" style="width:${(j+1)*20}%"></div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-300">${l.indicator}</p>
+      </div>`).join('')}
+    </div>`;
+}
+
+function generateModel() {
+  alert('In production: Claude API generates a complete INCOSE SECF-format competency model for any role, grounded in O*NET task inventories and framework backbone data.');
+}
+
+// ── Framework cards ─────────────────────────────────────────────────────────
+const frameworks = [
+  { name: 'O*NET', full: 'Occupational Information Network', color: 'blue', desc: '900+ occupations with task inventories, KSAOs, work context, and wage data. Primary occupational taxonomy backbone.', stats: '900+ occupations · 125K+ data points · API access', badge: 'Live API' },
+  { name: 'NICE v2.2', full: 'Workforce Framework for Cybersecurity', color: 'emerald', desc: 'NIST cybersecurity workforce standard. 30+ work roles organised into 5 categories with TKS statements and competency areas.', stats: '30+ work roles · 5 categories · April 2025 release', badge: 'Ingested' },
+  { name: 'INCOSE SECF', full: 'Systems Engineering Competency Framework', color: 'purple', desc: 'Global standard for Systems Engineering competencies. 36 competencies × 5 proficiency levels × behavioural indicators. The platform\'s output format template.', stats: '36 competencies · 5 levels · 180 behavioural indicators', badge: 'Parsed' },
+  { name: 'R&M BoK', full: 'Reliability & Maintainability Body of Knowledge', color: 'orange', desc: 'DoW December 2025 release. Lifecycle-phase competency requirements for defense acquisition engineers across MSA, TMRR, EMD, P&D, and O&S phases.', stats: '5 lifecycle phases · 5 functional areas · Dec 2025', badge: 'Parsed' },
+  { name: "Bloom's Taxonomy", full: 'Cognitive Learning Framework', color: 'cyan', desc: 'Six cognitive levels (Remember → Understand → Apply → Analyse → Evaluate → Create) mapped to platform proficiency levels 1–5 for L&D alignment.', stats: '6 cognitive levels · Maps to INCOSE SECF levels 1–5', badge: 'Reference' },
+  { name: 'SIOP / UGESP', full: 'Society for I-O Psychology / Uniform Guidelines', color: 'rose', desc: 'Competency modeling methodology and legal defensibility requirements. Platform-generated documentation follows SHRM-SIOP (2024) standards for content validity evidence.', stats: 'Legal methodology · Content validity · Adverse impact', badge: 'Methodology' },
+];
+const fCards = document.getElementById('frameworkCards');
+const fColors = { blue: ['border-blue-900','bg-blue-950','text-blue-400'], emerald: ['border-emerald-900','bg-emerald-950','text-emerald-400'], purple: ['border-purple-900','bg-purple-950','text-purple-400'], orange: ['border-orange-900','bg-orange-950','text-orange-400'], cyan: ['border-cyan-900','bg-cyan-950','text-cyan-400'], rose: ['border-rose-900','bg-rose-950','text-rose-400'] };
+frameworks.forEach(f => {
+  const [border, bg, text] = fColors[f.color];
+  fCards.innerHTML += `<div class="card bg-slate-900 ${border} border rounded-xl p-5">
+    <div class="flex items-start justify-between mb-3">
+      <div>
+        <span class="text-lg font-bold ${text}">${f.name}</span>
+        <p class="text-xs text-slate-400 mt-0.5">${f.full}</p>
+      </div>
+      <span class="text-xs ${bg} ${text} border ${border} px-2 py-1 rounded">${f.badge}</span>
+    </div>
+    <p class="text-sm text-slate-300 mb-3">${f.desc}</p>
+    <p class="text-xs text-slate-500">${f.stats}</p>
+  </div>`;
+});
+
+// ── AI Agent mock ───────────────────────────────────────────────────────────
+const presets = [
+  "What are our biggest capability gaps?",
+  "Generate a competency model for R&M Engineer",
+  "Why is case H2R-2024-1142 high risk?",
+  "Build/buy/borrow recommendation for Cybersecurity Architect?"
+];
+const responses = [
+  `Based on today's strategic workforce analysis, your three most critical capability gaps are:\n\n**1. R&M Engineering — Severity: Critical (FY2028 gap: -12 FTE)**\nThe R&M BoK lifecycle analysis shows insufficient Practitioner-level R&M engineers for programme demands in the TMRR and EMD phases scheduled FY2026–2028. Recommendation: Build via targeted L&D programme (6 engineers) + Buy 2 Senior R&M Engineers externally.\n\n**2. Cybersecurity Architecture — Severity: High (FY2028 gap: -7 FTE)**\nNICE Framework mapping shows DV-cleared Cyber Architects are critically scarce. Market demand is 3× supply. Recommendation: Buy 2 + Borrow 2 contractor positions.\n\n**3. Systems Engineering — Severity: Medium (FY2028 gap: -5 FTE)**\nINCOSE SECF mapping shows Lead Practitioner level shortage in Requirements Definition and System Architecting competencies. Recommendation: Internal development pipeline — identify 5 candidates at Practitioner level for accelerated development.`,
+  `**Competency Model: Reliability & Maintainability Engineer**\n*Grounded in R&M BoK (Dec 2025), INCOSE SECF, O*NET 17-2112.00*\n\n**Competency: R&M Engineering Management**\n\n*Definition:* Planning, definition, and implementation of R&M activities across the defense acquisition lifecycle to achieve system reliability and maintainability requirements, aligned to DoD acquisition policy (DoDI 5000.88).\n\n*Why it matters:* Programs without an effective R&M program consistently fail IOT&E. Early R&M investment reduces O&S cost by 30–50% over the system lifecycle.\n\n**Level 3 (Practitioner — Bloom's: Apply):** Prepares R&M allocations, block diagrams, math models, and FMECA independently. Supports CDR and Milestone reviews with validated R&M data. Manages FRACAS.\n\n**Level 4 (Lead — Bloom's: Analyse):** Leads R&M program for a major acquisition. Evaluates contractor R&M plans for EMD compliance. Presents at DAES reviews.\n\n*UGESP note: Content validity evidence links this competency to O*NET Task ID T5.3 (Verify design or system compliance with regulations or specifications) and Work Activity 4.A.2.b.1 (Evaluating information to determine compliance).*`,
+  `**Case H2R-2024-1142 — Risk Analysis**\n*Case: Senior R&M Engineer · Days open: 62 · Risk score: 91%*\n\n**SHAP Top Risk Factors:**\n\n1. **SC clearance requirement (weight: 0.34)** — Only 12% of R&M Engineer applicants hold active SC clearance. Average additional time-to-clear: 18 weeks.\n\n2. **Competency rarity (weight: 0.28)** — INCOSE SECF Level 4 (Lead Practitioner) R&M Engineering Management competency required. Market availability: critically low — O*NET wage data shows 40th percentile supply/demand ratio.\n\n3. **Consecutive offer declines (weight: 0.19)** — 2 previous candidates declined at offer stage. SHAP pattern matches compensation band mismatch — Grade Band F may need reassessment.\n\n**Recommended actions:** (1) Escalate to HR VP — compensation review required. (2) Parallel-track internal candidate from succession pool. (3) Consider contractor bridge (Borrow) to fill capability gap while search continues.`,
+  `**Build/Buy/Borrow/Bot Analysis: Cybersecurity Architect (DV Cleared)**\n\n| Option | Timeline | Cost | Risk |\n|--------|----------|------|------|\n| **Buy** (external hire) | 9–14 months | £185K + £45K clearance | High — market scarcity, 3 recent declines |\n| **Build** (internal dev) | 18–24 months | £65K L&D | Medium — 1 viable candidate identified |\n| **Borrow** (contractor) | 6–8 weeks | £95K p.a. | Low — bridge capability immediately |\n| **Bot** (automation) | Not viable | N/A | This role requires human judgment |\n\n**Recommendation: Borrow + Build in parallel.**\nEngage a DV-cleared Cybersecurity Architect contractor immediately (estimated 6-week lead time) to bridge the capability gap. Simultaneously develop the internal candidate — estimated 18 months to Practitioner level based on current INCOSE SECF profile. Revisit Buy in 12 months if internal development tracks behind plan.`
+];
+
+function sendPreset(i) {
+  addMessage(presets[i], true);
+  setTimeout(() => addMessage(responses[i], false), 900);
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if (!val) return;
+  addMessage(val, true);
+  input.value = '';
+  setTimeout(() => {
+    addMessage("I'm processing your query against today's workforce data and the framework backbone. In production, the Claude API would retrieve relevant context from ChromaDB (framework definitions, process mining outputs, competency profiles) and generate a grounded response. This demo shows pre-computed responses — the live platform supports any free-text workforce planning question.", false);
+  }, 800);
+}
+
+function addMessage(text, isUser) {
+  const msgs = document.getElementById('chatMessages');
+  const bubble = isUser
+    ? `<div class="flex gap-3 justify-end"><div class="chat-bubble-user p-3 max-w-2xl"><p class="text-sm text-white whitespace-pre-wrap">${text}</p></div><div class="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">MT</div></div>`
+    : `<div class="flex gap-3"><div class="w-7 h-7 rounded-full bg-blue-700 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div><div class="chat-bubble-ai p-3 max-w-2xl"><p class="text-sm text-slate-200 whitespace-pre-wrap">${text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p></div></div>`;
+  msgs.innerHTML += bubble;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+</body>
+</html>
