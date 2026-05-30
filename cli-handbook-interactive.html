@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced CLI Handbook — Windows</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0d14;
+    --surface: #111520;
+    --surface2: #161b2a;
+    --border: #1e2740;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #d4e0ff;
+    --muted: #5a6a9a;
+    --heading: #ffffff;
+    --code-bg: #0d1117;
+    --highlight: #ffd700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    left: 0; top: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--heading);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .nav-section {
+    padding: 12px 8px 4px;
+  }
+
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(0,212,255,0.08); color: var(--accent); }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Main */
+  #main {
+    margin-left: 240px;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  #header {
+    position: sticky;
+    top: 0;
+    background: rgba(10,13,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 50;
+  }
+
+  #search-wrap {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px 9px 36px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--muted); }
+
+  .search-icon {
+    position: absolute;
+    left: 11px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  #search-count {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .filter-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+  /* Content */
+  #content {
+    padding: 32px;
+    max-width: 900px;
+  }
+
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-tag {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+  }
+
+  .section-tag.git { background: rgba(124,58,237,0.12); color: var(--accent2); }
+  .section-tag.node { background: rgba(16,185,129,0.12); color: var(--accent3); }
+  .section-tag.python { background: rgba(255,215,0,0.1); color: var(--highlight); }
+  .section-tag.docker { background: rgba(0,150,255,0.12); color: #3b82f6; }
+
+  .section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--heading);
+  }
+
+  /* Command blocks */
+  .cmd-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cmd-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .cmd-block:hover { border-color: rgba(0,212,255,0.3); }
+  .cmd-block.hidden { display: none; }
+
+  .cmd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    background: var(--surface2);
+  }
+
+  .cmd-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .cmd-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 12px;
+  }
+
+  .cmd-toggle {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .cmd-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .cmd-block.open .cmd-body { max-height: 1200px; }
+  .cmd-block.open .cmd-toggle { transform: rotate(180deg); }
+  .cmd-toggle { transition: transform 0.2s; display: inline-block; }
+
+  pre {
+    background: var(--code-bg);
+    border-top: 1px solid var(--border);
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #b0c4ef;
+  }
+
+  .kw { color: #cc99ff; }
+  .cm { color: #5a6a9a; font-style: italic; }
+  .str { color: #98c379; }
+  .cmd { color: #61dafb; }
+  .flag { color: #ffd700; }
+  .hl { background: rgba(255,215,0,0.1); }
+
+  /* Table */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .cmd-table th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cmd-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(30,39,64,0.5);
+    vertical-align: top;
+  }
+
+  .cmd-table tr:last-child td { border-bottom: none; }
+  .cmd-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .mono { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+  .note { color: var(--muted); font-size: 11px; }
+
+  mark {
+    background: rgba(255,215,0,0.25);
+    color: var(--highlight);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  #no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  #no-results h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; }
+    #content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span>Windows CLI</span>
+    <h1>Advanced Handbook</h1>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Shell</div>
+    <button class="nav-item" onclick="scrollTo('ps-cmd')"><span class="nav-dot"></span>PS vs CMD</button>
+    <button class="nav-item" onclick="scrollTo('navigation')"><span class="nav-dot"></span>Navigation</button>
+    <button class="nav-item" onclick="scrollTo('files')"><span class="nav-dot"></span>File Operations</button>
+    <button class="nav-item" onclick="scrollTo('text')"><span class="nav-dot"></span>Text & Output</button>
+    <button class="nav-item" onclick="scrollTo('env')"><span class="nav-dot"></span>Env Variables</button>
+    <button class="nav-item" onclick="scrollTo('processes')"><span class="nav-dot"></span>Processes</button>
+    <button class="nav-item" onclick="scrollTo('networking')"><span class="nav-dot"></span>Networking</button>
+    <button class="nav-item" onclick="scrollTo('scripting')"><span class="nav-dot"></span>Scripting</button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Dev Tools</div>
+    <button class="nav-item" onclick="scrollTo('git')"><span class="nav-dot"></span>Git</button>
+    <button class="nav-item" onclick="scrollTo('node')"><span class="nav-dot"></span>Node.js & npm</button>
+    <button class="nav-item" onclick="scrollTo('python')"><span class="nav-dot"></span>Python & pip</button>
+    <button class="nav-item" onclick="scrollTo('docker')"><span class="nav-dot"></span>Docker</button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Advanced</div>
+    <button class="nav-item" onclick="scrollTo('tips')"><span class="nav-dot"></span>Tips & Tricks</button>
+  </div>
+</nav>
+
+<div id="main">
+  <div id="header">
+    <div id="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search" placeholder="Search commands, flags, topics..." oninput="doSearch(this.value)">
+    </div>
+    <span id="search-count"></span>
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('shell', this)">Shell</button>
+      <button class="filter-btn" onclick="setFilter('git', this)">Git</button>
+      <button class="filter-btn" onclick="setFilter('node', this)">Node</button>
+      <button class="filter-btn" onclick="setFilter('python', this)">Python</button>
+      <button class="filter-btn" onclick="setFilter('docker', this)">Docker</button>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- PS vs CMD -->
+    <div class="section" id="ps-cmd" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>PowerShell vs CMD</h2>
+      </div>
+      <table class="cmd-table">
+        <tr><th>Feature</th><th>PowerShell</th><th>CMD</th></tr>
+        <tr><td>Output type</td><td class="mono">.NET objects</td><td class="mono">Plain text</td></tr>
+        <tr><td>Scripts</td><td class="mono">.ps1</td><td class="mono">.bat / .cmd</td></tr>
+        <tr><td>Piping</td><td>Objects between cmdlets</td><td>Text only</td></tr>
+        <tr><td>Launch</td><td class="mono">pwsh / powershell</td><td class="mono">cmd</td></tr>
+        <tr><td>Use</td><td>Modern dev, automation</td><td>Legacy, quick tasks</td></tr>
+      </table>
+      <div style="margin-top:12px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--muted);">
+        💡 <strong style="color:var(--text)">Rule:</strong> Use PowerShell for everything new. Use CMD only for legacy batch scripts.
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="section" id="navigation" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Navigation & File System</h2>
+      </div>
+      <div class="cmd-grid">
+
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">pwd / cd</span><span class="cmd-desc">Print or change directory</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cm"># Print current directory</span>
+<span class="cmd">pwd</span>                         <span class="cm"># PowerShell</span>
+<span class="cmd">cd</span>                          <span class="cm"># CMD (no args = current path)</span>
+
+<span class="cm"># Change directory</span>
+<span class="cmd">cd</span> C:\Users\You\Projects
+<span class="cmd">cd</span> ..                       <span class="cm"># Up one level</span>
+<span class="cmd">cd</span> ..\..                    <span class="cm"># Up two levels</span>
+<span class="cmd">cd</span> ~                        <span class="cm"># Home directory (PowerShell)</span>
+D:                           <span class="cm"># Switch to D drive</span>
+
+<span class="cm"># Open Explorer in current directory</span>
+<span class="cmd">explorer</span> .</pre></div>
+        </div>
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">ls / dir / Get-ChildItem</span><span class="cmd-desc">List files and directories</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">ls</span>                          <span class="cm"># PowerShell alias (Unix-style)</span>
+<span class="cmd">dir</span>                         <span class="cm"># CMD and PowerShell</span>
+<span class="cmd">Get-ChildItem</span>               <span class="cm"># Full cmdlet</span>
+<span class="cmd">ls</span> <span class="flag">-Force</span>                   <span class="cm"># Show hidden files</span>
+<span class="cmd">ls</span> <span class="flag">-Recurse</span>                 <span class="cm"># Recursive listing</span>
+<span class="cmd">ls</span> *.txt                    <span class="cm"># Filter by extension</span>
+<span class="cmd">ls</span> | <span class="cmd">Sort-Object</span> LastWriteTime   <span class="cm"># Sort by date</span></pre></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- File Operations -->
+    <div class="section" id="files" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>File Operations</h2>
+      </div>
+      <div class="cmd-grid">
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">New-Item / mkdir</span><span class="cmd-desc">Create files and folders</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">New-Item</span> file.txt
+<span class="cmd">New-Item</span> <span class="flag">-ItemType</span> Directory myfolder
+<span class="cmd">mkdir</span> myfolder              <span class="cm"># Works in PS and CMD</span>
+<span class="cmd">ni</span> file.txt                 <span class="cm"># Alias for New-Item</span></pre></div>
+        </div>
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Copy-Item / cp</span><span class="cmd-desc">Copy files and folders</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Copy-Item</span> file.txt backup.txt
+<span class="cmd">copy</span> file.txt backup.txt           <span class="cm"># CMD</span>
+<span class="cmd">Copy-Item</span> <span class="flag">-Recurse</span> src\ dst\       <span class="cm"># Folder recursive</span>
+<span class="cmd">cp</span> <span class="flag">-r</span> src/ dst/                    <span class="cm"># Unix alias (PS)</span></pre></div>
+        </div>
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Remove-Item / del / rmdir</span><span class="cmd-desc">Delete files and folders</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Remove-Item</span> file.txt
+<span class="cmd">Remove-Item</span> <span class="flag">-Recurse</span> <span class="flag">-Force</span> myfolder\   <span class="cm"># Folder + contents</span>
+<span class="cmd">del</span> file.txt                              <span class="cm"># CMD</span>
+<span class="cmd">rmdir</span> <span class="flag">/s /q</span> myfolder                     <span class="cm"># CMD recursive</span></pre></div>
+        </div>
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Get-Content / cat</span><span class="cmd-desc">Read file contents</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Get-Content</span> file.txt
+<span class="cmd">cat</span> file.txt                       <span class="cm"># PS alias</span>
+<span class="cmd">type</span> file.txt                      <span class="cm"># CMD</span>
+<span class="cmd">Get-Content</span> file.txt <span class="flag">-Tail</span> 20      <span class="cm"># Last 20 lines</span>
+<span class="cmd">Get-Content</span> file.txt <span class="flag">-Wait</span>         <span class="cm"># Live tail (like tail -f)</span>
+<span class="str">"Hello"</span> | <span class="cmd">Out-File</span> file.txt       <span class="cm"># Write to file</span>
+<span class="str">"Hello"</span> | <span class="cmd">Add-Content</span> file.txt    <span class="cm"># Append to file</span></pre></div>
+        </div>
+
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Select-String / findstr</span><span class="cmd-desc">Search text in files (grep)</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Select-String</span> <span class="str">"pattern"</span> file.txt
+<span class="cmd">Select-String</span> <span class="flag">-Recurse</span> <span class="str">"TODO"</span> *.js   <span class="cm"># Recursive grep</span>
+<span class="cmd">findstr</span> <span class="str">"pattern"</span> file.txt            <span class="cm"># CMD equivalent</span></pre></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Text & Output -->
+    <div class="section" id="text" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Text & Output Manipulation</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Piping & Filtering</span><span class="cmd-desc">Chain and transform output</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cm"># Filter by condition</span>
+<span class="cmd">ls</span> | <span class="cmd">Where-Object</span> { $_.Length <span class="flag">-gt</span> 1MB }
+<span class="cmd">ls</span> | <span class="cmd">Where-Object</span> Name <span class="flag">-like</span> <span class="str">"*.log"</span>
+
+<span class="cm"># Sort and select</span>
+<span class="cmd">ls</span> | <span class="cmd">Sort-Object</span> Length <span class="flag">-Descending</span>
+<span class="cmd">ls</span> | <span class="cmd">Select-Object</span> <span class="flag">-First</span> 10
+
+<span class="cm"># Export</span>
+<span class="cmd">ls</span> | <span class="cmd">Export-Csv</span> output.csv <span class="flag">-NoTypeInformation</span>
+<span class="cmd">ls</span> | <span class="cmd">ConvertTo-Json</span>
+
+<span class="cm"># Redirect output</span>
+command > output.txt           <span class="cm"># Stdout to file</span>
+command <span class="flag">2></span> errors.txt          <span class="cm"># Stderr to file</span>
+command > out.txt <span class="flag">2>&1</span>        <span class="cm"># Both to same file</span>
+command | <span class="cmd">Tee-Object</span> out.txt  <span class="cm"># Print AND save</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Environment Variables -->
+    <div class="section" id="env" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Environment Variables</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">$env: / setx</span><span class="cmd-desc">Read, set, persist env vars</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cm"># Read variables</span>
+$<span class="kw">env</span>:PATH
+$<span class="kw">env</span>:USERNAME
+<span class="cmd">Get-ChildItem</span> Env:             <span class="cm"># List ALL</span>
+
+<span class="cm"># Set (current session only)</span>
+$<span class="kw">env</span>:MY_VAR = <span class="str">"hello"</span>
+$<span class="kw">env</span>:PATH += <span class="str">";C:\new\path"</span>  <span class="cm"># Append to PATH</span>
+
+<span class="cm"># Set permanently (user-level)</span>
+[System.Environment]::SetEnvironmentVariable(<span class="str">"MY_VAR"</span>,<span class="str">"value"</span>,<span class="str">"User"</span>)
+
+<span class="cm"># Set permanently (system, requires admin)</span>
+[System.Environment]::SetEnvironmentVariable(<span class="str">"MY_VAR"</span>,<span class="str">"value"</span>,<span class="str">"Machine"</span>)
+
+<span class="cm"># CMD equivalents</span>
+<span class="cmd">set</span>                           <span class="cm"># List all</span>
+<span class="cmd">set</span> MY_VAR=hello              <span class="cm"># Set (session)</span>
+<span class="cmd">setx</span> MY_VAR <span class="str">"hello"</span>          <span class="cm"># Set permanently (user)</span>
+<span class="cmd">echo</span> %MY_VAR%                 <span class="cm"># Read in CMD</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Processes -->
+    <div class="section" id="processes" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Processes & System</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Get-Process / taskkill</span><span class="cmd-desc">List and kill processes</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Get-Process</span>
+<span class="cmd">Get-Process</span> chrome
+<span class="cmd">Get-Process</span> | <span class="cmd">Sort-Object</span> CPU <span class="flag">-Desc</span> | <span class="cmd">Select-Object</span> <span class="flag">-First</span> 10
+
+<span class="cmd">Stop-Process</span> <span class="flag">-Name</span> chrome
+<span class="cmd">Stop-Process</span> <span class="flag">-Id</span> 1234
+<span class="cmd">taskkill</span> <span class="flag">/F /IM</span> chrome.exe    <span class="cm"># CMD forceful kill</span>
+
+<span class="cm"># Check what's using a port</span>
+<span class="cmd">netstat</span> <span class="flag">-ano</span> | <span class="cmd">findstr</span> :3000
+<span class="cmd">Get-Process</span> <span class="flag">-Id</span> (<span class="cmd">Get-NetTCPConnection</span> <span class="flag">-LocalPort</span> 3000).OwningProcess</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Networking -->
+    <div class="section" id="networking" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Networking</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">ping / tracert / nslookup</span><span class="cmd-desc">Connectivity & DNS</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">ping</span> google.com
+<span class="cmd">ping</span> <span class="flag">-n 4</span> google.com           <span class="cm"># 4 pings only</span>
+<span class="cmd">tracert</span> google.com             <span class="cm"># Trace route</span>
+<span class="cmd">nslookup</span> google.com            <span class="cm"># DNS lookup</span>
+<span class="cmd">Resolve-DnsName</span> google.com     <span class="cm"># PS DNS lookup</span>
+
+<span class="cmd">ipconfig</span>                       <span class="cm"># IP addresses</span>
+<span class="cmd">ipconfig</span> <span class="flag">/all</span>                 <span class="cm"># Full network details</span>
+<span class="cmd">ipconfig</span> <span class="flag">/flushdns</span>            <span class="cm"># Flush DNS cache</span>
+<span class="cmd">netstat</span> <span class="flag">-an</span>                   <span class="cm"># Active connections</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Invoke-WebRequest / curl</span><span class="cmd-desc">HTTP requests and downloads</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">Invoke-WebRequest</span> https://api.example.com
+(<span class="cmd">Invoke-WebRequest</span> https://api.example.com).Content
+<span class="cmd">Invoke-RestMethod</span> https://api.example.com/data   <span class="cm"># Auto-parse JSON</span>
+
+<span class="cm"># Download file</span>
+<span class="cmd">Invoke-WebRequest</span> <span class="flag">-Uri</span> <span class="str">"https://example.com/file.zip"</span> <span class="flag">-OutFile</span> <span class="str">"file.zip"</span>
+<span class="cmd">curl</span> <span class="flag">-o</span> file.zip https://example.com/file.zip</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripting -->
+    <div class="section" id="scripting" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Shell</span>
+        <h2>Scripting & Automation</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Variables & Types</span><span class="cmd-desc">PS variable basics</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre>$name = <span class="str">"World"</span>
+$count = 42
+$items = @(<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>)      <span class="cm"># Array</span>
+$map = @{ key = <span class="str">"value"</span> }       <span class="cm"># Hashtable</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Conditionals & Loops</span><span class="cmd-desc">Flow control</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="kw">if</span> ($count <span class="flag">-gt</span> 10) { <span class="str">"Big"</span> } <span class="kw">elseif</span> ($count <span class="flag">-eq</span> 10) { <span class="str">"Ten"</span> } <span class="kw">else</span> { <span class="str">"Small"</span> }
+
+<span class="cm"># Comparison operators</span>
+<span class="cm"># -eq  -ne  -gt  -lt  -ge  -le  -like  -match  -contains</span>
+
+<span class="kw">foreach</span> ($item <span class="kw">in</span> $items) { <span class="cmd">Write-Host</span> $item }
+<span class="kw">for</span> ($i = 0; $i <span class="flag">-lt</span> 10; $i++) { <span class="cmd">Write-Host</span> $i }
+1..10 | <span class="cmd">ForEach-Object</span> { <span class="cmd">Write-Host</span> $_ }</pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Functions & Error Handling</span><span class="cmd-desc">try/catch, functions</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="kw">function</span> Greet($name) { <span class="kw">return</span> <span class="str">"Hello, $name!"</span> }
+
+<span class="kw">try</span> {
+    <span class="cmd">Get-Item</span> <span class="str">"missing.txt"</span> <span class="flag">-ErrorAction</span> Stop
+} <span class="kw">catch</span> {
+    <span class="cmd">Write-Host</span> <span class="str">"Error: $_"</span>
+} <span class="kw">finally</span> {
+    <span class="cmd">Write-Host</span> <span class="str">"Always runs"</span>
+}
+
+<span class="cm"># Allow scripts to run</span>
+<span class="cmd">Set-ExecutionPolicy</span> <span class="flag">-Scope</span> CurrentUser RemoteSigned
+.\myscript.ps1</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Git -->
+    <div class="section" id="git" data-category="git">
+      <div class="section-header">
+        <span class="section-tag git">Git</span>
+        <h2>Git & Version Control</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git config / init / clone</span><span class="cmd-desc">Setup and initialization</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">git config</span> <span class="flag">--global</span> user.name <span class="str">"Your Name"</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.email <span class="str">"you@example.com"</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> core.editor <span class="str">"code --wait"</span>
+<span class="cmd">git config</span> <span class="flag">--list</span>
+
+<span class="cmd">git init</span>
+<span class="cmd">git clone</span> https://github.com/user/repo.git
+<span class="cmd">git clone</span> https://... myfolderName</pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git status / log / diff</span><span class="cmd-desc">Inspect changes and history</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">git status</span>
+<span class="cmd">git log</span>
+<span class="cmd">git log</span> <span class="flag">--oneline --graph</span>           <span class="cm"># Visual branch graph</span>
+<span class="cmd">git log</span> <span class="flag">--oneline</span> -10               <span class="cm"># Last 10 commits</span>
+<span class="cmd">git diff</span>                             <span class="cm"># Unstaged changes</span>
+<span class="cmd">git diff</span> <span class="flag">--staged</span>                    <span class="cm"># Staged changes</span>
+<span class="cmd">git diff</span> main..feature               <span class="cm"># Branch comparison</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git add / commit</span><span class="cmd-desc">Stage and commit</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">git add</span> file.txt
+<span class="cmd">git add</span> .                            <span class="cm"># Stage all</span>
+<span class="cmd">git add</span> <span class="flag">-p</span>                           <span class="cm"># Interactive (chunk by chunk)</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Your message"</span>
+<span class="cmd">git commit</span> <span class="flag">-am</span> <span class="str">"Stage + commit tracked"</span>
+<span class="cmd">git commit</span> <span class="flag">--amend --no-edit</span>         <span class="cm"># Fix last commit</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git branch / switch / merge</span><span class="cmd-desc">Branching and merging</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">git branch</span>                           <span class="cm"># List branches</span>
+<span class="cmd">git branch</span> <span class="flag">-a</span>                        <span class="cm"># All incl. remote</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> feature/login          <span class="cm"># Create + switch (modern)</span>
+<span class="cmd">git checkout</span> <span class="flag">-b</span> feature/login        <span class="cm"># Create + switch (classic)</span>
+<span class="cmd">git branch</span> <span class="flag">-d</span> feature/login          <span class="cm"># Delete merged branch</span>
+<span class="cmd">git branch</span> <span class="flag">-D</span> feature/login          <span class="cm"># Force delete</span>
+
+<span class="cmd">git merge</span> feature/login
+<span class="cmd">git merge</span> <span class="flag">--no-ff</span> feature/login      <span class="cm"># Always create merge commit</span>
+<span class="cmd">git rebase</span> main                      <span class="cm"># Rebase onto main</span>
+<span class="cmd">git rebase</span> <span class="flag">-i</span> HEAD~3                 <span class="cm"># Interactive rebase last 3</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git push / pull / remote</span><span class="cmd-desc">Remote operations</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">git remote</span> <span class="flag">-v</span>
+<span class="cmd">git remote add</span> origin https://...
+<span class="cmd">git fetch</span>                            <span class="cm"># Download without merging</span>
+<span class="cmd">git pull</span>
+<span class="cmd">git pull</span> <span class="flag">--rebase</span>                    <span class="cm"># Cleaner history</span>
+<span class="cmd">git push</span> origin main
+<span class="cmd">git push</span> <span class="flag">-u</span> origin feature/login     <span class="cm"># Push + track upstream</span>
+<span class="cmd">git push</span> <span class="flag">--force-with-lease</span>          <span class="cm"># Safe force push</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">git stash / restore / reset</span><span class="cmd-desc">Undo and stashing</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cm"># Stash</span>
+<span class="cmd">git stash</span>
+<span class="cmd">git stash save</span> <span class="str">"WIP: login form"</span>
+<span class="cmd">git stash list</span>
+<span class="cmd">git stash pop</span>
+<span class="cmd">git stash apply</span> stash@{2}
+
+<span class="cm"># Undo</span>
+<span class="cmd">git restore</span> file.txt                 <span class="cm"># Discard unstaged changes</span>
+<span class="cmd">git restore</span> <span class="flag">--staged</span> file.txt        <span class="cm"># Unstage</span>
+<span class="cmd">git reset</span> HEAD~1                     <span class="cm"># Undo last commit (keep files)</span>
+<span class="cmd">git reset</span> <span class="flag">--hard</span> HEAD~1              <span class="cm"># Undo last commit (discard)</span>
+<span class="cmd">git revert</span> abc1234                   <span class="cm"># Safe undo (new commit)</span>
+<span class="cmd">git clean</span> <span class="flag">-fd</span>                        <span class="cm"># Delete untracked files</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Node -->
+    <div class="section" id="node" data-category="node">
+      <div class="section-header">
+        <span class="section-tag node">Node.js</span>
+        <h2>Node.js & npm</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">npm install / uninstall / update</span><span class="cmd-desc">Package management</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">npm install</span>                  <span class="cm"># Install from package.json</span>
+<span class="cmd">npm install</span> express          <span class="cm"># Add dependency</span>
+<span class="cmd">npm install</span> <span class="flag">-D</span> jest          <span class="cm"># Add dev dependency</span>
+<span class="cmd">npm install</span> <span class="flag">-g</span> nodemon       <span class="cm"># Global install</span>
+<span class="cmd">npm uninstall</span> express
+<span class="cmd">npm update</span>                   <span class="cm"># Update all packages</span>
+<span class="cmd">npm ci</span>                       <span class="cm"># Clean install (for CI)</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">npm run / start / test</span><span class="cmd-desc">Run package scripts</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">npm start</span>
+<span class="cmd">npm test</span>
+<span class="cmd">npm run build</span>
+<span class="cmd">npm run dev</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">npm audit / outdated / list</span><span class="cmd-desc">Inspect and secure packages</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">npm list</span>
+<span class="cmd">npm list</span> <span class="flag">-g --depth=0</span>       <span class="cm"># Global packages</span>
+<span class="cmd">npm outdated</span>
+<span class="cmd">npm audit</span>
+<span class="cmd">npm audit fix</span>
+<span class="cmd">npm cache clean</span> <span class="flag">--force</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">npx / nvm-windows</span><span class="cmd-desc">Run packages, manage Node versions</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cm"># npx — run without installing globally</span>
+<span class="cmd">npx</span> create-react-app myapp
+<span class="cmd">npx</span> create-next-app@latest myapp
+<span class="cmd">npx</span> ts-node script.ts
+
+<span class="cm"># nvm-windows (install from github.com/coreybutler/nvm-windows)</span>
+<span class="cmd">nvm list</span>
+<span class="cmd">nvm list available</span>
+<span class="cmd">nvm install</span> 20.0.0
+<span class="cmd">nvm use</span> 20.0.0</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Python -->
+    <div class="section" id="python" data-category="python">
+      <div class="section-header">
+        <span class="section-tag python">Python</span>
+        <h2>Python & pip</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">venv / activate</span><span class="cmd-desc">Virtual environments (always use these!)</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">python</span> <span class="flag">-m venv</span> venv          <span class="cm"># Create virtualenv</span>
+.\venv\Scripts\activate       <span class="cm"># Activate (Windows)</span>
+<span class="cmd">deactivate</span>                    <span class="cm"># Deactivate</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">pip install / freeze / list</span><span class="cmd-desc">Package management</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">pip install</span> requests
+<span class="cmd">pip install</span> requests==2.28.0  <span class="cm"># Specific version</span>
+<span class="cmd">pip install</span> <span class="flag">-r</span> requirements.txt
+<span class="cmd">pip uninstall</span> requests
+<span class="cmd">pip list</span>
+<span class="cmd">pip show</span> requests
+<span class="cmd">pip freeze</span> > requirements.txt  <span class="cm"># Export dependencies</span>
+<span class="cmd">pip install</span> <span class="flag">--upgrade pip</span>      <span class="cm"># Update pip itself</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">pytest / black / mypy</span><span class="cmd-desc">Testing and code quality</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">pip install</span> black flake8 mypy pytest
+
+<span class="cmd">pytest</span>                        <span class="cm"># Run all tests</span>
+<span class="cmd">pytest</span> <span class="flag">-v</span>                     <span class="cm"># Verbose</span>
+<span class="cmd">pytest</span> tests/test_auth.py
+<span class="cmd">pytest</span> <span class="flag">-k</span> <span class="str">"test_login"</span>        <span class="cm"># Filter by name</span>
+
+<span class="cmd">black</span> .                       <span class="cm"># Format all files</span>
+<span class="cmd">mypy</span> script.py                <span class="cm"># Type check</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">poetry</span><span class="cmd-desc">Modern Python project management</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">pip install</span> poetry
+<span class="cmd">poetry new</span> myproject
+<span class="cmd">poetry install</span>
+<span class="cmd">poetry add</span> requests
+<span class="cmd">poetry add</span> <span class="flag">--dev</span> pytest
+<span class="cmd">poetry run python</span> script.py
+<span class="cmd">poetry shell</span>                  <span class="cm"># Activate venv</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Docker -->
+    <div class="section" id="docker" data-category="docker">
+      <div class="section-header">
+        <span class="section-tag docker">Docker</span>
+        <h2>Docker</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">docker run</span><span class="cmd-desc">Run containers</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">docker run</span> nginx                         <span class="cm"># Run foreground</span>
+<span class="cmd">docker run</span> <span class="flag">-d</span> nginx                      <span class="cm"># Detached</span>
+<span class="cmd">docker run</span> <span class="flag">-d -p</span> 8080:80 nginx           <span class="cm"># Map port host:container</span>
+<span class="cmd">docker run</span> <span class="flag">-d -p</span> 8080:80 <span class="flag">--name</span> myapp nginx
+<span class="cmd">docker run</span> <span class="flag">-it</span> ubuntu bash               <span class="cm"># Interactive terminal</span>
+<span class="cmd">docker run</span> <span class="flag">--rm</span> ubuntu echo <span class="str">"hello"</span>      <span class="cm"># Auto-remove after exit</span>
+<span class="cmd">docker run</span> <span class="flag">-v</span> C:\data:/app/data nginx     <span class="cm"># Mount volume</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">docker ps / stop / rm / logs</span><span class="cmd-desc">Container management</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">docker ps</span>                         <span class="cm"># Running containers</span>
+<span class="cmd">docker ps</span> <span class="flag">-a</span>                      <span class="cm"># All containers</span>
+<span class="cmd">docker stop</span> myapp
+<span class="cmd">docker start</span> myapp
+<span class="cmd">docker rm</span> myapp                   <span class="cm"># Remove stopped</span>
+<span class="cmd">docker rm</span> <span class="flag">-f</span> myapp               <span class="cm"># Force remove running</span>
+<span class="cmd">docker logs</span> myapp
+<span class="cmd">docker logs</span> <span class="flag">-f</span> myapp             <span class="cm"># Follow logs</span>
+<span class="cmd">docker exec</span> <span class="flag">-it</span> myapp bash       <span class="cm"># Shell into container</span>
+<span class="cmd">docker stats</span>                      <span class="cm"># Live resource usage</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">docker build / images / pull</span><span class="cmd-desc">Image management</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">docker images</span>
+<span class="cmd">docker pull</span> nginx
+<span class="cmd">docker pull</span> node:20-alpine
+<span class="cmd">docker rmi</span> nginx
+<span class="cmd">docker image prune</span>               <span class="cm"># Remove dangling images</span>
+<span class="cmd">docker image prune</span> <span class="flag">-a</span>           <span class="cm"># All unused images</span>
+
+<span class="cmd">docker build</span> <span class="flag">-t</span> myapp:latest .
+<span class="cmd">docker tag</span> myapp:latest myapp:v1.0</pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">docker-compose</span><span class="cmd-desc">Multi-container orchestration</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">docker-compose up</span>
+<span class="cmd">docker-compose up</span> <span class="flag">-d</span>            <span class="cm"># Detached</span>
+<span class="cmd">docker-compose up</span> <span class="flag">--build</span>       <span class="cm"># Rebuild before starting</span>
+<span class="cmd">docker-compose down</span>
+<span class="cmd">docker-compose down</span> <span class="flag">-v</span>          <span class="cm"># Also remove volumes</span>
+<span class="cmd">docker-compose logs</span> <span class="flag">-f</span>          <span class="cm"># Follow all logs</span>
+<span class="cmd">docker-compose ps</span>
+<span class="cmd">docker-compose exec</span> app bash</pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">docker system prune</span><span class="cmd-desc">Cleanup</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">docker system prune</span>              <span class="cm"># Remove unused resources</span>
+<span class="cmd">docker system prune</span> <span class="flag">-a --volumes</span> <span class="cm"># Nuclear cleanup (careful!)</span>
+<span class="cmd">docker volume prune</span>
+<span class="cmd">docker network prune</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="section" id="tips" data-category="shell">
+      <div class="section-header">
+        <span class="section-tag">Tips</span>
+        <h2>Tips, Tricks & Power Moves</h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-block open">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Keyboard Shortcuts</span><span class="cmd-desc">Work faster in the terminal</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body">
+            <table class="cmd-table">
+              <tr><th>Shortcut</th><th>Action</th></tr>
+              <tr><td class="mono">Tab</td><td>Autocomplete path or command</td></tr>
+              <tr><td class="mono">Ctrl+R</td><td>Reverse history search</td></tr>
+              <tr><td class="mono">Ctrl+C</td><td>Kill current command</td></tr>
+              <tr><td class="mono">Ctrl+L</td><td>Clear screen</td></tr>
+              <tr><td class="mono">Up / Down</td><td>Navigate command history</td></tr>
+              <tr><td class="mono">Alt+.</td><td>Insert last argument (PS)</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">Chaining Commands</span><span class="cmd-desc">Run multiple commands</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">cd</span> myproject; <span class="cmd">npm install</span>; <span class="cmd">npm run dev</span>   <span class="cm"># Run sequentially</span>
+<span class="cmd">npm run build</span> && <span class="cmd">npm start</span>               <span class="cm"># Second only if first succeeds</span>
+<span class="cmd">npm run build</span> || echo <span class="str">"Build failed"</span>      <span class="cm"># Second only if first fails</span>
+
+<span class="cm"># Measure execution time</span>
+<span class="cmd">Measure-Command</span> { <span class="cmd">npm run build</span> }
+
+<span class="cm"># Clipboard</span>
+<span class="str">"text"</span> | <span class="cmd">Set-Clipboard</span>
+<span class="cmd">Get-Clipboard</span>
+<span class="cmd">cat</span> output.txt | <span class="cmd">clip</span>              <span class="cm"># CMD: copy file to clipboard</span></pre></div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span><span class="cmd-title">PowerShell Profile</span><span class="cmd-desc">Customize your shell startup</span></span>
+            <span class="cmd-toggle">▾</span>
+          </div>
+          <div class="cmd-body"><pre><span class="cmd">notepad</span> $PROFILE              <span class="cm"># Edit your profile</span>
+
+<span class="cm"># Useful additions to your profile:</span>
+<span class="cmd">Set-Alias</span> g git
+<span class="kw">function</span> gs { <span class="cmd">git status</span> }
+<span class="kw">function</span> glog { <span class="cmd">git log</span> <span class="flag">--oneline --graph</span> -20 }
+<span class="kw">function</span> proj { <span class="cmd">cd</span> C:\Users\You\Projects\$args }</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="no-results">
+      <h3>No results found</h3>
+      <p>Try a different search term or clear the filter</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let activeFilter = 'all';
+
+  function toggle(header) {
+    const block = header.closest('.cmd-block');
+    block.classList.toggle('open');
+  }
+
+  function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+
+  function setFilter(cat, btn) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applySearch(document.getElementById('search').value);
+  }
+
+  function doSearch(query) { applySearch(query); }
+
+  function applySearch(query) {
+    const q = query.trim().toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll('.section').forEach(section => {
+      const cat = section.dataset.category;
+      const catMatch = activeFilter === 'all' || cat === activeFilter;
+
+      if (!catMatch) {
+        section.style.display = 'none';
+        return;
+      }
+
+      if (!q) {
+        section.style.display = '';
+        section.querySelectorAll('.cmd-block').forEach(b => {
+          b.classList.remove('hidden');
+        });
+        visibleCount++;
+        return;
+      }
+
+      // Search in section text
+      const sectionText = section.innerText.toLowerCase();
+      if (sectionText.includes(q)) {
+        section.style.display = '';
+        let sectionVisible = false;
+        section.querySelectorAll('.cmd-block').forEach(block => {
+          const blockText = block.innerText.toLowerCase();
+          if (blockText.includes(q)) {
+            block.classList.remove('hidden');
+            block.classList.add('open');
+            sectionVisible = true;
+          } else {
+            block.classList.add('hidden');
+          }
+        });
+        if (sectionVisible) visibleCount++;
+        else section.style.display = 'none';
+      } else {
+        section.style.display = 'none';
+      }
+    });
+
+    const countEl = document.getElementById('search-count');
+    const noResults = document.getElementById('no-results');
+    if (q) {
+      countEl.textContent = visibleCount + ' section' + (visibleCount !== 1 ? 's' : '') + ' matched';
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    } else {
+      countEl.textContent = '';
+      noResults.style.display = 'none';
+    }
+  }
+
+  // Open first block of each section by default
+  document.querySelectorAll('.section').forEach(s => {
+    const first = s.querySelector('.cmd-block');
+    if (first && !first.classList.contains('open')) first.classList.add('open');
+  });
+</script>
+</body>
+</html>
