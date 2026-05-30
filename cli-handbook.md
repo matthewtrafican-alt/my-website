@@ -1,678 +1,360 @@
 # Advanced CLI Handbook — Windows (PowerShell & CMD)
-> Covering: Shell & File System · Git & Version Control · Dev Tools (Node, Python, Docker)
+> Plain English → Command → What It Does
+
+---
+
+## How to use this handbook
+
+Every entry follows this pattern:
+
+**When you want to...** → `the command` → *what actually happens*
+
+You don't need to memorize commands. You need to know what you're trying to do — then look it up here.
 
 ---
 
 ## Table of Contents
-1. [PowerShell vs CMD — When to Use What](#powershell-vs-cmd)
-2. [Navigation & File System](#navigation--file-system)
-3. [File Operations](#file-operations)
-4. [Text & Output Manipulation](#text--output-manipulation)
-5. [Environment Variables](#environment-variables)
-6. [Processes & System](#processes--system)
-7. [Networking](#networking)
-8. [Scripting & Automation](#scripting--automation)
-9. [Git & Version Control](#git--version-control)
-10. [Node.js & npm](#nodejs--npm)
-11. [Python & pip](#python--pip)
-12. [Docker](#docker)
-13. [Tips, Tricks & Power Moves](#tips-tricks--power-moves)
+1. [Navigation & Files](#navigation--files)
+2. [Working with Text & Output](#working-with-text--output)
+3. [Environment Variables](#environment-variables)
+4. [Processes & System](#processes--system)
+5. [Networking](#networking)
+6. [Scripting](#scripting)
+7. [Git & Version Control](#git--version-control)
+8. [Node.js & npm](#nodejs--npm)
+9. [Python & pip](#python--pip)
+10. [Docker](#docker)
+11. [Quick Reference — Copy & Paste Prompts](#quick-reference--copy--paste-prompts)
 
 ---
 
-## PowerShell vs CMD
+## Navigation & Files
 
-| Feature | PowerShell | CMD |
-|---|---|---|
-| Objects | Yes (rich .NET objects) | No (plain text) |
-| Scripting | `.ps1` scripts | `.bat` / `.cmd` scripts |
-| Piping | Objects between cmdlets | Text only |
-| Use case | Modern dev, automation | Legacy, quick tasks |
-| Launch | `pwsh` or `powershell` | `cmd` |
+**When you want to see where you are** → `pwd` → *prints the full path of your current folder*
 
-**Rule of thumb**: Use PowerShell for everything new. Use CMD only for legacy batch scripts or when PS isn't available.
+**When you want to move into a folder** → `cd foldername` → *changes your location to that folder*
 
----
+**When you want to go back up one level** → `cd ..` → *moves you to the parent folder*
 
-## Navigation & File System
+**When you want to go home** → `cd ~` → *takes you to your user home directory*
 
-```powershell
-# Print current directory
-pwd                         # PowerShell
-cd                          # CMD (no args shows current path)
+**When you want to switch drives** → `D:` → *switches to the D drive*
 
-# Change directory
-cd C:\Users\You\Projects
-cd ..                       # Go up one level
-cd ..\..                    # Go up two levels
-cd ~                        # Home directory (PowerShell)
-cd /                        # Root of current drive
+**When you want to see what's in a folder** → `ls` → *lists all files and folders*
 
-# List files
-ls                          # PowerShell alias (like Unix)
-dir                         # CMD and PowerShell
-Get-ChildItem               # Full PowerShell cmdlet
-ls -Force                   # Show hidden files
-ls -Recurse                 # Recursive listing
-ls *.txt                    # Filter by extension
-ls | Sort-Object LastWriteTime  # Sort by date modified
+**When you want to see hidden files too** → `ls -Force` → *shows everything including hidden items*
 
-# Change drives
-D:                          # Switch to D drive
-cd D:\Projects              # Switch drive and path
+**When you want to search inside a folder recursively** → `ls -Recurse` → *lists everything including subfolders*
 
-# Open Explorer in current directory
-explorer .
-```
+**When you want to open the folder in File Explorer** → `explorer .` → *opens the current folder visually*
 
----
+**When you want to open a file in VS Code** → `code filename.js` → *opens or creates the file in VS Code*
 
-## File Operations
+**When you want to open the whole project in VS Code** → `code .` → *opens the entire current folder as a VS Code project*
 
-```powershell
-# Create files and directories
-New-Item file.txt           # Create empty file (PS)
-New-Item -ItemType Directory myfolder  # Create directory
-mkdir myfolder              # Shortcut (works in PS and CMD)
-echo "" > file.txt          # Quick file create (CMD style)
-ni file.txt                 # Alias for New-Item
+**When you want to create a new folder** → `mkdir foldername` → *creates a new empty folder*
 
-# Copy
-Copy-Item file.txt backup.txt           # PS
-copy file.txt backup.txt                # CMD
-Copy-Item -Recurse src\ dst\            # Copy folder recursively
-cp -r src/ dst/                         # Unix-style alias (PS)
+**When you want to create a new file** → `New-Item file.txt` or `ni file.txt` → *creates an empty file*
 
-# Move / Rename
-Move-Item old.txt new.txt               # Move or rename (PS)
-move old.txt new.txt                    # CMD
-Rename-Item file.txt renamed.txt        # Explicit rename
+**When you want to copy a file** → `Copy-Item file.txt backup.txt` → *makes a copy with a new name*
 
-# Delete
-Remove-Item file.txt                    # PS
-Remove-Item -Recurse -Force myfolder\   # Delete folder + contents
-del file.txt                            # CMD
-rmdir /s /q myfolder                    # CMD recursive delete
+**When you want to copy a whole folder** → `Copy-Item -Recurse src\ dst\` → *copies folder and all its contents*
 
-# Read file contents
-Get-Content file.txt                    # PS (like cat)
-cat file.txt                            # PS alias
-type file.txt                           # CMD
-Get-Content file.txt -Tail 20           # Last 20 lines
-Get-Content file.txt -Wait              # Live tail (like tail -f)
+**When you want to rename or move a file** → `Move-Item old.txt new.txt` → *renames or moves the file*
 
-# Write to file
-"Hello World" | Out-File file.txt       # Write (overwrites)
-"Hello World" | Add-Content file.txt    # Append
-"Hello" > file.txt                      # Redirect (overwrites)
-"Hello" >> file.txt                     # Redirect (append)
+**When you want to delete a file** → `Remove-Item file.txt` → *permanently deletes the file*
 
-# Search in files
-Select-String "pattern" file.txt        # Like grep (PS)
-Select-String -Recurse "TODO" *.js      # Recursive grep
-findstr "pattern" file.txt              # CMD equivalent
+**When you want to delete a whole folder** → `Remove-Item -Recurse -Force myfolder\` → *deletes folder and everything in it*
 
-# File info
-Get-Item file.txt | Select-Object *     # Full file metadata
-(Get-Item file.txt).Length              # File size in bytes
-```
+**When you want to read a file** → `cat file.txt` → *prints the file contents to the terminal*
+
+**When you want to see just the last few lines** → `Get-Content file.txt -Tail 20` → *shows the last 20 lines*
+
+**When you want to watch a file update live** → `Get-Content file.txt -Wait` → *like tail -f, refreshes as file changes*
+
+**When you want to write to a file** → `"Hello" | Out-File file.txt` → *creates or overwrites the file with that text*
+
+**When you want to append to a file** → `"Hello" | Add-Content file.txt` → *adds to the end without overwriting*
+
+**When you want to search for text inside files** → `Select-String "pattern" file.txt` → *like grep, finds matching lines*
+
+**When you want to search recursively** → `Select-String -Recurse "TODO" *.js` → *searches all matching files in all subfolders*
+
+**When you want to open a file in the browser** → `start index.html` → *opens the file with its default program*
 
 ---
 
-## Text & Output Manipulation
+## Working with Text & Output
 
-```powershell
-# Piping (chain commands)
-ls | Where-Object { $_.Length -gt 1MB }        # Files > 1MB
-ls | Select-Object Name, Length | Sort-Object Length -Descending
-Get-Content log.txt | Select-String "ERROR"
+**When you want to filter results** → `ls | Where-Object Name -like "*.log"` → *shows only items matching your condition*
 
-# Count lines / items
-(Get-Content file.txt).Count            # Line count
-ls | Measure-Object                     # Count files
+**When you want to sort results** → `ls | Sort-Object Length -Descending` → *sorts by any property*
 
-# Format output
-ls | Format-Table Name, Length, LastWriteTime   # Table view
-ls | Format-List                                # List view
-ls | ConvertTo-Json                             # JSON output
-ls | Export-Csv output.csv -NoTypeInformation   # CSV export
+**When you want to count things** → `ls | Measure-Object` → *counts files or lines*
 
-# Redirect output
-command > output.txt                    # Stdout to file
-command 2> errors.txt                   # Stderr to file
-command > out.txt 2>&1                  # Both to same file
-command | Tee-Object output.txt         # Print AND save
+**When you want to save output to a file** → `command > output.txt` → *redirects stdout to a file*
 
-# String operations
-"hello world".ToUpper()
-"  trim me  ".Trim()
-"a,b,c" -split ","                      # Split string
-"hello" -replace "ell","ELL"            # Replace in string
+**When you want to save errors too** → `command > out.txt 2>&1` → *captures both stdout and stderr*
 
-# Filter and search
-ls | Where-Object Name -like "*.log"
-ls | Where-Object LastWriteTime -gt (Get-Date).AddDays(-7)  # Modified last 7 days
-```
+**When you want to print AND save** → `command | Tee-Object output.txt` → *shows output and saves it at once*
+
+**When you want to export as CSV** → `ls | Export-Csv output.csv -NoTypeInformation` → *saves results as a spreadsheet*
+
+**When you want to copy something to clipboard** → `"text" | Set-Clipboard` → *copies to clipboard*
+
+**When you want to paste from clipboard** → `Get-Clipboard` → *reads clipboard contents*
 
 ---
 
 ## Environment Variables
 
-```powershell
-# View variables
-$env:PATH                               # Print PATH
-$env:USERNAME                           # Current user
-Get-ChildItem Env:                      # List ALL env vars
-[System.Environment]::GetEnvironmentVariables()  # Full list
+**When you want to read a variable** → `$env:PATH` → *prints the value of that variable*
 
-# Set (current session only)
-$env:MY_VAR = "hello"
-$env:PATH += ";C:\new\path"            # Append to PATH
+**When you want to list all variables** → `Get-ChildItem Env:` → *shows every environment variable*
 
-# Set permanently (user-level)
-[System.Environment]::SetEnvironmentVariable("MY_VAR","value","User")
+**When you want to set a variable for this session** → `$env:MY_VAR = "hello"` → *sets it until you close the terminal*
 
-# Set permanently (system-level, requires admin)
-[System.Environment]::SetEnvironmentVariable("MY_VAR","value","Machine")
+**When you want to add to PATH** → `$env:PATH += ";C:\new\path"` → *appends a path to your PATH variable*
 
-# Delete variable
-Remove-Item Env:MY_VAR
-
-# CMD equivalents
-set                                     # List all
-set MY_VAR=hello                        # Set (session)
-setx MY_VAR "hello"                     # Set permanently (user)
-echo %MY_VAR%                           # Read in CMD
-```
+**When you want to set a variable permanently** → `[System.Environment]::SetEnvironmentVariable("MY_VAR","value","User")` → *persists across sessions*
 
 ---
 
 ## Processes & System
 
-```powershell
-# List processes
-Get-Process                             # All processes
-Get-Process chrome                      # Filter by name
-Get-Process | Sort-Object CPU -Desc | Select-Object -First 10  # Top 10 by CPU
+**When you want to see what's running** → `Get-Process` → *lists all running processes*
 
-# Kill processes
-Stop-Process -Name chrome               # Kill by name
-Stop-Process -Id 1234                   # Kill by PID
-taskkill /F /IM chrome.exe             # CMD forceful kill
-taskkill /F /PID 1234
+**When you want to kill an app** → `Stop-Process -Name chrome` → *force-closes that process*
 
-# System info
-systeminfo                              # Full system info
-Get-ComputerInfo                        # PS system info
-hostname                                # Computer name
-whoami                                  # Current user
+**When you want to kill by process ID** → `Stop-Process -Id 1234` → *kills specific process*
 
-# Services
-Get-Service                             # List services
-Start-Service wuauserv                  # Start Windows Update
-Stop-Service wuauserv
-Restart-Service wuauserv
+**When you want to see who's using a port** → `netstat -ano | findstr :3000` → *shows what process is on that port*
 
-# Disk usage
-Get-PSDrive                             # Drive usage summary
-Get-ChildItem -Recurse | Measure-Object -Sum Length  # Folder size
+**When you want to kill what's on a port** → `Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess` → *finds the process using that port*
 
-# Check what's using a port
-netstat -ano | findstr :3000            # Who's on port 3000
-Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
-```
+**When you want system info** → `systeminfo` → *full hardware and OS details*
+
+**When you want to know who you're logged in as** → `whoami` → *prints your username*
+
+**When you want to measure how long something takes** → `Measure-Command { npm run build }` → *times any command*
 
 ---
 
 ## Networking
 
-```powershell
-# Basic connectivity
-ping google.com
-ping -n 4 google.com                    # 4 pings only
-tracert google.com                      # Trace route
-nslookup google.com                     # DNS lookup
-Resolve-DnsName google.com              # PS DNS lookup
+**When you want to check if a site is reachable** → `ping google.com` → *sends test packets and shows response time*
 
-# HTTP requests (PowerShell)
-Invoke-WebRequest https://api.example.com           # Like curl
-(Invoke-WebRequest https://api.example.com).Content # Just body
-Invoke-RestMethod https://api.example.com/data      # Auto-parse JSON
-curl https://api.example.com                        # If curl installed
+**When you want to trace a network path** → `tracert google.com` → *shows every hop between you and the destination*
 
-# Download files
-Invoke-WebRequest -Uri "https://example.com/file.zip" -OutFile "file.zip"
-curl -o file.zip https://example.com/file.zip
+**When you want to look up a DNS address** → `nslookup google.com` → *resolves a domain to its IP*
 
-# Network info
-ipconfig                                # IP addresses
-ipconfig /all                           # Full network details
-ipconfig /flushdns                      # Flush DNS cache
-Get-NetIPAddress                        # PS network addresses
-netstat -an                             # Active connections
+**When you want to see your IP address** → `ipconfig` → *shows all network interface info*
 
-# Firewall
-Get-NetFirewallRule                     # List rules
-New-NetFirewallRule -DisplayName "App" -Direction Inbound -Port 8080 -Action Allow
-```
+**When you want to flush DNS cache** → `ipconfig /flushdns` → *clears cached DNS entries*
+
+**When you want to make an HTTP request** → `Invoke-RestMethod https://api.example.com` → *like curl, auto-parses JSON*
+
+**When you want to download a file** → `Invoke-WebRequest -Uri "https://example.com/file.zip" -OutFile "file.zip"` → *downloads to current folder*
+
+**When you want to see active connections** → `netstat -an` → *lists all open network connections*
 
 ---
 
-## Scripting & Automation
+## Scripting
 
-```powershell
-# PowerShell script basics (.ps1)
+**When you want to allow scripts to run** → `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` → *unlocks PowerShell scripting for your user*
 
-# Variables
-$name = "World"
-$count = 42
-$items = @("a", "b", "c")              # Array
-$map = @{ key = "value" }              # Hashtable
+**When you want to run a script** → `.\myscript.ps1` → *executes a PowerShell script file*
 
-# Conditionals
-if ($count -gt 10) {
-    Write-Host "Big number"
-} elseif ($count -eq 10) {
-    Write-Host "Exactly ten"
-} else {
-    Write-Host "Small number"
-}
+**When you want to edit your shell profile** → `notepad $PROFILE` → *opens your startup config file*
 
-# Comparison operators
-# -eq  -ne  -gt  -lt  -ge  -le
-# -like  -match  -contains  -in
+**When you want to chain commands** → `cmd1 && cmd2` → *runs second only if first succeeds*
 
-# Loops
-foreach ($item in $items) { Write-Host $item }
-for ($i = 0; $i -lt 10; $i++) { Write-Host $i }
-1..10 | ForEach-Object { Write-Host $_ }
-while ($true) { break }
+**When you want to run commands regardless** → `cmd1; cmd2` → *runs both no matter what*
 
-# Functions
-function Greet($name) {
-    return "Hello, $name!"
-}
-Greet "Alice"
-
-# Error handling
-try {
-    Get-Item "nonexistent.txt" -ErrorAction Stop
-} catch {
-    Write-Host "Error: $_"
-} finally {
-    Write-Host "Always runs"
-}
-
-# Running scripts
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned  # Allow scripts
-.\myscript.ps1
-powershell -File myscript.ps1
-
-# Profiles (run on PS startup)
-notepad $PROFILE                        # Edit your profile
-```
+**When you want to run something if the first fails** → `cmd1 || cmd2` → *runs second only if first fails*
 
 ---
 
 ## Git & Version Control
 
-```powershell
-# Setup
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-git config --global core.editor "code --wait"   # VS Code as editor
-git config --list                               # View all config
+**When you want to start tracking a project** → `git init` → *creates a hidden .git folder that tracks all changes*
 
-# Initialize & clone
-git init                                # New repo in current folder
-git clone https://github.com/user/repo.git
-git clone https://... myfolderName      # Clone to custom folder
+**When you want to download someone's project** → `git clone https://github.com/user/repo.git` → *downloads the full repo to your machine*
 
-# Status & history
-git status                              # Current state
-git log                                 # Commit history
-git log --oneline --graph               # Visual branch graph
-git log --oneline -10                   # Last 10 commits
-git diff                                # Unstaged changes
-git diff --staged                       # Staged changes
-git diff main..feature                  # Branch comparison
+**When you want to see what changed** → `git status` → *shows modified, staged, and untracked files*
 
-# Staging & committing
-git add file.txt                        # Stage one file
-git add .                               # Stage all changes
-git add -p                              # Interactive stage (chunk by chunk)
-git commit -m "Your message"
-git commit -am "Stage + commit tracked files"
-git commit --amend --no-edit            # Amend last commit (keep message)
+**When you want to see the history** → `git log --oneline --graph` → *visual timeline of all commits*
 
-# Branches
-git branch                              # List branches
-git branch -a                           # All branches (including remote)
-git branch feature/login               # Create branch
-git checkout feature/login             # Switch branch
-git switch feature/login               # Modern switch
-git checkout -b feature/login          # Create + switch
-git switch -c feature/login            # Modern create + switch
-git branch -d feature/login            # Delete merged branch
-git branch -D feature/login            # Force delete
+**When you want to save your work** → `git add . && git commit -m "what I changed"` → *snapshots your current state*
 
-# Merging & rebasing
-git merge feature/login                # Merge into current branch
-git merge --no-ff feature/login        # Always create merge commit
-git rebase main                        # Rebase current branch onto main
-git rebase -i HEAD~3                   # Interactive rebase last 3 commits
-git cherry-pick abc1234                # Apply specific commit
+**When you want to save just one file** → `git add file.txt && git commit -m "updated file"` → *commits only that file*
 
-# Remote
-git remote -v                          # List remotes
-git remote add origin https://...      # Add remote
-git fetch                              # Download without merging
-git pull                               # Fetch + merge
-git pull --rebase                      # Fetch + rebase (cleaner)
-git push origin main
-git push -u origin feature/login       # Push + track upstream
-git push --force-with-lease            # Safe force push
+**When you want to stage changes interactively** → `git add -p` → *lets you review each change chunk by chunk*
 
-# Stashing
-git stash                              # Stash changes
-git stash save "WIP: login form"       # Named stash
-git stash list                         # List stashes
-git stash pop                          # Apply + remove latest
-git stash apply stash@{2}              # Apply specific stash
-git stash drop stash@{0}               # Delete a stash
+**When you want to push to GitHub** → `git push` → *uploads your commits to the remote*
 
-# Undoing
-git restore file.txt                   # Discard unstaged changes
-git restore --staged file.txt          # Unstage a file
-git reset HEAD~1                       # Undo last commit (keep changes)
-git reset --hard HEAD~1                # Undo last commit (discard changes)
-git revert abc1234                     # Safe undo via new commit
-git clean -fd                          # Delete untracked files/folders
+**When you want to pull the latest** → `git pull --rebase` → *downloads and integrates remote changes cleanly*
 
-# Tags
-git tag v1.0.0                         # Lightweight tag
-git tag -a v1.0.0 -m "Release v1.0.0" # Annotated tag
-git push origin --tags                 # Push all tags
-```
+**When you want to create a new branch** → `git switch -c feature/my-feature` → *creates and switches to a new branch*
+
+**When you want to switch branches** → `git switch main` → *moves to that branch*
+
+**When you want to merge a branch** → `git merge feature/my-feature` → *combines that branch into your current one*
+
+**When you want to temporarily save uncommitted work** → `git stash` → *shelves changes so you can switch context*
+
+**When you want to restore stashed work** → `git stash pop` → *brings back your shelved changes*
+
+**When you want to undo your last commit** → `git reset HEAD~1` → *removes the commit but keeps your file changes*
+
+**When you want to discard file changes** → `git restore file.txt` → *throws away unstaged changes to that file*
+
+**When you want to unstage a file** → `git restore --staged file.txt` → *removes it from the staging area*
+
+**When you want to connect to GitHub** → `git remote add origin https://github.com/USER/REPO.git` → *links your local repo to GitHub*
+
+**When you want to ignore node_modules** → `echo node_modules/ > .gitignore` → *tells Git to never track that folder*
+
+**When you want to remove a folder from GitHub but keep it locally** → `git rm -r --cached foldername` → *untracks it without deleting it*
 
 ---
 
 ## Node.js & npm
 
-```powershell
-# Version management
-node --version
-npm --version
-npx --version
+**When you want to start a new Node project** → `npm init -y` → *creates package.json with default settings*
 
-# Install nvm-windows for managing Node versions
-# https://github.com/coreybutler/nvm-windows
-nvm list                               # Installed versions
-nvm list available                     # Available versions
-nvm install 20.0.0                     # Install specific version
-nvm use 20.0.0                         # Switch version
-nvm current                            # Active version
+**When you want to install all dependencies** → `npm install` → *reads package.json and installs everything*
 
-# Project setup
-npm init                               # Interactive setup
-npm init -y                            # Auto-accept defaults
-npm install                            # Install from package.json
-npm install express                    # Add dependency
-npm install -D jest                    # Add dev dependency
-npm install -g nodemon                 # Global install
-npm uninstall express
-npm update                             # Update all packages
+**When you want to add a package** → `npm install express` → *installs and adds to dependencies*
 
-# Running scripts (from package.json)
-npm start
-npm test
-npm run build
-npm run dev
+**When you want to add a dev-only package** → `npm install -D jest` → *installs but marks as development only*
 
-# Useful npm commands
-npm list                               # Installed packages
-npm list -g --depth=0                  # Global packages
-npm outdated                           # Show outdated packages
-npm audit                              # Security audit
-npm audit fix                          # Auto-fix vulnerabilities
-npm cache clean --force                # Clear cache
-npm ci                                 # Clean install (for CI)
+**When you want to install globally** → `npm install -g nodemon` → *makes the command available anywhere*
 
-# npx — run without installing
-npx create-react-app myapp
-npx create-next-app@latest myapp
-npx ts-node script.ts
+**When you want to run your app** → `node server.js` → *executes your JS file with Node*
 
-# package.json scripts example
-# {
-#   "scripts": {
-#     "start": "node server.js",
-#     "dev": "nodemon server.js",
-#     "build": "tsc",
-#     "test": "jest --watch"
-#   }
-# }
+**When you want to run a script** → `npm run dev` → *runs whatever "dev" is defined as in package.json*
 
-# pnpm (faster alternative to npm)
-npm install -g pnpm
-pnpm install
-pnpm add express
-pnpm run dev
-```
+**When you want to check for security issues** → `npm audit fix` → *automatically fixes known vulnerabilities*
+
+**When you want to see installed packages** → `npm list` → *lists all packages in current project*
+
+**When you want to run a tool without installing** → `npx create-next-app@latest myapp` → *downloads and runs once*
+
+**When you want to manage Node versions** → `nvm install 20.0.0 && nvm use 20.0.0` → *switches between Node versions*
 
 ---
 
 ## Python & pip
 
-```powershell
-# Check versions
-python --version
-python3 --version
-pip --version
+**When you want to create an isolated environment** → `python -m venv venv` → *creates a folder with its own Python + packages*
 
-# Virtual environments (ALWAYS use these)
-python -m venv venv                    # Create virtualenv
-.\venv\Scripts\activate                # Activate (Windows)
-deactivate                             # Deactivate
+**When you want to activate it** → `.\venv\Scripts\activate` → *switches your terminal to use that environment*
 
-# With Poetry (recommended for modern projects)
-pip install poetry
-poetry new myproject
-poetry install
-poetry add requests
-poetry add --dev pytest
-poetry run python script.py
-poetry shell                           # Activate venv
+**When you want to leave it** → `deactivate` → *switches back to global Python*
 
-# pip basics
-pip install requests                   # Install package
-pip install requests==2.28.0           # Specific version
-pip install -r requirements.txt        # Install from file
-pip uninstall requests
-pip list                               # Installed packages
-pip show requests                      # Package details
-pip freeze > requirements.txt          # Export dependencies
-pip install --upgrade pip              # Update pip itself
+**When you want to install a package** → `pip install requests` → *downloads and installs into active environment*
 
-# Running Python
-python script.py
-python -m module_name                  # Run as module
-python -c "print('hello')"             # One-liner
-python -i script.py                    # Interactive after running
+**When you want a specific version** → `pip install requests==2.28.0` → *pins to exact version*
 
-# Common tools
-pip install black                      # Code formatter
-pip install flake8                     # Linter
-pip install mypy                       # Type checker
-pip install pytest                     # Test runner
-pytest                                 # Run tests
-pytest -v                              # Verbose
-pytest tests/test_auth.py             # Specific file
-pytest -k "test_login"                 # Filter by name
+**When you want to install from a file** → `pip install -r requirements.txt` → *installs everything listed in the file*
 
-# pyenv-win (Node version manager equivalent)
-# Install from https://github.com/pyenv-win/pyenv-win
-pyenv install 3.12.0
-pyenv global 3.12.0
-pyenv local 3.11.0                     # Per-project version
-```
+**When you want to save your dependencies** → `pip freeze > requirements.txt` → *exports all installed packages and versions*
+
+**When you want to run your script** → `python app.py` → *executes the Python file*
+
+**When you want to run tests** → `pytest -v` → *runs all test files verbosely*
+
+**When you want to format your code** → `black .` → *auto-formats all Python files*
 
 ---
 
 ## Docker
 
+**When you want to run a container** → `docker run -d -p 8080:80 --name myapp nginx` → *starts a detached container with port mapping*
+
+**When you want to see what's running** → `docker ps` → *lists active containers*
+
+**When you want to see all containers** → `docker ps -a` → *includes stopped containers*
+
+**When you want to get inside a container** → `docker exec -it myapp bash` → *opens a shell inside the running container*
+
+**When you want to follow container logs** → `docker logs -f myapp` → *streams live output from the container*
+
+**When you want to stop a container** → `docker stop myapp` → *gracefully stops it*
+
+**When you want to force remove a container** → `docker rm -f myapp` → *stops and deletes it*
+
+**When you want to build an image** → `docker build -t myapp:latest .` → *builds from Dockerfile in current folder*
+
+**When you want to start all services** → `docker-compose up -d` → *starts everything defined in docker-compose.yml*
+
+**When you want to stop everything** → `docker-compose down -v` → *stops and removes containers and volumes*
+
+**When you want to follow all service logs** → `docker-compose logs -f` → *streams logs from all services*
+
+**When you want to clean up everything unused** → `docker system prune` → *removes stopped containers, dangling images, unused networks*
+
+---
+
+## Quick Reference — Copy & Paste Prompts
+
+### Start a project from scratch
 ```powershell
-# Check Docker
-docker --version
-docker info
-docker ps                              # Running containers
-docker ps -a                           # All containers (including stopped)
+mkdir my-project
+cd my-project
+git init
+code .
+```
 
-# Images
-docker images                          # List local images
-docker pull nginx                      # Download image
-docker pull node:20-alpine             # Specific tag
-docker rmi nginx                       # Remove image
-docker image prune                     # Remove dangling images
-docker image prune -a                  # Remove all unused images
+### The daily Git loop (do this every time you change something)
+```powershell
+git add .
+git commit -m "describe what you changed"
+git push
+```
 
-# Running containers
-docker run nginx                       # Run (foreground)
-docker run -d nginx                    # Detached (background)
-docker run -d -p 8080:80 nginx         # Map port host:container
-docker run -d -p 8080:80 --name myapp nginx  # Named container
-docker run -it ubuntu bash             # Interactive terminal
-docker run --rm ubuntu echo "hello"    # Auto-remove after exit
-docker run -v C:\data:/app/data nginx  # Mount volume
+### Set up a Node project
+```powershell
+npm init -y
+npm install express
+node server.js
+```
 
-# Container management
-docker stop myapp
-docker start myapp
-docker restart myapp
-docker rm myapp                        # Remove stopped container
-docker rm -f myapp                     # Force remove running container
-docker logs myapp                      # View logs
-docker logs -f myapp                   # Follow logs (like tail -f)
-docker exec -it myapp bash             # Shell into running container
-docker exec myapp ls /app              # Run command in container
-docker inspect myapp                   # Full container info
-docker stats                           # Live resource usage
+### Set up a Python project
+```powershell
+python -m venv venv
+.\venv\Scripts\activate
+pip install requests
+python app.py
+```
 
-# Building images
-docker build -t myapp:latest .         # Build from Dockerfile
-docker build -t myapp:v1.0 -f custom.Dockerfile .
-docker tag myapp:latest myapp:v1.0     # Add tag
+### Push a project to GitHub for the first time
+```powershell
+git init
+git add .
+git commit -m "first commit"
+git remote add origin https://github.com/YOU/REPO.git
+git branch -M main
+git push -u origin main
+```
 
-# Docker Compose
-docker-compose up                      # Start services
-docker-compose up -d                   # Detached
-docker-compose up --build              # Rebuild before starting
-docker-compose down                    # Stop & remove containers
-docker-compose down -v                 # Also remove volumes
-docker-compose logs -f                 # Follow all logs
-docker-compose ps                      # Service status
-docker-compose exec app bash           # Shell into service
-docker-compose build                   # Build images only
+### Fix node_modules accidentally committed
+```powershell
+echo node_modules/ > .gitignore
+git rm -r --cached node_modules
+git add .gitignore
+git commit -m "remove node_modules"
+git push
+```
 
-# Volumes
-docker volume ls
-docker volume create mydata
-docker volume rm mydata
-docker volume prune
-
-# Networks
-docker network ls
-docker network create mynet
-docker run --network mynet myapp
-
-# Cleanup everything
-docker system prune                    # Remove unused resources
-docker system prune -a --volumes       # Nuclear cleanup (careful!)
-
-# Dockerfile quick reference
-# FROM node:20-alpine
-# WORKDIR /app
-# COPY package*.json ./
-# RUN npm ci
-# COPY . .
-# EXPOSE 3000
-# CMD ["node", "server.js"]
+### Check everything is installed
+```powershell
+git --version && node --version && python --version
 ```
 
 ---
 
-## Tips, Tricks & Power Moves
-
-### PowerShell Profile
-```powershell
-# Edit your profile (~\.config\powershell\profile.ps1 or similar)
-notepad $PROFILE
-
-# Useful profile additions:
-Set-Alias g git
-Set-Alias k kubectl
-function proj { cd C:\Users\You\Projects\$args }
-function gs { git status }
-function glog { git log --oneline --graph -20 }
-```
-
-### Useful Shortcuts
-| Shortcut | Action |
-|---|---|
-| `Tab` | Autocomplete |
-| `Ctrl+R` | Reverse history search |
-| `Ctrl+C` | Kill current command |
-| `Ctrl+L` | Clear screen |
-| `Up/Down` | Navigate history |
-| `Alt+.` | Insert last argument (PS) |
-
-### Finding Things Fast
-```powershell
-# Find files
-Get-ChildItem -Recurse -Filter "*.log"
-Get-ChildItem -Recurse | Where-Object Name -like "*config*"
-
-# Find command history
-Get-History
-Get-History | Select-String "git"      # Search history
-
-# Where is a command?
-Get-Command node                       # Find executable
-(Get-Command node).Source              # Full path
-where.exe node                         # CMD equivalent
-```
-
-### Working Smarter
-```powershell
-# Chain commands
-cd myproject; npm install; npm run dev   # Run sequentially
-npm run build && npm start               # Run second only if first succeeds
-npm run build || echo "Build failed"     # Run second only if first fails
-
-# Background jobs (PS)
-Start-Job { npm run build }
-Get-Job
-Receive-Job 1
-
-# Measure execution time
-Measure-Command { npm run build }
-
-# Clipboard
-"text" | Set-Clipboard                 # Copy to clipboard
-Get-Clipboard                          # Paste from clipboard
-cat output.txt | clip                  # CMD: copy file to clipboard
-
-# Common aliases to know
-ls = Get-ChildItem
-cat = Get-Content  
-rm = Remove-Item
-cp = Copy-Item
-mv = Move-Item
-echo = Write-Output
-pwd = Get-Location
-clear = Clear-Host
-```
-
----
-
-*Generated for Windows PowerShell / CMD — May 2026*
+*Advanced CLI Handbook — Windows Edition · May 2026*
+*Plain English → Command → What It Does*
