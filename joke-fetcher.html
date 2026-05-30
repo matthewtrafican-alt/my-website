@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matt's Joke Machine</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: #0a0d14;
+  color: #d4e0ff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  background: #111520;
+  border: 1px solid #1e2740;
+  border-radius: 16px;
+  padding: 48px;
+  max-width: 540px;
+  width: 100%;
+  text-align: center;
+}
+
+.emoji { font-size: 48px; margin-bottom: 16px; }
+
+h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #5a6a9a;
+  margin-bottom: 40px;
+}
+
+.joke-box {
+  background: #0d1117;
+  border: 1px solid #1e2740;
+  border-radius: 12px;
+  padding: 28px 24px;
+  min-height: 100px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: all 0.3s;
+}
+
+.setup {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+.punchline {
+  font-size: 15px;
+  color: #00d4ff;
+  line-height: 1.5;
+  display: none;
+}
+
+.placeholder {
+  font-size: 14px;
+  color: #5a6a9a;
+}
+
+.btn {
+  background: #00d4ff;
+  color: #0a0d14;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.btn:hover { background: #00b8e0; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-reveal {
+  background: none;
+  color: #7c3aed;
+  border: 1px solid #7c3aed;
+  border-radius: 10px;
+  padding: 12px 32px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  display: none;
+}
+
+.btn-reveal:hover { background: rgba(124,58,237,0.1); }
+
+.counter {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #5a6a9a;
+  letter-spacing: 1px;
+}
+
+.counter span { color: #00d4ff; font-weight: 700; }
+
+.loading { animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="emoji">🤖</div>
+  <h1>Matt's Joke Machine</h1>
+  <p class="subtitle">Built with Node.js · Powered by a joke API</p>
+
+  <div class="joke-box" id="joke-box">
+    <p class="placeholder" id="placeholder">Hit the button to get a joke...</p>
+    <p class="setup" id="setup"></p>
+    <p class="punchline" id="punchline"></p>
+  </div>
+
+  <button class="btn" id="main-btn" onclick="getJoke()">Get a Joke</button>
+  <button class="btn-reveal" id="reveal-btn" onclick="revealPunchline()">Reveal Punchline 👀</button>
+
+  <div class="counter">Jokes told: <span id="count">0</span></div>
+</div>
+
+<script>
+  let count = 0;
+  let currentJoke = null;
+
+  async function getJoke() {
+    const btn = document.getElementById('main-btn');
+    const revealBtn = document.getElementById('reveal-btn');
+    const placeholder = document.getElementById('placeholder');
+    const setup = document.getElementById('setup');
+    const punchline = document.getElementById('punchline');
+    const box = document.getElementById('joke-box');
+
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+    btn.classList.add('loading');
+    revealBtn.style.display = 'none';
+    punchline.style.display = 'none';
+    setup.textContent = '';
+    placeholder.style.display = 'block';
+    placeholder.textContent = 'Fetching a joke...';
+
+    try {
+      const res = await fetch('https://official-joke-api.appspot.com/random_joke');
+      currentJoke = await res.json();
+
+      placeholder.style.display = 'none';
+      setup.textContent = currentJoke.setup;
+      punchline.textContent = currentJoke.punchline;
+      punchline.style.display = 'none';
+
+      revealBtn.style.display = 'block';
+      btn.textContent = 'Another Joke';
+
+    } catch (err) {
+      placeholder.textContent = 'Could not load joke. Try again!';
+    }
+
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+
+  function revealPunchline() {
+    const punchline = document.getElementById('punchline');
+    const revealBtn = document.getElementById('reveal-btn');
+    punchline.style.display = 'block';
+    revealBtn.style.display = 'none';
+    count++;
+    document.getElementById('count').textContent = count;
+  }
+</script>
+
+</body>
+</html>
