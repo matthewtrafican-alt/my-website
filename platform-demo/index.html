@@ -412,13 +412,13 @@ input[type=text]:focus{outline:none;border-color:#3b82f6;}
     </div>
     <div class="p-3 border-t border-gray-800">
       <div class="flex flex-wrap gap-2 mb-2">
-        <button onclick="preset(0)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Which programs are at most risk from talent gaps?</button>
-        <button onclick="preset(1)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Who are we most at risk of losing this quarter?</button>
-        <button onclick="preset(2)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">What is our biggest hiring bottleneck right now?</button>
-        <button onclick="preset(3)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Show me return on impact for the top retention actions</button>
+        <button onclick="preset(0)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Assess the Engineering organisation</button>
+        <button onclick="preset(1)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Who in Cybersecurity is at risk of leaving?</button>
+        <button onclick="preset(2)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Typhoon programme delivery risk</button>
+        <button onclick="preset(3)" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700">Return on impact for all actions</button>
       </div>
       <div class="flex gap-2">
-        <input id="chatIn" type="text" placeholder="Ask about delivery risk, people decisions, or workforce planning..."
+        <input id="chatIn" type="text" placeholder="e.g. assess engineering org · who is leaving · R&M pay gap · Typhoon delivery risk..."
           class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-500"
           onkeydown="if(event.key==='Enter')sendChat()">
         <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Send</button>
@@ -1219,38 +1219,405 @@ function renderPeopleTable(data) {
     </tr>`).join('');
 }
 
-// ── AI AGENT ───────────────────────────────────────────────────────────────
-const PRESETS = [
-  'Which programs are at most risk from talent gaps?',
-  'Who are we most at risk of losing this quarter?',
-  'What is our biggest hiring bottleneck right now?',
-  'Show me return on impact for the top retention actions',
-];
+// ── AI AGENT — analytical engine ──────────────────────────────────────────
 
-const RESPONSES = [
-  () => {
-    const critical = PROG.filter(p=>p.delivery_risk_score>65).map(p=>p.name);
-    const gaps = PROG.map(p=>[p.name,Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0)]).sort((a,b)=>b[1]-a[1]);
-    return `Based on today's data, here are the programmes at highest delivery risk from talent gaps:\n\n${PROG.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score).slice(0,3).map((p,i)=>`${i+1}. **${p.name}** — Delivery risk: ${p.delivery_risk_score} (${p.delivery_risk_label})\n   Gap: ${Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).map(([k,v])=>v+' '+k).join(', ')}\n   Critical milestones at risk: ${(p.milestones||[]).filter(m=>m.status!='On Track').length}`).join('\n\n')}\n\nThe binding constraint across all three programmes is **Developed Vetting (DV) cleared engineering talent** — lead time to fill these roles is 14-18 months. If you need capability for a milestone in 12 months, you are already behind. Recommend opening requisitions immediately and engaging cleared contractor pool as bridge.`;
-  },
-  () => {
-    const top = EMP.filter(e=>e.flight_risk_score>=60&&e.would_be_regrettable).sort((a,b)=>b.flight_risk_score-a.flight_risk_score).slice(0,4);
-    return `There are ${EMP.filter(e=>e.flight_risk_score>=60&&e.would_be_regrettable).length} people at high flight risk whose departure would be regrettable based on programme execution impact:\n\n${top.map(e=>`**${e.name}** (${e.role}, ${e.department})\n   Flight risk: ${e.flight_risk_score}% | Compa-ratio: ${e.compa_ratio} | ${e.months_since_promotion} months since promotion\n   On critical path: ${e.on_critical_path?'Yes':'No'} | Programme: ${(e.programs||['—'])[0]}\n   Primary driver: ${e.compa_ratio<0.92?'Below-market pay ('+Math.round(e.compa_ratio*100)+'% of peer midpoint)':e.months_since_promotion>36?'No career progression in 3+ years':'Market demand for skills'}`).join('\n\n')}\n\nContagion warning: ${ATT.filter(a=>a.regrettability==='Regrettable'&&a.contagion_team_members_at_risk>0).length} recent regrettable departure(s) have elevated the flight risk of their team members. Recommend prioritising team engagement checks in R&M Engineering this month.`;
-  },
-  () => {
-    return `The single biggest bottleneck in your hiring pipeline right now is **security clearance processing time**.\n\nAverage DV clearance lead time: 14-18 months (your process average: 16 months vs. 12 month target)\nAverage SC clearance lead time: 9-11 months (your process average: 11 months vs. 8 month target)\n\nThis is a Theory of Constraints problem. The clearance process is the binding constraint on throughput — every other improvement you make to the hiring process is limited by this bottleneck.\n\n**What to subordinate to the constraint:**\n1. Start clearance initiation earlier — as soon as a programme need is forecast, not when requisition is raised\n2. Build a pipeline of pre-cleared candidates through contractor relationships\n3. Prioritise cleared internal redeployment before external hire\n\n**What to elevate the constraint:**\n1. Engage with MOD sponsoring officer to streamline case submission quality\n2. Assign a dedicated clearance coordinator to chase cases proactively\n3. Track clearance lead time as a primary ACQUIRE KPI, not just time-to-fill\n\nCurrent pipeline: ${LOG.filter(l=>l.clearance_required!='Baseline').length} active cases requiring SC or DV clearance.`;
-  },
-  () => {
-    const top3 = ACTIONS.filter(a=>a.road==='Retain').slice(0,3);
-    const total_action = top3.reduce((s,a)=>s+a.cost_action,0);
-    const total_inaction = top3.reduce((s,a)=>s+a.cost_inaction,0);
-    return `Top retention actions with return on impact:\n\n${top3.map((a,i)=>`${i+1}. **${a.title}**\n   Cost of action: £${fmt(a.cost_action)} | Cost of inaction: £${fmt(a.cost_inaction)} | ROI: ${a.roi}x\n   ${a.action.split('.')[0]}.`).join('\n\n')}\n\n**Portfolio summary:**\nTotal investment across top 3 retention actions: £${fmt(total_action)}\nTotal estimated cost if no action taken: £${fmt(total_inaction)}\nCombined return on impact: ${Math.round(total_inaction/total_action)}x\n\nNote: These calculations use replacement cost (salary × 1.4) plus programme delay cost. The actual return is likely higher when you include knowledge loss, team contagion effects, and customer confidence impact on programme delivery.`;
-  },
+// Department groupings by leadership role
+const DEPT_GROUPS = {
+  engineering: ['Systems Engineering','R&M Engineering','Cybersecurity'],
+  systems:     ['Systems Engineering'],
+  'r&m':       ['R&M Engineering'],
+  reliability: ['R&M Engineering'],
+  cyber:       ['Cybersecurity'],
+  hr:          ['HR'],
+  finance:     ['Finance'],
+  it:          ['IT & Digital'],
+  digital:     ['IT & Digital'],
+  operations:  ['Operations'],
+  ops:         ['Operations'],
+  programme:   ['Programme Management'],
+  pm:          ['Programme Management'],
+  leadership:  ['Leadership'],
+};
+
+function detectScope(q) {
+  const lower = q.toLowerCase();
+  // explicit department match
+  for (const [key, depts] of Object.entries(DEPT_GROUPS)) {
+    if (lower.includes(key)) return { emps: EMP.filter(e=>depts.includes(e.department)), label: depts.join(' & '), depts };
+  }
+  // VP / organisation-wide
+  if (/\b(vp|vice president|cpo|ceo|all|enterprise|company|organisation|organization|whole)\b/.test(lower)) {
+    return { emps: EMP, label: 'all departments (enterprise view)', depts: [] };
+  }
+  // my team / my org — default to engineering if no other clue
+  if (/\b(my team|my org|my organization|my organisation|my people|my department)\b/.test(lower)) {
+    const eng = DEPT_GROUPS.engineering;
+    return { emps: EMP.filter(e=>eng.includes(e.department)), label: 'Engineering (Systems, R&M, Cybersecurity)', depts: eng };
+  }
+  // fallback — all
+  return { emps: EMP, label: 'all departments', depts: [] };
+}
+
+function detectIntent(q) {
+  const lower = q.toLowerCase();
+  if (/\b(assess|assessment|overview|summary|health|status|brief|how are we|how is|state of)\b/.test(lower)) return 'assess';
+  if (/\b(retain|retention|flight risk|leaving|resign|attrition|turnover|at risk of losing|who might leave)\b/.test(lower)) return 'retain';
+  if (/\b(program|programme|delivery|milestone|schedule|on.time|delay|behind)\b/.test(lower)) return 'program';
+  if (/\b(hire|hiring|pipeline|acquire|acquisition|vacancy|vacancies|headcount gap|recruit|bottleneck|ahead of ready|lead time)\b/.test(lower)) return 'acquire';
+  if (/\b(develop|skill|competency|succession|training|learning|capability|gap)\b/.test(lower)) return 'develop';
+  if (/\b(return on impact|roi|cost of inaction|cost of action|business case|invest)\b/.test(lower)) return 'roi';
+  if (/\b(pay|salary|compensation|compa.ratio|below market|underpay)\b/.test(lower)) return 'pay';
+  if (/\b(contagion|team risk|colleague left|departure effect|ripple)\b/.test(lower)) return 'contagion';
+  if (/\b(star model|structure|optimize|optimise|span of control|org design|layer)\b/.test(lower)) return 'optimize';
+  return 'assess'; // default
+}
+
+// ── Analysis functions ────────────────────────────────────────────────────
+
+function aiAssess(emps, label) {
+  const n = emps.length;
+  if(!n) return `No employees found in that scope. Try "engineering", "cybersecurity", or "all" to set the scope.`;
+
+  const avgFR  = Math.round(emps.reduce((s,e)=>s+e.flight_risk_score,0)/n);
+  const highFR = emps.filter(e=>e.flight_risk_score>=60);
+  const regret = highFR.filter(e=>e.would_be_regrettable);
+  const avgCR  = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
+  const belowMkt = emps.filter(e=>e.compa_ratio<0.90);
+  const avgEng = Math.round(emps.reduce((s,e)=>s+e.engagement_score,0)/n);
+  const avgStar= Math.round(emps.reduce((s,e)=>s+e.star_overall,0)/n);
+  const weakDim= ['strategy','structure','processes','rewards','people']
+    .map(d=>({d, v:Math.round(emps.reduce((s,e)=>s+(e['star_'+d]||0),0)/n)}))
+    .sort((a,b)=>a.v-b.v)[0];
+  const avgMatch= Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n);
+  const lowMatch= emps.filter(e=>e.competency_match_pct<70).length;
+  const noSucc  = emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated').length;
+  const kpCount = emps.filter(e=>e.key_person_dependency).length;
+
+  // Programme exposure for this scope
+  const deptProgs = [...new Set(emps.flatMap(e=>e.programs||[]))].filter(id=>id!=='Corporate / Internal');
+  const relevantProgs = PROG.filter(p=>deptProgs.includes(p.id));
+  const atRiskProgs = relevantProgs.filter(p=>p.delivery_risk_score>50);
+
+  // LOGs for this scope
+  const deptNames = [...new Set(emps.map(e=>e.department))];
+  const scopeLogs = LOG.filter(l=>deptNames.includes(l.department));
+  const highRiskCases = scopeLogs.filter(l=>l.risk_label==='High'||l.risk_label==='Critical');
+
+  // Build narrative
+  let out = `**Organisation Assessment — ${label} (${n} employees)**\n\n`;
+
+  out += `**RETAIN — Stabilise critical skills**\n`;
+  out += `Average flight risk score: ${avgFR}/100. ${highFR.length} employee${highFR.length!==1?'s':''} at elevated risk (score ≥60)`;
+  if(regret.length) {
+    out += `, ${regret.length} of whom would be regrettable to lose based on programme execution impact`;
+    const top = regret.sort((a,b)=>b.flight_risk_score-a.flight_risk_score)[0];
+    out += `.\nHighest risk: **${top.name}** (${top.department}, score ${top.flight_risk_score}) — `;
+    const drivers = [];
+    if(top.compa_ratio<0.90) drivers.push(`pay ${Math.round(top.compa_ratio*100)}% of peer midpoint`);
+    if(top.months_since_promotion>36) drivers.push(`${top.months_since_promotion} months without promotion`);
+    if(top.department==='Cybersecurity') drivers.push('high external market demand');
+    if(top.performance_current>=4) drivers.push('high performer, marketable');
+    out += drivers.join(', ') + `. Programme: ${(top.programs||['—'])[0]}`;
+  } else {
+    out += `. No regrettable flight risk currently flagged.`;
+  }
+  out += `\nAverage compa-ratio: ${avgCR}. ${belowMkt.length} employee${belowMkt.length!==1?'s':''} below 0.90 — compensation review recommended.\n`;
+  out += `Average engagement: ${avgEng}/100.\n\n`;
+
+  out += `**OPTIMIZE — Accelerate org performance**\n`;
+  out += `STAR Model average: ${avgStar}/100. Weakest dimension: **${weakDim.d[0].toUpperCase()+weakDim.d.slice(1)}** (${weakDim.v}/100).`;
+  const stretched = emps.filter(e=>e.direct_reports>=10);
+  if(stretched.length) out += ` ${stretched.length} manager${stretched.length!==1?'s':''} with ≥10 direct reports — span of control stretched.`;
+  out += `\n\n`;
+
+  out += `**ACQUIRE — Deliver talent on time**\n`;
+  if(atRiskProgs.length) {
+    out += `${atRiskProgs.length} programme${atRiskProgs.length!==1?'s':''} with delivery risk above 50 involving ${label}: `;
+    out += atRiskProgs.map(p=>`**${p.name}** (risk score ${p.delivery_risk_score})`).join(', ') + `.`;
+  } else {
+    out += `No high-delivery-risk programmes currently mapped to this scope.`;
+  }
+  if(highRiskCases.length) out += ` ${highRiskCases.length} H2R case${highRiskCases.length!==1?'s':''} in ${label} classified as High/Critical risk — average ${Math.round(highRiskCases.reduce((s,l)=>s+l.days_open,0)/highRiskCases.length)} days open.`;
+  out += `\n\n`;
+
+  out += `**DEVELOP — Build skills, grow leaders**\n`;
+  out += `Average competency match: ${avgMatch}%. ${lowMatch} employee${lowMatch!==1?'s':''} below 70% threshold — targeted development plans required.`;
+  if(noSucc) out += ` **${noSucc} key person${noSucc!==1?'s':''} with no identified successor** — critical succession void.`;
+  out += `\n\n`;
+
+  // Top actions
+  const scopeActions = ACTIONS.filter(a=>!a.dept||deptNames.includes(a.dept)||a.dept==='Multiple').slice(0,3);
+  if(scopeActions.length) {
+    out += `**Top ${scopeActions.length} recommended actions:**\n`;
+    scopeActions.forEach((a,i)=>{
+      out += `${i+1}. [${a.road}] ${a.title} — ${a.priority} priority. Return on impact: £${fmt(a.cost_inaction)} avoided for £${fmt(a.cost_action)} invested (${a.roi}x). Owner: ${a.owner.split(' — ')[0]}.\n`;
+    });
+  }
+  return out;
+}
+
+function aiRetain(emps, label) {
+  const n = emps.length;
+  const highFR = emps.filter(e=>e.flight_risk_score>=50).sort((a,b)=>b.flight_risk_score-a.flight_risk_score);
+  const regret = highFR.filter(e=>e.would_be_regrettable);
+
+  let out = `**Retention Risk — ${label} (${n} employees)**\n\n`;
+  out += `${highFR.length} employee${highFR.length!==1?'s':''} at elevated flight risk (score ≥50). ${regret.length} would be regrettable to lose.\n\n`;
+
+  if(highFR.length===0) return out + `No elevated flight risk detected in this scope.`;
+
+  out += `**Top flight risks:**\n`;
+  highFR.slice(0,5).forEach((e,i)=>{
+    const factors = [];
+    if(e.compa_ratio<0.90) factors.push(`pay at ${Math.round(e.compa_ratio*100)}% of peer midpoint`);
+    if(e.compa_ratio<0.85) factors.push('severe pay gap (>15% below peers)');
+    if(e.performance_current>=4) factors.push('high performer — market demand');
+    if(e.org_tenure_yrs>8) factors.push('long tenure with limited progression');
+    if(e.department==='Cybersecurity') factors.push('Cybersecurity — highly competed-for in market');
+    if(e.months_since_promotion>36) factors.push(`${e.months_since_promotion} months without promotion`);
+    if(e.engagement_score<60) factors.push(`low engagement (${e.engagement_score}/100)`);
+    out += `${i+1}. **${e.name}** — ${e.role}, ${e.department}\n`;
+    out += `   Score: ${e.flight_risk_score}/100 | Programme: ${(e.programs||['—'])[0]} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}\n`;
+    out += `   Driving factors: ${factors.length?factors.join('; '):'baseline risk'}\n`;
+    out += `   Estimated replacement cost if they leave: £${fmt(Math.round(e.base_salary_gbp*1.4))}\n\n`;
+  });
+
+  // Contagion events in scope
+  const deptNames = [...new Set(emps.map(e=>e.department))];
+  const contagion = ATT.filter(a=>deptNames.includes(a.department)&&a.contagion_team_members_at_risk>0&&a.regrettability==='Regrettable');
+  if(contagion.length) {
+    out += `**Turnover contagion active:**\n`;
+    contagion.forEach(a=>{
+      out += `${a.name} departed ${a.departure_date} (${a.departure_reason}) — ${a.contagion_team_members_at_risk} teammate(s) at +${a.contagion_risk_uplift_pct}% elevated flight risk. Action: team pulse check.\n`;
+    });
+    out += `\n`;
+  }
+
+  const avgCR = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
+  out += `**Pay equity summary:** Average compa-ratio ${avgCR}. ${emps.filter(e=>e.compa_ratio<0.90).length} employee${emps.filter(e=>e.compa_ratio<0.90).length!==1?'s':''} below 0.90.`;
+  return out;
+}
+
+function aiProgram(emps, label) {
+  const deptProgs = [...new Set(emps.flatMap(e=>e.programs||[]))].filter(id=>id!=='Corporate / Internal');
+  const relevantProgs = PROG.filter(p=>deptProgs.includes(p.id));
+
+  let out = `**Programme Delivery Risk — ${label}**\n\n`;
+  if(!relevantProgs.length) {
+    out += `No active programmes mapped to this scope. Try "all" to see enterprise-wide programme risk.`;
+    return out;
+  }
+
+  relevantProgs.sort((a,b)=>b.delivery_risk_score-a.delivery_risk_score).forEach(p=>{
+    const totalGap = Object.values(p.headcount_gap||{}).reduce((s,v)=>s+v,0);
+    const atRiskMs = (p.milestones||[]).filter(m=>m.status!=='On Track');
+    out += `**${p.name}** — ${p.phase_short} · £${p.value_gbp}M · ${p.customer}\n`;
+    out += `Delivery risk score: **${p.delivery_risk_score}/100 (${p.delivery_risk_label})**\n`;
+    if(totalGap>0) {
+      out += `Headcount gap: ${Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k}`).join(', ')}.\n`;
+      const worstRole = Object.entries(p.headcount_gap||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])[0];
+      if(worstRole) {
+        const lt = p.lead_time_months?.[worstRole[0]]||6;
+        const status = lt>9?'BEHIND — open requisition immediately':'AT RISK — pipeline needs action';
+        out += `Biggest gap: **${worstRole[0]}** (${worstRole[1]} needed). Lead time: ${lt} months → ${status}\n`;
+      }
+    }
+    if(atRiskMs.length) out += `Milestones at risk: ${atRiskMs.map(m=>`${m.name} (${m.date}, ${m.status})`).join('; ')}.\n`;
+    out += `\n`;
+  });
+
+  // Binding constraint
+  out += `**Binding constraint (Theory of Constraints):** Security clearance lead time is the single bottleneck limiting throughput across all programmes — DV clearance averages 14-18 months. `;
+  out += `Every other process improvement is subordinate until this constraint is elevated. Recommend: (1) initiate clearances before requisitions are raised; (2) maintain pre-cleared contractor pool as bridge.`;
+  return out;
+}
+
+function aiAcquire(emps, label) {
+  const deptNames = [...new Set(emps.map(e=>e.department))];
+  const scopeLogs = LOG.filter(l=>deptNames.includes(l.department));
+  const active = scopeLogs.filter(l=>l.status==='Active');
+  const high = active.filter(l=>l.risk_label==='High'||l.risk_label==='Critical');
+  const avgDays = active.length?Math.round(active.reduce((s,l)=>s+l.days_open,0)/active.length):0;
+  const cleared = active.filter(l=>l.clearance_required!=='Baseline');
+
+  let out = `**Talent Pipeline — ${label}**\n\n`;
+  out += `${active.length} active requisition${active.length!==1?'s':''} | ${high.length} high/critical risk | Average age: ${avgDays} days | ${cleared.length} requiring SC or DV clearance\n\n`;
+
+  if(high.length) {
+    out += `**Cases requiring immediate attention:**\n`;
+    high.slice(0,4).forEach(l=>{
+      out += `• **${l.role}** (${l.department}) — ${l.days_open} days open | Risk: ${l.risk_label} | Clearance: ${l.clearance_required}\n`;
+      if(l.sla_breach) out += `  ⚠ SLA already breached.\n`;
+      if(l.compliance_breach) out += `  ⚠ Compliance gap: ${l.compliance_breach}.\n`;
+    });
+    out += `\n`;
+  }
+
+  out += `**Lead time benchmarks (time from need to productive in role):**\n`;
+  out += `• DV-cleared roles: 14–18 months actual vs 12 month target → **Behind target**\n`;
+  out += `• SC-cleared roles: 9–11 months actual vs 8 month target → **Slightly behind**\n`;
+  out += `• Uncleared professional: 3–6 months → **On track**\n\n`;
+
+  out += `**"Ahead of Ready" status:** If any programme milestone is within ${cleared.length>0?'12-18':'6'} months and cleared roles are unfilled, you are already behind the lead time curve. `;
+  out += `Cleared contractor bridge is the recommended immediate action while permanent hiring progresses.`;
+  return out;
+}
+
+function aiDevelop(emps, label) {
+  const n = emps.length;
+  const avgMatch = Math.round(emps.reduce((s,e)=>s+e.competency_match_pct,0)/n);
+  const lowMatch = emps.filter(e=>e.competency_match_pct<70);
+  const readyNow = emps.filter(e=>e.succession_status==='Ready Now');
+  const pipeline  = emps.filter(e=>e.succession_status.includes('Development'));
+  const noSucc    = emps.filter(e=>e.key_person_dependency&&e.succession_status==='Not Nominated');
+  const avgTrain  = Math.round(emps.reduce((s,e)=>s+e.training_hrs_ttm,0)/n);
+
+  let out = `**Capability & Development — ${label} (${n} employees)**\n\n`;
+  out += `Average competency match: **${avgMatch}%** (target: 80%). ${lowMatch.length} employee${lowMatch.length!==1?'s':''} below 70% threshold — development plans needed.\n`;
+  out += `Average training hours (last 12 months): ${avgTrain} hours per person.\n\n`;
+
+  out += `**Succession depth:**\n`;
+  out += `• Ready Now: ${readyNow.length} nominee${readyNow.length!==1?'s':''}\n`;
+  out += `• In development pipeline: ${pipeline.length}\n`;
+  out += `• Key persons with NO successor: **${noSucc.length}** — critical void\n`;
+  if(noSucc.length) {
+    noSucc.slice(0,3).forEach(e=>{
+      out += `  — ${e.name} (${e.role}, ${e.department}) — departure would expose programme delivery.\n`;
+    });
+  }
+  out += `\n`;
+
+  if(lowMatch.length) {
+    out += `**Lowest competency match (priority for development investment):**\n`;
+    lowMatch.sort((a,b)=>a.competency_match_pct-b.competency_match_pct).slice(0,4).forEach(e=>{
+      out += `• ${e.name} — ${e.role} — match: ${e.competency_match_pct}% | Training hours: ${e.training_hrs_ttm}\n`;
+    });
+  }
+  return out;
+}
+
+function aiPay(emps, label) {
+  const n = emps.length;
+  const avgCR = (emps.reduce((s,e)=>s+e.compa_ratio,0)/n).toFixed(2);
+  const below85 = emps.filter(e=>e.compa_ratio<0.85);
+  const below90 = emps.filter(e=>e.compa_ratio>=0.85&&e.compa_ratio<0.90);
+  const atMkt   = emps.filter(e=>e.compa_ratio>=0.90&&e.compa_ratio<=1.05);
+  const above   = emps.filter(e=>e.compa_ratio>1.05);
+
+  let out = `**Pay equity analysis — ${label} (${n} employees)**\n\n`;
+  out += `Average compa-ratio: **${avgCR}** (1.00 = peer market midpoint)\n\n`;
+  out += `• Severe gap (<0.85): **${below85.length}** employee${below85.length!==1?'s':''} — immediate review\n`;
+  out += `• Below peers (0.85–0.90): **${below90.length}** — plan in next cycle\n`;
+  out += `• At/near market (0.90–1.05): **${atMkt.length}** — healthy\n`;
+  out += `• Above midpoint (>1.05): **${above.length}**\n\n`;
+
+  if(below85.length) {
+    out += `**Employees at severe pay gap — highest retention risk:**\n`;
+    [...below85].sort((a,b)=>a.compa_ratio-b.compa_ratio).slice(0,4).forEach(e=>{
+      out += `• ${e.name} (${e.role}) — compa-ratio ${e.compa_ratio} | Flight risk: ${e.flight_risk_score} | Regrettable: ${e.would_be_regrettable?'Yes':'No'}\n`;
+      out += `  Estimated cost to bring to midpoint: £${fmt(Math.round(e.base_salary_gbp*(1/e.compa_ratio - 1)))} pa | Replacement cost if they leave: £${fmt(Math.round(e.base_salary_gbp*1.4))}\n`;
+    });
+  }
+  return out;
+}
+
+function aiROI(emps, label) {
+  const deptNames = [...new Set(emps.map(e=>e.department))];
+  const scopeActions = ACTIONS.filter(a=>!a.dept||deptNames.includes(a.dept)||a.dept==='Multiple');
+  const total_act = scopeActions.reduce((s,a)=>s+a.cost_action,0);
+  const total_inact = scopeActions.reduce((s,a)=>s+a.cost_inaction,0);
+
+  let out = `**Return on Impact — ${label}**\n\n`;
+  out += `${scopeActions.length} recommended action${scopeActions.length!==1?'s':''} across all ROAD pillars.\n`;
+  out += `Total investment required: **£${fmt(total_act)}** | Total cost avoided (if no action): **£${fmt(total_inact)}** | Combined return: **${Math.round(total_inact/Math.max(1,total_act))}x**\n\n`;
+
+  scopeActions.forEach((a,i)=>{
+    out += `**${i+1}. ${a.title}**\n`;
+    out += `   ROAD: ${a.road} | Priority: ${a.priority} | Owner: ${a.owner.split(' — ')[0]}\n`;
+    out += `   Cost of action: £${fmt(a.cost_action)} → Cost of inaction: £${fmt(a.cost_inaction)} → Return: ${a.roi}x\n`;
+    out += `   ${a.action.split('.')[0]}.\n\n`;
+  });
+  return out;
+}
+
+function aiOptimize(emps, label) {
+  const n = emps.length;
+  const dims = ['strategy','structure','processes','rewards','people'];
+  const scores = dims.map(d=>({d, v:Math.round(emps.reduce((s,e)=>s+(e['star_'+d]||0),0)/n)}));
+  const stretched = emps.filter(e=>e.direct_reports>=10);
+  const overmanaged = emps.filter(e=>e.direct_reports>0&&e.direct_reports<4);
+
+  let out = `**Org Performance (STAR Model) — ${label} (${n} employees)**\n\n`;
+  out += `**Galbraith STAR Model scores:**\n`;
+  scores.forEach(s=>{
+    const status = s.v<55?'⚠ Action needed':s.v<70?'Monitor':s.v<85?'Healthy':'Strong';
+    out += `• ${s.d[0].toUpperCase()+s.d.slice(1)}: ${s.v}/100 — ${status}\n`;
+  });
+  const weakest = scores.sort((a,b)=>a.v-b.v)[0];
+  out += `\nWeakest dimension: **${weakest.d[0].toUpperCase()+weakest.d.slice(1)} (${weakest.v}/100)**. `;
+  const advice = {
+    strategy:'Workforce capability is not fully aligned to programme objectives — review role profiles against current programme portfolio.',
+    structure:'Org structure needs review — check span of control, layers, and reporting lines.',
+    processes:'Information flows and decision rights are limiting performance — clarify RACI and escalation paths.',
+    rewards:'Recognition and compensation are not driving the right behaviours — review incentive structures.',
+    people:'Development and succession quality needs attention — invest in career conversations and L&D.',
+  };
+  out += advice[weakest.d]+'\n\n';
+
+  out += `**Span of control:**\n`;
+  out += `• ${stretched.length} manager${stretched.length!==1?'s':''} with ≥10 direct reports — stretched, productivity risk\n`;
+  out += `• ${overmanaged.length} manager${overmanaged.length!==1?'s':''} with <4 direct reports — over-managed, efficiency opportunity\n`;
+  if(stretched.length) {
+    out += `Stretched managers: ${stretched.map(e=>`${e.name.split(' ')[0]} (${e.direct_reports} reports, engagement ${e.engagement_score}/100)`).join(', ')}\n`;
+  }
+  return out;
+}
+
+function aiContagion() {
+  const events = ATT.filter(a=>a.contagion_team_members_at_risk>0&&a.regrettability==='Regrettable');
+  let out = `**Turnover Contagion Analysis**\n\n`;
+  out += `When a regrettable departure occurs, teammates' flight risk increases by 40-80% within 6 months (research baseline). The platform applies a ${40}% uplift as default, adjusted upward for team-critical roles.\n\n`;
+  if(!events.length) return out+`No active contagion events detected in the last 18 months.`;
+  out += `**Active contagion events:**\n`;
+  events.forEach(a=>{
+    out += `**${a.name}** left ${a.departure_date} — ${a.department}\n`;
+    out += `Reason: ${a.departure_reason} | Clearance: ${a.clearance} | Knowledge documented: ${a.knowledge_documented}\n`;
+    out += `Impact: ${a.contagion_team_members_at_risk} remaining teammate(s) at +${a.contagion_risk_uplift_pct}% elevated flight risk\n`;
+    out += `Recommended action: schedule team pulse check, review workload, prioritise career conversations with at-risk teammates.\n\n`;
+  });
+  const totalAtRisk = events.reduce((s,a)=>s+a.contagion_team_members_at_risk,0);
+  out += `**Total teammates at elevated contagion risk: ${totalAtRisk}**`;
+  return out;
+}
+
+function analyzeQuery(q) {
+  const scope  = detectScope(q);
+  const intent = detectIntent(q);
+  switch(intent) {
+    case 'assess':   return aiAssess(scope.emps, scope.label);
+    case 'retain':   return aiRetain(scope.emps, scope.label);
+    case 'program':  return aiProgram(scope.emps, scope.label);
+    case 'acquire':  return aiAcquire(scope.emps, scope.label);
+    case 'develop':  return aiDevelop(scope.emps, scope.label);
+    case 'pay':      return aiPay(scope.emps, scope.label);
+    case 'roi':      return aiROI(scope.emps, scope.label);
+    case 'optimize': return aiOptimize(scope.emps, scope.label);
+    case 'contagion':return aiContagion();
+    default:         return aiAssess(scope.emps, scope.label);
+  }
+}
+
+// Preset queries
+const PRESETS = [
+  'Give me an assessment of the Engineering organisation',
+  'Who in Cybersecurity is at highest risk of leaving?',
+  'What is the programme delivery risk on Typhoon Modernisation?',
+  'Show me the return on impact for all recommended actions',
 ];
 
 function preset(i) {
   addMsg(PRESETS[i], true);
-  setTimeout(()=>addMsg(RESPONSES[i](), false), 900);
+  setTimeout(()=>addMsg(analyzeQuery(PRESETS[i]), false), 400);
 }
 
 function sendChat() {
@@ -1258,7 +1625,7 @@ function sendChat() {
   if(!inp?.value.trim()) return;
   const q = inp.value.trim(); inp.value='';
   addMsg(q, true);
-  setTimeout(()=>addMsg(`I'm analysing your question against today's workforce data. In production, the Claude API retrieves relevant context from the vector store (framework backbone, programme data, employee profiles, attrition records) and generates a grounded response.\n\nTry one of the pre-set questions above to see full responses grounded in the synthetic dataset.`, false), 700);
+  setTimeout(()=>addMsg(analyzeQuery(q), false), 400);
 }
 
 function addMsg(txt, isUser) {
