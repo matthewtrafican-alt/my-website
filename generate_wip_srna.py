@@ -1,8 +1,10 @@
 """
-Generates WIP-SRNA-001 v1.0
+Generates WIP-SRNA-001 v2.0
 Workforce Intelligence Platform — System Requirements & Notional Architecture
-Expands H2R-SRNA-001 v1.0 with strategic workforce planning, competency intelligence,
-and multi-horizon planning capabilities.
+Expands H2R-SRNA-001 v1.0 with ROAD framework, VUCA Prime design philosophy,
+Theory of Constraints (talent as product), program execution risk management,
+attrition classification by program impact, turnover contagion modelling,
+proactive action plans with return on impact, and three-tier ownership model.
 """
 
 from docx import Document
@@ -10,18 +12,16 @@ from docx.shared import Pt, RGBColor, Cm, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
-import copy
 
 doc = Document()
 
-# ── Page margins ──────────────────────────────────────────────────────────────
 for section in doc.sections:
     section.top_margin    = Cm(2.0)
     section.bottom_margin = Cm(2.0)
     section.left_margin   = Cm(2.5)
     section.right_margin  = Cm(2.5)
 
-# ── Helper functions ──────────────────────────────────────────────────────────
+# ── Helpers ────────────────────────────────────────────────────────────────────
 
 def set_cell_bg(cell, hex_color):
     tc   = cell._tc
@@ -52,27 +52,24 @@ def bullet(text):
     return p
 
 def action_box(ref, text):
-    """Amber action-required box"""
-    tbl = doc.add_table(rows=1, cols=1)
+    tbl  = doc.add_table(rows=1, cols=1)
     tbl.style = 'Table Grid'
     cell = tbl.rows[0].cells[0]
     set_cell_bg(cell, 'FFF3CD')
-    p = cell.paragraphs[0]
+    p    = cell.paragraphs[0]
     p.clear()
-    run = p.add_run(f'ACTION REQUIRED — {ref}')
+    run  = p.add_run(f'ACTION REQUIRED — {ref}')
     run.bold = True
     run.font.color.rgb = RGBColor(0x85, 0x64, 0x04)
     run.font.size = Pt(9)
     cell.add_paragraph(text).paragraph_format.space_after = Pt(3)
-    owner_p = cell.add_paragraph()
-    owner_p.add_run('Owner: ________________________    Date: ________________________    Status: ☐ Open  ☐ In Progress  ☐ Resolved').font.size = Pt(8)
+    op = cell.add_paragraph()
+    op.add_run('Owner: ________________________    Date: ________________________    Status: open / in progress / resolved').font.size = Pt(8)
     doc.add_paragraph()
 
-def req_table(rows_data, has_source=True):
-    """Requirements table: ID | Requirement | MoSCoW | Source"""
-    cols = 4 if has_source else 3
-    headers = ['ID', 'Requirement', 'MoSCoW', 'Source / Rationale'] if has_source else ['ID', 'Requirement', 'MoSCoW']
-    tbl = doc.add_table(rows=1, cols=cols)
+def req_table(rows_data):
+    headers = ['ID', 'Requirement', 'Priority', 'Rationale']
+    tbl = doc.add_table(rows=1, cols=4)
     tbl.style = 'Table Grid'
     hdr = tbl.rows[0].cells
     for i, h in enumerate(headers):
@@ -91,10 +88,8 @@ def req_table(rows_data, has_source=True):
             for para in row[i].paragraphs:
                 for run in para.runs:
                     run.font.size = Pt(9)
-        if cols >= 3:
-            moscow = row_data[2]
-            color  = moscow_colors.get(moscow, 'FFFFFF')
-            set_cell_bg(row[2], color)
+        moscow = row_data[2]
+        set_cell_bg(row[2], moscow_colors.get(moscow, 'FFFFFF'))
     doc.add_paragraph()
 
 def simple_table(headers, rows, header_color='1F3864'):
@@ -118,9 +113,26 @@ def simple_table(headers, rows, header_color='1F3864'):
                     run.font.size = Pt(9)
     doc.add_paragraph()
 
+def road_box(pillar, color_hex, definition, outcomes, indicators):
+    tbl = doc.add_table(rows=1, cols=1)
+    tbl.style = 'Table Grid'
+    cell = tbl.rows[0].cells[0]
+    set_cell_bg(cell, color_hex)
+    p = cell.paragraphs[0]
+    p.clear()
+    run = p.add_run(pillar)
+    run.bold = True
+    run.font.size = Pt(11)
+    run.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
+    cell.add_paragraph(definition)
+    cell.add_paragraph(f'Outcomes: {outcomes}')
+    cell.add_paragraph(f'Leading indicators: {indicators}')
+    doc.add_paragraph()
+
 # ══════════════════════════════════════════════════════════════════════════════
 # COVER PAGE
 # ══════════════════════════════════════════════════════════════════════════════
+
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 run = p.add_run('S Y S T E M   R E Q U I R E M E N T S   &   N O T I O N A L\nA R C H I T E C T U R E')
@@ -137,19 +149,27 @@ run2.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
 
 p3 = doc.add_paragraph()
 p3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-run3 = p3.add_run('AI-Powered Strategic Workforce Planning, Competency Intelligence\n& H2R Process Analytics')
+run3 = p3.add_run('AI-Powered Program Delivery Risk Management\n& Strategic Workforce Intelligence')
 run3.font.size = Pt(13)
 run3.font.color.rgb = RGBColor(0x2E, 0x75, 0xB6)
 
+p4 = doc.add_paragraph()
+p4.alignment = WD_ALIGN_PARAGRAPH.CENTER
+run4 = p4.add_run('ROAD Framework · VUCA Prime · Theory of Constraints · Donella Meadows')
+run4.font.size = Pt(10)
+run4.font.color.rgb = RGBColor(0x44, 0x72, 0xC4)
+run4.italic = True
+
 doc.add_paragraph()
 
-meta = doc.add_table(rows=4, cols=4)
+meta = doc.add_table(rows=5, cols=4)
 meta.style = 'Table Grid'
 meta_data = [
-    ['Organisation', 'AeroDefend Group (Illustrative)', 'Version', '1.0 — DRAFT'],
-    ['Classification', 'Internal — Confidential', 'Status', 'Pending IT Review'],
-    ['Prepared by', 'HR Transformation Initiative', 'Prepared for', 'IT VP & HR VP'],
-    ['Document ref', 'WIP-SRNA-001', 'Date', '29 May 2026'],
+    ['Organisation',  'AeroDefend Group (Illustrative)', 'Version', '2.0 — DRAFT'],
+    ['Classification','Internal — Confidential',          'Status',  'Pending IT & CPO Review'],
+    ['Prepared by',   'HR Transformation Initiative',     'Prepared for', 'IT VP, HR VP & CPO'],
+    ['Document ref',  'WIP-SRNA-001',                     'Supersedes', 'WIP-SRNA-001 v1.0'],
+    ['Date',          '30 May 2026',                      'Base document', 'H2R-SRNA-001 v1.0'],
 ]
 for r, row_data in enumerate(meta_data):
     cells = meta.rows[r].cells
@@ -174,19 +194,20 @@ info_cell = info_tbl.rows[0].cells[0]
 set_cell_bg(info_cell, 'D6E4F0')
 info_p = info_cell.paragraphs[0]
 info_p.clear()
-run_info = info_p.add_run('Relationship to H2R-SRNA-001')
+run_info = info_p.add_run('Relationship to H2R-SRNA-001 and WIP-SRNA-001 v1.0')
 run_info.bold = True
 run_info.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
 info_cell.add_paragraph(
-    'This document (WIP-SRNA-001) directly extends H2R-SRNA-001 v1.0. All functional and '
-    'non-functional requirements from the H2R Process Intelligence Platform are carried forward '
-    'and supplemented with multi-horizon workforce planning capabilities, a competency '
-    'intelligence layer grounded in external occupational frameworks, and a cascade engine that '
-    'connects strategic workforce decisions to daily H2R execution. Requirement IDs prefixed '
-    'FR-H2R are inherited from H2R-SRNA-001. New requirements are prefixed FR-WIP.'
+    'This document (v2.0) supersedes WIP-SRNA-001 v1.0 and directly extends H2R-SRNA-001 v1.0. '
+    'All requirements from both predecessor documents are carried forward and supplemented with: '
+    'the ROAD strategic framework (Retain / Optimize / Acquire / Develop); VUCA Prime design '
+    'philosophy; Theory of Constraints applied to talent as a product; program execution risk '
+    'management as the primary business driver; attrition classification by program impact '
+    '(replacing any 9-box based classification); turnover contagion modelling at team level; '
+    'proactive action plans with return on impact; three-tier ownership model; and a phased '
+    'data architecture from flat files through to live IT integration.'
 )
 doc.add_paragraph()
-
 doc.add_page_break()
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -196,7 +217,8 @@ heading('1. Document Control & Revision History', 1)
 simple_table(
     ['Version', 'Date', 'Author', 'Changes'],
     [
-        ['1.0', '29/05/2026', 'HR Transformation Team', 'Initial draft — expands H2R-SRNA-001 with multi-horizon workforce planning and competency intelligence layers'],
+        ['1.0', '29/05/2026', 'HR Transformation Team', 'Initial draft — multi-horizon workforce planning and competency intelligence'],
+        ['2.0', '30/05/2026', 'HR Transformation Team', 'Major revision — ROAD framework, VUCA Prime, Theory of Constraints, program execution risk as primary driver, attrition by program impact, turnover contagion, return on impact action plans, three-tier ownership model, flat-file phasing architecture'],
     ]
 )
 heading('1.1 Document Approvals Required', 2)
@@ -206,6 +228,7 @@ simple_table(
         ['IT Vice President', '', '', ''],
         ['HR Vice President', '', '', ''],
         ['Chief People Officer', '', '', ''],
+        ['Programme Directors (for Programme Delivery Risk framing)', '', '', ''],
         ['IT Architecture Lead', '', '', ''],
         ['Data Engineering Lead', '', '', ''],
         ['CISO / Information Security', '', '', ''],
@@ -218,36 +241,72 @@ simple_table(
 # ══════════════════════════════════════════════════════════════════════════════
 heading('2. Executive Summary', 1)
 body(
-    'The AeroDefend Group Workforce Intelligence Platform extends the H2R Process Intelligence '
-    'Platform (H2R-SRNA-001) into a full-spectrum workforce planning capability. Where the H2R '
-    'platform addresses operational HR execution — process conformance, SLA management, and '
-    'compliance monitoring — this platform adds the strategic intelligence layer that most '
-    'organisations lack: the ability to see three years ahead, identify capability gaps before '
-    'they become hiring emergencies, and generate legally defensible competency models grounded '
-    'in industry-standard occupational frameworks.'
+    'The AeroDefend Group Workforce Intelligence Platform is an analytics and intelligence overlay '
+    'that sits above existing HR systems (primarily SAP SuccessFactors and SAP HCM) without '
+    'replacing them. It addresses a specific business problem: on-time programme delivery is at '
+    'risk when the right talent is not in the right place, at the right time, with the right '
+    'skills, at the right cost. Talent is treated as a product in a supply chain. When that supply '
+    'chain has a bottleneck, programmes slip, customers are disappointed, and commercial '
+    'commitments are at risk. The platform makes workforce risk visible before it becomes a '
+    'delivery crisis.'
 )
 body(
-    'Research confirms that approximately 90% of organisations want skills-based workforce '
-    'planning, yet only 26% actively implement it. The primary barrier is not ambition but '
-    'architecture: organisations operate in reverse, managing what they have today without a '
-    'clear view of what they need tomorrow. This platform resolves that by connecting four '
-    'planning horizons — Strategic (3–5 years), Operational (12–36 months), Tactical (0–12 '
-    'months), and Execution (daily/weekly) — through a single Databricks Lakehouse and a '
-    'shared competency ontology.'
+    'This platform is not a performance management tool, not a 9-box succession grid, and not a '
+    'case management system. Case management stays in SAP. The platform is the intelligence layer '
+    'that generates insight from SAP data and turns it into proactive, prioritised action plans '
+    'for the people who can act on them — Line Managers, HR Business Partners, and Leaders — '
+    'each seeing the information relevant to their role.'
+)
+body(
+    'Version 2.0 introduces the ROAD strategic framework (Retain, Optimize, Acquire, Develop) as '
+    'the organisational architecture for all workforce actions. It introduces VUCA Prime '
+    '(Vision, Understanding, Clarity, Agility) as the platform design philosophy — the platform '
+    'is the antidote to the volatility, uncertainty, complexity, and ambiguity of the defence '
+    'and aerospace operating environment. And it introduces the Theory of Constraints applied to '
+    'human capital: the platform identifies the binding constraint in the talent supply chain '
+    'and directs attention to the one thing that, if resolved, would have the greatest impact '
+    'on programme delivery.'
 )
 
-heading('2.1 Platform Capabilities at a Glance', 2)
+heading('2.1 Primary Business Driver — On-Time Programme Delivery', 2)
+body(
+    'The primary output metric of this platform is delivery confidence. Every workforce action '
+    'recommended by the platform is anchored to a specific programme, a specific milestone, '
+    'and a specific impact if no action is taken. This framing is deliberate: HR interventions '
+    'are most effective when they are connected to the business outcome they are protecting.'
+)
+body(
+    'The "five rights of talent" framework defines the standard: Right talent — Right place — '
+    'Right time — Right skills — Right cost. When any of the five rights is breached, the '
+    'platform identifies it, explains why it matters in plain English, and recommends a specific '
+    'action with a calculated return on impact.'
+)
 simple_table(
-    ['Capability', 'Description', 'Planning Horizon'],
+    ['If this goes wrong...', 'The business impact is...', 'ROAD response is...'],
     [
-        ['Strategic Workforce Planning', '3-year capability gap analysis, scenario modelling, build/buy/borrow/bot decisions', 'Strategic (3–5 yr)'],
-        ['Headcount & Capacity Planning', 'Annual headcount planning linked to budget cycles and business strategy', 'Operational (1–3 yr)'],
-        ['Competency Intelligence', 'AI-generated competency models grounded in O*NET, NICE, INCOSE SECF, R&M BoK', 'Operational / Tactical'],
-        ['Tactical Workforce Planning', 'Active requisition management, deployment, retention risk, internal mobility', 'Tactical (0–12 mo)'],
-        ['H2R Process Intelligence', 'Process mining, SLA management, compliance monitoring (inherited from H2R-SRNA-001)', 'Execution (daily)'],
-        ['Cascade Engine', 'Bidirectional flow: strategy → execution and operational data → strategic forecast', 'All horizons'],
-        ['UGESP Compliance Engine', 'Auto-generated legal documentation for selection procedures and competency validation', 'All horizons'],
-        ['Talent Marketplace', 'Internal mobility matching based on competency profiles and career pathway models', 'Tactical / Execution'],
+        ['Right talent not in place (key person leaves)', 'Programme critical path exposed; milestone at risk', 'Retain — flight risk intervention before departure'],
+        ['Wrong place (talent allocated suboptimally)', 'Programme bottleneck; underutilisation elsewhere', 'Optimize — redeployment and org design action'],
+        ['Wrong time (hired too late — behind lead time)', 'Programme milestone missed; contract penalty risk', 'Acquire — "Ahead of Ready" pipeline acceleration'],
+        ['Wrong skills (competency gap on critical role)', 'Delivery quality risk; rework and delay', 'Develop — targeted upskilling with milestone linkage'],
+        ['Wrong cost (talent priced out of market)', 'Retention failure; external hire premium cost', 'Retain + Acquire — compensation review and pipeline'],
+    ]
+)
+
+heading('2.2 Platform Capabilities at a Glance', 2)
+simple_table(
+    ['Capability', 'Description', 'ROAD Pillar', 'Planning Horizon'],
+    [
+        ['Program Delivery Risk View', 'Talent supply vs demand by programme, "Ahead of Ready" status, milestone risk', 'All ROAD', 'Tactical (0-12mo)'],
+        ['Retain — Flight Risk & Attrition', 'Flight risk scoring, regrettable attrition classification by programme impact, turnover contagion', 'Retain', 'Tactical'],
+        ['Optimize — Org Performance', 'STAR Model (Galbraith), span of control, org layer design, productivity indicators', 'Optimize', 'Operational'],
+        ['Acquire — Talent Pipeline', '"Ahead of Ready" lead time management, TOC bottleneck identification, H2R case risk scoring', 'Acquire', 'Tactical + Execution'],
+        ['Develop — Capability Building', 'Competency gap analysis, succession depth, L&D investment vs gap closure, career pathways', 'Develop', 'Operational'],
+        ['Proactive Action Plans', 'Driving indicator-based action recommendations with return on impact (cost of action vs inaction)', 'All ROAD', 'Execution'],
+        ['H2R Process Intelligence', 'Process mining, SLA management, compliance monitoring (inherited from H2R-SRNA-001)', 'Acquire + Retain', 'Execution'],
+        ['Strategic Workforce Planning', '3-year capability gap analysis, scenario modelling, build/buy/borrow/bot decisions', 'All ROAD', 'Strategic (3-5yr)'],
+        ['Competency Intelligence', 'AI-generated competency models grounded in O*NET, NICE, INCOSE SECF, R&M BoK', 'Develop', 'Operational'],
+        ['Cascade Engine', 'Bidirectional flow: strategy to execution and data to forecast', 'All ROAD', 'All horizons'],
+        ['AI Agent', 'Claude API-powered workforce intelligence agent grounded in real-time data via ChromaDB RAG', 'All ROAD', 'All horizons'],
     ]
 )
 
@@ -255,464 +314,555 @@ simple_table(
 # 3. SCOPE & BUSINESS CONTEXT
 # ══════════════════════════════════════════════════════════════════════════════
 heading('3. Scope & Business Context', 1)
-heading('3.1 Initiative Purpose', 2)
+heading('3.1 What This Platform Is — And Is Not', 2)
 body(
-    'The Workforce Intelligence Platform transforms AeroDefend Group\'s approach to workforce '
-    'management by integrating four previously disconnected planning layers into a single '
-    'platform. The platform applies process mining, machine learning, a competency knowledge '
-    'graph, and generative AI to both SAP H2R event data and external occupational frameworks — '
-    'enabling evidence-based process improvement, predictive capability gap management, '
-    'compliance monitoring, and self-service workforce analytics across all planning horizons.'
+    'This platform is an analytics and intelligence overlay. It reads data from SAP and other '
+    'sources, processes it, and surfaces insights and action recommendations. It does NOT replace '
+    'SAP case management. It does NOT write back to SAP. HR Business Partners use SAP for '
+    'execution; they use this platform to decide what to execute.'
+)
+simple_table(
+    ['What the Platform Does', 'What the Platform Does NOT Do'],
+    [
+        ['Reads H2R event logs from SAP SuccessFactors', 'Create or update SAP cases (case management stays in SAP)'],
+        ['Scores flight risk based on engagement, pay, tenure signals', 'Replace performance management — performance stays in SAP'],
+        ['Classifies attrition as regrettable or non-regrettable by programme impact', 'Operate a 9-box succession grid (development is separate from performance)'],
+        ['Generates action plans with return on impact calculations', 'Automate HR decisions — all decisions are made by humans'],
+        ['Shows programme delivery risk from a talent perspective', 'Replace project management systems — EVM stays in programme tools'],
+        ['Surfaces the binding constraint in the talent supply chain', 'Remove the constraint autonomously — that requires human intervention'],
+    ]
 )
 
 heading('3.2 The Four-Horizon Planning Architecture', 2)
-body(
-    'Effective workforce planning requires simultaneous management of four interconnected time '
-    'horizons. Each horizon has distinct questions, rhythms, and outputs. The platform addresses '
-    'all four, with the cascade engine ensuring decisions at the strategic level drive action at '
-    'the execution level, and operational data feeds back up to refine the strategic forecast.'
-)
 simple_table(
     ['Layer', 'Horizon', 'Primary Question', 'Planning Rhythm', 'Primary Output'],
     [
-        ['Strategic WFP', '3–5 years', 'What workforce shape and capability do we need to execute business strategy?', 'Annual + major trigger events', 'Strategic capability plan, scenario models, build/buy/borrow decisions'],
-        ['Operational WFP', '12–36 months', 'How many people, in what roles, with what competencies, and when?', 'Annual budget cycle + quarterly review', 'Headcount plan, L&D investment plan, succession slate'],
-        ['Tactical WFP & Execution', '0–12 months', 'Who do we hire, redeploy, develop, or exit — and in what sequence?', 'Monthly + sprint cadence', 'Hiring plan, deployment schedule, retention actions, internal mobility matches'],
-        ['H2R Execution', 'Daily / weekly', 'Are our HR processes running on time and in compliance?', 'Daily pipeline, real-time alerts', 'Process KPIs, SLA breach reports, compliance alerts, case risk scores'],
+        ['Strategic Workforce Planning', '3-5 years', 'What workforce shape and capability do we need to execute business strategy?', 'Annual + trigger events', 'Strategic capability plan, build/buy/borrow decisions'],
+        ['Operational Workforce Planning', '12-36 months', 'How many people, in what roles, with what competencies, and when?', 'Annual budget cycle + quarterly review', 'Headcount plan, L&D investment plan, succession slate'],
+        ['Tactical Workforce Planning', '0-12 months', 'Who do we hire, redeploy, develop, or retain — and in what sequence?', 'Monthly + sprint cadence', 'ROAD action plans, hiring plan, retention actions'],
+        ['H2R Execution', 'Daily/weekly', 'Are our HR processes running on time and in compliance?', 'Daily pipeline, real-time alerts', 'Process risk scores, SLA breach reports, compliance alerts'],
     ]
 )
 
 heading('3.3 In Scope — Phase 1 (Months 1–6)', 2)
-bullet('All capabilities from H2R-SRNA-001 Phase 1 (carried forward in full)')
-bullet('Framework Backbone ingestion: O*NET Web Services API, NICE Framework v2.2 (JSON), INCOSE SECF (structured data), R&M BoK lifecycle-competency mappings')
-bullet('HR Domain Ontology expanded to include occupational frameworks, competency definitions at 5 proficiency levels, and Bloom\'s Taxonomy cognitive complexity mapping')
-bullet('Strategic Workforce Planning module: 3-year capability gap analysis, scenario modelling engine, build/buy/borrow/bot decision support')
-bullet('Operational Workforce Planning module: annual headcount planning, role pipeline management, succession risk analysis')
-bullet('Competency Intelligence module: AI-generated competency models, behavioural indicators at 5 levels, UGESP-compliant technical documentation')
-bullet('Cascade Engine: bidirectional linkage between planning layers, strategic gaps cascading to active requisitions')
-bullet('Databricks Lakehouse: Bronze/Silver/Gold Delta Lake, Unity Catalog, MLflow, Workflows')
-bullet('Semantic Layer: governed workforce data access, business metric definitions, row-level security')
-bullet('AI Agent: Claude API with RAG over ChromaDB vector store (framework backbone + process mining outputs)')
-bullet('Visualisation: Native React dashboard (operational) + Tableau integration (strategic + workforce planning)')
-bullet('UGESP Compliance Engine: auto-generated legal documentation, adverse impact monitoring')
+bullet('All capabilities from H2R-SRNA-001 Phase 1 — carried forward in full')
+bullet('ROAD Framework implementation: Retain, Optimize, Acquire, Develop as the navigation and action backbone')
+bullet('Program Delivery Risk view: talent supply vs demand by programme, "Ahead of Ready" status, milestone risk')
+bullet('Attrition Intelligence: classification by programme execution impact (regrettable/non-regrettable/neutral), NOT 9-box')
+bullet('Turnover Contagion: team-level risk modelling when regrettable departures occur')
+bullet('Proactive Action Plans: driving indicator-based recommendations with return on impact')
+bullet('Three-tier ownership model: Action Owner (Line Manager) / Business Partner (HR BP) / Leader (HR VP/CPO) views')
+bullet('STAR Model (Galbraith): Strategy, Structure, Processes, Rewards, People scored at individual/team/org level')
+bullet('Theory of Constraints: binding constraint identification in talent supply chain with lead time analysis')
+bullet('Flat files as Phase 1 data architecture — CSV/JSON from SAP export, pre-processed into vector stores')
+bullet('Framework Backbone ingestion: O*NET, NICE, INCOSE SECF, R&M BoK, Bloom\'s Taxonomy')
+bullet('Strategic Workforce Planning module: 3-year capability gap analysis, scenario modelling')
+bullet('Competency Intelligence: AI-generated competency models grounded in framework backbone')
+bullet('Cascade Engine: bidirectional planning layer connector')
+bullet('AI Agent: Claude API with RAG over ChromaDB vector store')
+bullet('Static demo deployment: GitHub Pages (no backend required for demonstration)')
 
 heading('3.4 Explicitly Out of Scope — Phase 1', 2)
 bullet('Direct write-back to SAP (read-only integration in Phase 1)')
-bullet('Real-time SAP event streaming (batch ingestion in Phase 1)')
+bullet('Real-time SAP event streaming (batch/nightly ingestion in Phase 1; event-driven in Phase 3)')
 bullet('Mobile application')
-bullet('AFECD / military classification system integration (Phase 2)')
-bullet('External talent market data integration (Phase 2)')
+bullet('AFECD military classification integration (Phase 2)')
+bullet('External talent market data (Lightcast, LinkedIn — Phase 2)')
 bullet('Automated workflow execution in SAP (Phase 2)')
 bullet('Full SIOP-compliant structured job analysis data collection (Phase 2 — framework seeded in Phase 1)')
+bullet('9-box grid or any tool blending development with talent performance management')
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 4. FRAMEWORK BACKBONE
+# 4. DESIGN PHILOSOPHY & STRATEGIC FRAMEWORK
 # ══════════════════════════════════════════════════════════════════════════════
-heading('4. Competency Framework Backbone', 1)
+heading('4. Design Philosophy & Strategic Framework', 1)
 body(
-    'The platform\'s competency intelligence layer is grounded in six authoritative external '
-    'frameworks. These frameworks serve as the semantic backbone — providing standardised '
-    'occupational language, competency definitions, task inventories, and proficiency level '
-    'indicators that the platform uses to automatically generate client-facing competency models '
-    'and legal technical documentation. This eliminates the need for clients to build competency '
-    'models from scratch and ensures all models are defensible against industry standards.'
+    'The Workforce Intelligence Platform is built on four interlocking design principles. '
+    'These are not branding choices — they directly shape what the platform measures, '
+    'what it surfaces, and how it recommends actions. Understanding these principles is '
+    'essential for anyone designing, building, or using the platform.'
 )
 
+heading('4.1 VUCA Prime — The Platform as the Antidote', 2)
+body(
+    'Defence and aerospace organisations operate in a VUCA environment: Volatility '
+    '(programme scope changes without warning), Uncertainty (technology risk, competitor moves), '
+    'Complexity (multi-programme talent allocation, clearance dependencies), Ambiguity '
+    '(unclear future capability requirements). The response to VUCA is not more dashboards — '
+    'it is VUCA Prime: Vision, Understanding, Clarity, Agility.'
+)
+simple_table(
+    ['VUCA Challenge', 'VUCA Prime Response', 'Platform Mechanism'],
+    [
+        ['Volatility — environment changes faster than plans', 'Vision — know where you are going and why', '3-year workforce plan, programme milestone linkage, strategic ROAD targets'],
+        ['Uncertainty — cannot predict what will happen', 'Understanding — know why things are happening now', 'Driving indicator analysis, causal narratives in plain English, root cause identification'],
+        ['Complexity — too many interacting variables', 'Clarity — know what to do about it', 'Prioritised action plans, single recommended action per risk, owner assigned per action'],
+        ['Ambiguity — information is incomplete or unclear', 'Agility — move faster than the problem', 'Real-time data pipeline, ROAD action routing, proactive "Ahead of Ready" lead time management'],
+    ]
+)
+
+heading('4.2 ROAD Framework — The Workforce Strategy Architecture', 2)
+body(
+    'ROAD is the strategic framework that organises all workforce actions into four '
+    'mutually reinforcing pillars. Every action plan generated by the platform is tagged '
+    'to a ROAD pillar. Every metric is assigned to a ROAD category. The framework ensures '
+    'workforce decisions are balanced — preventing organisations from over-indexing on '
+    'any single dimension (e.g. only hiring when they should also be retaining or developing).'
+)
+simple_table(
+    ['Pillar', 'Full Name', 'Core Outcomes', 'Stabilises Against', 'Primary Indicators'],
+    [
+        ['R', 'Retain', 'Stabilise critical skills and foster a positive work environment', 'Regrettable attrition, contagion spread, clearance loss, knowledge walk-out', 'Flight risk score, compa-ratio, engagement score, attrition rate (regrettable), contagion index'],
+        ['O', 'Optimize', 'Accelerate organisational performance and maximise productivity', 'Manager overload, org design misalignment, decision velocity loss, span-of-control drift', 'STAR model scores, span of control, org layer ratio, engagement by team'],
+        ['A', 'Acquire', 'Deliver talent at the right place, on time, at the right cost', 'Late hiring, clearance lead time underestimation, TOC bottlenecks, programme milestone risk', '"Ahead of Ready" status, lead time vs target, requisition age, pipeline coverage ratio'],
+        ['D', 'Develop', 'Build skills and empower leaders to sustain growth', 'Competency gaps, succession voids, L&D under-investment, promotion pipeline blockages', 'Competency match %, succession depth, training hours, promotion rate by grade'],
+    ]
+)
+
+heading('4.3 Theory of Constraints — Talent as a Product', 2)
+body(
+    'The Theory of Constraints (TOC), applied to talent, treats the workforce pipeline as '
+    'a production system. The product is a qualified, cleared, and productive person deployed '
+    'to the right programme. Like any production system, throughput is limited by the binding '
+    'constraint — the one step in the process that limits output regardless of how efficiently '
+    'everything else runs.'
+)
+body(
+    'In defence and aerospace, the most common binding constraints are: (1) security clearance '
+    'lead time — DV clearance averages 12-18 months; (2) specialist skill scarcity — '
+    'R&M Engineering and Mission Systems expertise is a finite market; (3) manager approval '
+    'chain delays — internal bureaucracy slowing the hiring process below the constraint. '
+    'The platform identifies the current binding constraint by measuring lead times at each '
+    'stage and surfacing the one with the largest gap between actual and target.'
+)
+simple_table(
+    ['TOC Concept', 'Talent Application', 'Platform Implementation'],
+    [
+        ['Identify the constraint', 'Which step in H2R slows throughput most?', 'Process mining on H2R event log — lead time by stage'],
+        ['Exploit the constraint', 'Maximise throughput of the bottleneck step', 'Priority actions on constrained roles; cleared contractor bridge'],
+        ['Subordinate to the constraint', 'Align other processes to support the constraint', 'Programme teams forecast demand earlier; clearance initiated before requisition'],
+        ['Elevate the constraint', 'Invest to break the constraint entirely', 'Clearance coordinator; pre-cleared candidate pipeline; internal redeployment priority'],
+        ['Prevent inertia — repeat', 'Monitor to catch the next constraint as it emerges', 'Platform KPIs refresh weekly; TOC dashboard on Acquire section'],
+    ]
+)
+
+heading('4.4 "Ahead of Ready" — Lead Time as the Strategic Variable', 2)
+body(
+    'Talent must be deployed before demand is urgent. This is the "Ahead of Ready" principle. '
+    'In a conventional HR model, a vacancy is created when someone leaves or when a project '
+    'ramps up. In the Workforce Intelligence Platform model, the demand signal is the programme '
+    'plan — milestones, phase gates, and headcount ramps that are known months or years in '
+    'advance. The platform compares current supply to future demand at each lead-time horizon '
+    'and flags where supply will be insufficient before the need is urgent.'
+)
+body(
+    'Lead time is the total time from "need identified" to "qualified, cleared, and productive '
+    'person in seat." For DV-cleared roles, this is 14-18 months. For SC-cleared roles, '
+    '9-12 months. For uncleared professionals, 3-6 months. If a milestone is 10 months away '
+    'and you need a DV-cleared role filled, you are already behind. The platform makes this '
+    'visible and actionable before the milestone is missed.'
+)
+
+heading('4.5 Donella Meadows — Working On the System, Not In It', 2)
+body(
+    'Donella Meadows\' Thinking in Systems framework is the analytical lens for the platform. '
+    'Workforce is modelled as a stock (the current pool of qualified, engaged, productive people) '
+    'managed through four flows: inflows via Acquire (hiring), development via Develop (upskilling '
+    'and succession), stabilisation via Retain (reducing outflows), and structural optimisation '
+    'via Optimize (org design). The platform sits outside the system looking in — working ON '
+    'the system, not IN it.'
+)
+body(
+    'This philosophy has a specific implication for how the platform presents information. '
+    'A dashboard that shows what is happening (lagging indicators) is working IN the system. '
+    'A platform that explains why something is happening (driving indicators) and tells you '
+    'what to do about it before it gets worse (leading indicators) is working ON the system. '
+    'Every screen in the platform is designed to surface driving indicators first, with '
+    'lagging indicators as confirmation, not as the primary signal.'
+)
+simple_table(
+    ['Indicator Type', 'Definition', 'Platform Example', 'Action Value'],
+    [
+        ['Driving indicator', 'Root cause — the thing that causes the problem', 'Compa-ratio below 0.90 for 6+ months', 'HIGH — act now to prevent departure'],
+        ['Leading indicator', 'Early signal — the problem is developing', 'Flight risk score above 60%; time-in-role > 4 years with no promotion', 'MEDIUM — monitor and prepare intervention'],
+        ['Lagging indicator', 'Consequence — the problem has already occurred', 'Attrition rate this quarter; vacancy count', 'LOW — confirm what happened, calibrate models'],
+    ]
+)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 5. COMPETENCY FRAMEWORK BACKBONE
+# ══════════════════════════════════════════════════════════════════════════════
+heading('5. Competency Framework Backbone', 1)
+body(
+    'The competency intelligence layer is grounded in six authoritative external frameworks. '
+    'These provide the semantic backbone — occupational language, competency definitions, '
+    'task inventories, and proficiency level indicators used to automatically generate '
+    'competency models and UGESP-defensible legal documentation.'
+)
 simple_table(
     ['Framework', 'Source', 'Primary Contribution', 'Access Method'],
     [
-        ['O*NET', 'US DOL / O*NET Resource Center', 'Occupational taxonomy (900+ roles), task inventories, KSAOs, work context', 'Web Services API (X-API-Key)'],
-        ['NICE Framework v2.2', 'NIST / CISA (April 2025)', 'Cybersecurity workforce: 30+ work roles, TKS statements, competency areas', 'JSON / XLSX download'],
-        ['INCOSE SECF', 'INCOSE (July 2018)', '36 Systems Engineering competencies × 5 proficiency levels × behavioural indicators', 'Structured PDF / parsed data'],
-        ['R&M BoK', 'DoW / OSD (December 2025)', 'Defense acquisition engineering lifecycle competency requirements by phase and functional area', 'Parsed from public release PDF'],
-        ['AFECD', 'USAF / AFPC', 'Air Force Specialty Codes (AFSCs), skill levels (3/5/7/9), duty descriptions, entry requirements', 'Phase 2 — pending data access'],
-        ['SIOP / UGESP Methodology', 'SHRM-SIOP (2024)', 'Competency modeling methodology, legal defensibility requirements, content validation framework', 'Reference methodology only'],
-        ["Bloom's Taxonomy", 'Educational literature', 'Cognitive complexity mapping for proficiency levels 1–5', 'Reference model'],
+        ['O*NET', 'US DOL / O*NET Resource Center', '900+ occupations, task inventories, KSAOs, work context', 'Web Services API (X-API-Key)'],
+        ['NICE Framework v2.2', 'NIST / CISA (April 2025)', '30+ cybersecurity work roles, TKS statements, competency areas', 'JSON / XLSX download'],
+        ['INCOSE SECF', 'INCOSE (July 2018)', '36 Systems Engineering competencies x 5 proficiency levels x behavioural indicators', 'Parsed from published document'],
+        ['R&M BoK', 'DoW / OSD (December 2025)', 'Defense acquisition engineering lifecycle competencies by phase and functional area', 'Parsed from public release'],
+        ['AFECD', 'USAF / AFPC', 'Air Force Specialty Codes, skill levels, duty descriptions (Phase 2)', 'Phase 2 — pending access'],
+        ['SIOP / UGESP Methodology', 'SHRM-SIOP (2024)', 'Competency modelling methodology, legal defensibility, content validity framework', 'Reference methodology'],
+        ["Bloom's Taxonomy", 'Educational literature', 'Cognitive complexity mapping for proficiency levels 1-5', 'Reference model'],
     ]
 )
 
-heading('4.1 Competency Model Output Structure', 2)
+# ══════════════════════════════════════════════════════════════════════════════
+# 6. STAKEHOLDER & USER ROLES — THREE-TIER OWNERSHIP MODEL
+# ══════════════════════════════════════════════════════════════════════════════
+heading('6. Stakeholder & User Roles — Three-Tier Ownership Model', 1)
 body(
-    'All competency models generated by the platform follow the INCOSE SECF structure, which '
-    'provides the most complete and implementable format for HR use cases. Each generated '
-    'competency has the following structure:'
+    'Version 2.0 introduces a three-tier ownership model that defines who sees what and '
+    'who owns which actions. The ownership model is not about data access control alone — '
+    'it defines accountability for each action plan generated by the platform. Every action '
+    'has a primary owner who is responsible for moving it to resolution.'
 )
 simple_table(
-    ['Element', 'Description', 'Source'],
+    ['Ownership Tier', 'Role', 'What They See', 'What They Own'],
     [
-        ['Label', 'Short competency name (e.g. "Systems Thinking")', 'INCOSE SECF / O*NET / NICE / client taxonomy'],
-        ['Definition', '2–3 sentence description of the competency and why it matters', 'INCOSE SECF / SIOP methodology'],
-        ['Behavioural Indicators — Level 1 (Awareness)', 'Observable behaviours demonstrating entry-level competence', 'INCOSE SECF model + AI generation'],
-        ['Behavioural Indicators — Level 2 (Supervised Practitioner)', 'Behaviours requiring guidance and supervision', 'INCOSE SECF model + AI generation'],
-        ['Behavioural Indicators — Level 3 (Practitioner)', 'Independent performance behaviours', 'INCOSE SECF model + AI generation'],
-        ['Behavioural Indicators — Level 4 (Lead Practitioner)', 'Expert guidance and enterprise-level behaviours', 'INCOSE SECF model + AI generation'],
-        ['Behavioural Indicators — Level 5 (Expert)', 'Recognised authority, contribution beyond enterprise boundary', 'INCOSE SECF model + AI generation'],
-        ["Bloom's Level Mapping", 'Cognitive complexity of each proficiency level (Remember → Create)', "Bloom's Taxonomy"],
-        ['O*NET Cross-Reference', 'Linked O*NET occupational codes and KSA element IDs', 'O*NET API'],
-        ['UGESP Validation Statement', 'Content validity evidence linking competency to job performance', 'SIOP / UGESP methodology'],
+        ['Action Owner', 'Line Manager / Programme Manager', 'Their team\'s flight risk, individual action plans, upcoming milestones requiring talent, direct report competency gaps', 'Day-to-day retention conversations, development plans, programme resourcing requests'],
+        ['Business Partner', 'HR Business Partner', 'Department-level ROAD health, all action plans in their portfolio, H2R case risk scores, workforce analytics for their client group', 'Compensation reviews, succession facilitation, talent acquisition briefs, escalation to Leader tier'],
+        ['Leader', 'HR VP / CPO / Business Leadership', 'Enterprise-wide ROAD health, programme delivery risk summary, strategic capability gaps, return on impact across portfolio', 'Strategic workforce decisions, investment approvals, org design changes, board-level reporting'],
     ]
 )
 
-# ══════════════════════════════════════════════════════════════════════════════
-# 5. STAKEHOLDER & USER ROLES
-# ══════════════════════════════════════════════════════════════════════════════
-heading('5. Stakeholder & User Roles', 1)
 body(
-    'The following roles interact with the platform at different access levels across all '
-    'planning horizons. Data governance and row-level security in Unity Catalog are configured '
-    'per this matrix. Roles marked * are new additions beyond H2R-SRNA-001.'
+    'The platform presents each ownership view as a distinct "lens" — same underlying data, '
+    'different level of aggregation, different action vocabulary. Line Managers see individual '
+    'names and specific conversations. HR Business Partners see department patterns and '
+    'portfolio actions. Leaders see trends, risks, and investment decisions.'
 )
 simple_table(
     ['Role', 'User Type', 'Platform Access', 'Planning Horizon', 'Visualisation'],
     [
-        ['Chief People Officer *', 'Executive', 'Strategic WFP dashboard + AI agent + full platform read', 'Strategic (3–5 yr)', 'Executive Tableau + AI agent'],
-        ['HR Vice President', 'Executive', 'Full platform + AI agent (all departments, read-only)', 'All horizons', 'Executive Tableau + AI agent'],
-        ['IT Vice President', 'Executive', 'Architecture dashboard + infrastructure metrics', 'Execution', 'IT ops Tableau view'],
-        ['Workforce Planning Analyst *', 'Power User', 'Strategic WFP + Competency Intelligence + cascade engine', 'Strategic + Operational', 'React WFP dashboard + Tableau'],
-        ['HR Business Partner', 'Power User', 'AI agent + process maps + action plans + competency models', 'Operational + Tactical', 'Operational React + Tableau'],
-        ['TA Recruiter / Coordinator', 'Operational', 'Active case risk scores + breach alerts + role profiles', 'Tactical + Execution', 'React dashboard (operational)'],
-        ['HR Operations Manager', 'Power User', 'Full process mining + root cause + headcount planning', 'Operational + Execution', 'React + Tableau'],
-        ['Competency SME *', 'Specialist', 'Competency model builder + framework backbone viewer + UGESP docs', 'Operational', 'Competency Intelligence dashboard'],
-        ['Compensation Analyst', 'Specialist', 'Compensation-related process steps + comp band planning', 'Operational', 'Tableau only'],
-        ['Data / Analytics Analyst', 'Technical', 'Full Databricks SQL + semantic layer + notebooks', 'All (anonymised PII)', 'Tableau + Databricks notebooks'],
-        ['IT Architect', 'Technical', 'Infrastructure + integration layer + metadata', 'Execution', 'IT monitoring dashboard'],
-        ['Compliance Officer', 'Audit', 'Compliance sentinel + breach log + UGESP documentation', 'All horizons', 'Compliance Tableau view'],
-        ['Line Manager', 'Consumer', 'Self-service: own team cases + team competency profiles', 'Tactical', 'Tableau published view (read-only)'],
+        ['Chief People Officer', 'Leader', 'Enterprise ROAD dashboard, strategic capability gaps, AI agent, full read', 'Strategic (3-5yr)', 'Leader view + AI agent'],
+        ['HR Vice President', 'Leader', 'Full platform, enterprise-wide analytics, Leader ownership view', 'All horizons', 'Leader view + AI agent'],
+        ['IT Vice President', 'Executive', 'Architecture dashboard, infrastructure metrics, Phase 2 roadmap', 'Execution + Architecture', 'IT ops view'],
+        ['Programme Director', 'Consumer', 'Programme delivery risk tab — talent supply vs demand for their programmes', 'Tactical (0-12mo)', 'Programme risk view (read-only)'],
+        ['HR Business Partner', 'Business Partner', 'Department ROAD health, all action plans in portfolio, AI agent, H2R case risk', 'Operational + Tactical', 'Business Partner view'],
+        ['Workforce Planning Analyst', 'Power User', 'Strategic WFP, competency intelligence, cascade engine, scenario modelling', 'Strategic + Operational', 'Full analytical view'],
+        ['TA Recruiter / Coordinator', 'Action Owner', 'Active case risk scores, breach alerts, lead time dashboard, pipeline coverage', 'Tactical + Execution', 'Acquire view'],
+        ['HR Operations Manager', 'Action Owner', 'Full process mining, compliance monitoring, H2R execution KPIs', 'Operational + Execution', 'Execution view'],
+        ['Line Manager', 'Action Owner', 'Own team action plans, direct report flight risk, competency gaps, open cases', 'Tactical', 'Action Owner view (read-only)'],
+        ['Competency SME', 'Specialist', 'Competency model builder, framework backbone viewer, UGESP docs', 'Operational', 'Competency intelligence view'],
+        ['Compliance Officer', 'Audit', 'Compliance sentinel, breach log, UGESP documentation audit trail', 'All horizons', 'Compliance view'],
+        ['Data / Analytics Analyst', 'Technical', 'Full Databricks SQL, semantic layer, notebooks (anonymised PII)', 'All horizons', 'Databricks + Tableau'],
     ]
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 6. FUNCTIONAL REQUIREMENTS
+# 7. FUNCTIONAL REQUIREMENTS
 # ══════════════════════════════════════════════════════════════════════════════
-heading('6. Functional Requirements', 1)
+heading('7. Functional Requirements', 1)
 body(
-    'Requirements are numbered by capability area and prioritised using MoSCoW. Requirements '
-    'prefixed FR-H2R are inherited from H2R-SRNA-001 v1.0 and are carried forward unchanged. '
-    'Requirements prefixed FR-WIP are new to this document. Each requirement traces to a named '
-    'source (business pain point, compliance obligation, or stakeholder request).'
+    'Requirements are prioritised using MoSCoW. Requirements prefixed FR-H2R are inherited '
+    'from H2R-SRNA-001 v1.0 unchanged. Requirements prefixed FR-WIP-V1 were introduced in '
+    'WIP-SRNA-001 v1.0. Requirements prefixed FR-WIP-V2 are new to this version.'
 )
 
-# 6.1 Data Ingestion (inherited)
-heading('6.1 Data Ingestion & Event Log (Inherited from H2R-SRNA-001)', 2)
-body('All FR-D01 through FR-D09 requirements from H2R-SRNA-001 are carried forward unchanged. See H2R-SRNA-001 §4.1 for full definitions. Key additions below.')
+heading('7.1 Data Ingestion & Event Log', 2)
+body('FR-D01 through FR-D09 from H2R-SRNA-001 are carried forward. Key v2.0 additions:')
 req_table([
-    ['FR-WIP-D01', 'The system shall ingest framework backbone data from O*NET Web Services API on a scheduled basis (minimum weekly), storing raw responses in the Bronze layer', 'Must', 'Framework: O*NET occupational data must be current'],
-    ['FR-WIP-D02', 'The system shall ingest NICE Framework v2.2 work role definitions, TKS statements, and competency area mappings from the published JSON/XLSX source on initial load and when new versions are released', 'Must', 'Framework: NICE is the cybersecurity workforce standard'],
-    ['FR-WIP-D03', 'The system shall ingest INCOSE SECF competency definitions (36 competencies × 5 levels × behavioural indicators) as structured data into the framework ontology', 'Must', 'Framework: INCOSE SECF is the competency output format template'],
-    ['FR-WIP-D04', 'The system shall ingest R&M BoK lifecycle-phase competency mappings (MSA, TMRR, EMD, P&D, O&S) as structured data, linking acquisition phase to required functional competencies', 'Must', 'Framework: R&M BoK provides defense acquisition engineering competencies'],
-    ['FR-WIP-D05', 'The system shall ingest client workforce data (job titles, position descriptions, incumbent profiles, performance data) via CSV upload or HRIS API, mapping client terminology to framework concepts via the semantic layer', 'Must', 'Client: platform must work with client\'s existing data, not replace it'],
-    ['FR-WIP-D06', "The system shall ingest Bloom's Taxonomy cognitive level definitions as a reference model, mapping each to INCOSE SECF proficiency levels 1–5", 'Must', "Competency: Bloom's mapping enables cognitive complexity scoring"],
+    ['FR-WIP-V2-D01', 'The system shall support a Phase 1 flat-file data architecture: SAP data exported as CSV/JSON, stored locally, pre-processed into vector stores and analytical datasets without requiring live SAP API connectivity. The flat-file schema SHALL be designed as the data requirements specification for Phase 2 IT integration.', 'Must', 'Phase 1 must work without live SAP integration to enable rapid demonstration and proof of concept. Flat file schema becomes the IT interface specification.'],
+    ['FR-WIP-V2-D02', 'The system shall ingest synthetic workforce data (employees, programmes, attrition history, H2R action log) as the demonstration dataset for Phase 1. The synthetic data schema shall match the target production schema field-for-field.', 'Must', 'Demo requirement: platform must be demonstrable without access to production HR data.'],
+    ['FR-WIP-V2-D03', 'The Phase 2 data architecture shall integrate with SAP SuccessFactors via OData API and SAP HCM/ECC for employee master data, position data, and H2R event logs. Phase 2 shall target nightly batch ingestion. Phase 3 shall evaluate event-driven ingestion.', 'Must', 'IT integration requirement: Phase 2 connects to live SAP. This document is the data specification.'],
 ])
 
-# 6.2 Process Mining (inherited)
-heading('6.2 Process Mining Engine (Inherited from H2R-SRNA-001)', 2)
-body('All FR-PM01 through FR-PM09 requirements from H2R-SRNA-001 are carried forward unchanged. See H2R-SRNA-001 §4.2 for full definitions.')
-
-# 6.3 Predictive Analytics (inherited)
-heading('6.3 Predictive Analytics (Inherited from H2R-SRNA-001)', 2)
-body('All FR-PA01 through FR-PA07 requirements from H2R-SRNA-001 are carried forward unchanged. See H2R-SRNA-001 §4.3 for full definitions. Key additions below.')
-req_table([
-    ['FR-WIP-PA01', 'The system shall train and deploy a capability gap prediction model that forecasts workforce capability shortfalls at 12-month, 24-month, and 36-month horizons, by job family, department, and competency domain', 'Must', 'Strategic WFP: core output of the strategic planning module'],
-    ['FR-WIP-PA02', 'The system shall model three workforce scenarios for each strategic planning cycle: Status Quo, Growth, and Restructure — each producing a distinct capability gap profile and recommended action portfolio', 'Should', 'Strategic WFP: scenario modelling for planning uncertainty'],
-    ['FR-WIP-PA03', 'The system shall calculate a Workforce Readiness Index (WRI) for each department, combining current competency coverage, pipeline strength, and attrition risk into a single 0–100 score', 'Should', 'Strategic WFP: executive-level workforce health metric'],
-])
-
-# 6.4 Ontology & Knowledge Graph (significantly expanded)
-heading('6.4 Ontology & Knowledge Graph (Significantly Expanded)', 2)
-body('All FR-OG01 through FR-OG07 requirements from H2R-SRNA-001 are carried forward and expanded below. The ontology scope is significantly larger than originally defined in H2R-SRNA-001.')
-req_table([
-    ['FR-WIP-OG01', 'The HR Domain Ontology shall incorporate all six framework backbone sources (O*NET, NICE, INCOSE SECF, R&M BoK, Bloom\'s Taxonomy, SIOP/UGESP methodology) as structured ontology layers, with defined relationships between entities across frameworks', 'Must', 'Framework: cross-framework mapping is the platform\'s core differentiator'],
-    ['FR-WIP-OG02', 'The ontology shall define an Occupation entity with attributes: O*NET code, title, task inventory, KSAO elements, work context, and cross-references to NICE work roles and INCOSE SECF competencies where applicable', 'Must', 'Ontology: occupation is the primary entity linking all frameworks'],
-    ['FR-WIP-OG03', 'The ontology shall define a Competency entity with attributes: label, definition, why-it-matters, five proficiency levels each with behavioural indicators, Bloom\'s cognitive level mapping, and source framework reference', 'Must', 'Competency: this is the primary output entity of the platform'],
-    ['FR-WIP-OG04', 'The ontology shall define an AcquisitionPhase entity linking R&M BoK lifecycle phases (MSA, TMRR, EMD, P&D, O&S) to required functional area competencies at specified proficiency levels', 'Must', 'R&M BoK: defense acquisition workforce planning requires lifecycle context'],
-    ['FR-WIP-OG05', 'The ontology shall define a WorkRole entity linking NICE Framework work roles to O*NET occupational codes, INCOSE SECF competencies, and client position data via entity resolution', 'Must', 'NICE: cybersecurity workforce mapping requires this entity'],
-    ['FR-WIP-OG06', 'The ontology shall support a ProficiencyLevel entity (1–5, Awareness through Expert) with defined behavioural indicators per competency, linked to Bloom\'s cognitive taxonomy levels', 'Must', "Competency: proficiency levels are required for UGESP defensibility and L&D planning"],
-    ['FR-WIP-OG07', 'The ontology shall support a CareerPath entity representing role-to-role progression routes, including required competency level transitions, typical time-in-role, and bridging development actions', 'Should', 'Career: career pathway maps are a primary client deliverable'],
-    ['FR-WIP-OG08', 'The ontology shall support a CapabilityGap entity linking current workforce competency profiles to future-state requirements derived from the strategic workforce plan, with a gap severity score and recommended resolution (hire/build/borrow/bot)', 'Must', 'Strategic WFP: gap entity is the core analytical output'],
-    ['FR-WIP-OG09', 'The knowledge graph shall support cross-framework queries such as: "Show all O*NET occupations mapped to NICE work roles where the INCOSE Systems Thinking competency is required at Practitioner level or above"', 'Must', 'Analytics: cross-framework insight is the primary value proposition'],
-    ['FR-WIP-OG10', 'The ontology shall be version-controlled and auditable, with all changes timestamped and attributed — required for UGESP compliance and legal defensibility', 'Must', 'UGESP: competency model changes must be traceable'],
-])
-
-# 6.5 Semantic Layer (inherited)
-heading('6.5 Semantic Layer (Inherited + Extended from H2R-SRNA-001)', 2)
-body('All FR-SL01 through FR-SL07 requirements from H2R-SRNA-001 are carried forward unchanged. Key additions below.')
-req_table([
-    ['FR-WIP-SL01', 'The semantic layer metric catalogue shall be extended to include workforce planning metrics: Workforce Readiness Index, Capability Coverage %, Competency Gap Count, Time-to-Competency, and Strategic Hire Fill Rate', 'Must', 'Strategic WFP: workforce planning KPIs are distinct from H2R process KPIs'],
-    ['FR-WIP-SL02', 'The semantic layer shall expose a workforce planning API enabling the cascade engine to query current competency profiles, active gaps, and planned headcount changes in a single call', 'Must', 'Cascade: real-time cross-layer queries require a unified semantic interface'],
-])
-
-# 6.6 AI Agent (inherited + expanded)
-heading('6.6 AI Agent (Inherited + Extended from H2R-SRNA-001)', 2)
-body('All FR-AI01 through FR-AI08 requirements from H2R-SRNA-001 are carried forward unchanged. Key additions below.')
-req_table([
-    ['FR-WIP-AI01', 'The AI agent shall answer strategic workforce planning questions grounded in the framework backbone and client data, including: capability gap analysis, build/buy/borrow recommendations, scenario comparison, and competency model generation', 'Must', 'Strategic WFP: AI agent must span all planning horizons, not just H2R process'],
-    ['FR-WIP-AI02', 'The AI agent shall generate draft competency models for any role or job family when prompted, using the INCOSE SECF structure, grounded in O*NET task inventories and NICE/INCOSE competency definitions', 'Must', 'Competency: automated model generation is a primary platform capability'],
-    ['FR-WIP-AI03', 'The AI agent shall generate UGESP-compliant technical documentation for any competency model on request, including: job analysis rationale, content validity evidence, and adverse impact monitoring requirements', 'Should', 'UGESP: legal documentation generation reduces I-O psychology consulting cost'],
-    ['FR-WIP-AI04', 'The AI agent shall translate military occupational specialties (AFSCs, MOSs) to civilian O*NET equivalents on demand, supporting military-to-civilian workforce transition planning', 'Could', 'AFECD: defense clients need military-to-civilian translation'],
-])
-
-# 6.7 Strategic Workforce Planning Module
-heading('6.7 Strategic Workforce Planning Module', 2)
-body('This module is new to this document. It addresses the 3-year planning horizon and the annual strategic workforce planning cycle.')
-req_table([
-    ['FR-WIP-SWP01', 'The system shall maintain a rolling 3-year workforce plan for each department and the enterprise as a whole, updated annually and on major trigger events (acquisition, contract award/loss, technology change)', 'Must', 'Strategic WFP: 3-year horizon is the minimum required for meaningful capability planning'],
-    ['FR-WIP-SWP02', 'The 3-year plan shall decompose business strategy into capability requirements, translating strategic objectives into required competencies, headcount, and role profiles using the framework backbone as translation layer', 'Must', 'Strategic WFP: strategy-to-workforce translation is the core analytical task'],
-    ['FR-WIP-SWP03', 'The system shall calculate a capability gap for each competency domain: (Required Proficiency × Required Headcount) minus (Current Proficiency × Current Headcount), producing a gap severity matrix by year, department, and competency', 'Must', 'Strategic WFP: quantified gap is required for budget and investment decisions'],
-    ['FR-WIP-SWP04', 'The system shall recommend a sourcing strategy for each capability gap: Build (L&D investment), Buy (external hire), Borrow (contractor/partner), or Bot (automation/AI substitution), with estimated cost and timeline for each option', 'Must', 'Strategic WFP: build/buy/borrow/bot decision framework is standard workforce planning methodology'],
-    ['FR-WIP-SWP05', 'The strategic workforce plan shall be versioned and support before/after comparison, enabling measurement of plan accuracy and plan improvement over successive cycles', 'Should', 'Governance: plan vs actual tracking demonstrates workforce planning maturity'],
-    ['FR-WIP-SWP06', 'The system shall support scenario modelling: users define business scenarios (e.g. 20% revenue growth, entry into new market, loss of key contract) and the system generates the corresponding workforce requirement delta', 'Should', 'Strategic WFP: planning under uncertainty requires scenario analysis'],
-])
-
-# 6.8 Operational Workforce Planning Module
-heading('6.8 Operational Workforce Planning Module (Headcount Planning)', 2)
-body('This module addresses the 12–36 month horizon and the annual headcount planning and budget cycle.')
-req_table([
-    ['FR-WIP-OWP01', 'The system shall support an annual headcount planning cycle: departments submit headcount requests, the system validates them against strategic capability requirements and budget constraints, producing a recommended headcount plan', 'Must', 'Operational WFP: annual headcount planning is the primary operational rhythm'],
-    ['FR-WIP-OWP02', 'The headcount plan shall track planned headcount vs approved budget vs actual headcount at department and role level, updated after each monthly pipeline run', 'Must', 'Operational WFP: plan vs actual variance is a core management metric'],
-    ['FR-WIP-OWP03', 'The system shall identify succession risk: roles where there is no ready-now successor and no development pipeline, flagged as critical succession gaps requiring immediate action', 'Must', 'Operational WFP: succession risk is a board-level concern in defense organisations'],
-    ['FR-WIP-OWP04', 'The system shall produce a quarterly workforce planning review pack for HR leadership: headcount status, capability gap progress, succession risk update, and 12-month hiring forecast', 'Should', 'Operational WFP: regular review cadence is required for organisational accountability'],
-    ['FR-WIP-OWP05', 'The system shall track L&D investment against capability gap closure, measuring competency level improvement for individuals in development programmes and reporting aggregate capability uplift', 'Should', 'Operational WFP: L&D ROI measurement enables investment prioritisation'],
-])
-
-# 6.9 Tactical Workforce Planning & Execution Module
-heading('6.9 Tactical Workforce Planning & Execution Module', 2)
-body('This module addresses the 0–12 month horizon, connecting operational headcount plans to active requisitions and the H2R execution layer.')
-req_table([
-    ['FR-WIP-TWP01', 'The system shall maintain a tactical hiring plan for the next 12 months, derived from the approved headcount plan and updated monthly, showing requisitions by role, priority, target hire date, and sourcing strategy', 'Must', 'Tactical WFP: the tactical plan is the bridge between operational planning and H2R execution'],
-    ['FR-WIP-TWP02', 'The cascade engine shall automatically generate requisition records in the hiring plan when a new headcount position is approved in the operational workforce plan', 'Must', 'Cascade: this is the key downstream connection from operational to tactical layer'],
-    ['FR-WIP-TWP03', 'The system shall calculate a deployment optimisation recommendation for each open position: internal candidate match score (based on competency gap to role requirement), vs external hire cost/time estimate', 'Should', 'Tactical WFP: internal mobility is faster and cheaper than external hire where a match exists'],
-    ['FR-WIP-TWP04', 'The system shall identify retention risk: individuals with high competency profiles in critical roles where attrition indicators are elevated (tenure, market demand for skills, flight risk score from H2R data)', 'Must', 'Tactical WFP: retention of critical talent is a primary tactical concern'],
-    ['FR-WIP-TWP05', 'The system shall produce a monthly workforce execution dashboard showing: tactical plan vs actuals, open critical requisitions, retention risk alerts, internal mobility matches, and competency development progress', 'Must', 'Tactical WFP: monthly cadence is required for HR operations rhythm'],
-])
-
-# 6.10 Competency Intelligence Module
-heading('6.10 Competency Intelligence Module', 2)
-body('This module manages the generation, validation, versioning, and delivery of competency models. It is a primary client-facing capability of the platform.')
-req_table([
-    ['FR-WIP-CI01', 'The system shall generate a draft competency model for any role or job family using the AI agent, grounded in O*NET task inventories, NICE/INCOSE SECF competency definitions, and client job description data', 'Must', 'Competency: automated model generation is the primary differentiated capability'],
-    ['FR-WIP-CI02', 'Each generated competency model shall follow the INCOSE SECF structure: Competency Label, Definition, Why it Matters, and Behavioural Indicators at 5 proficiency levels', 'Must', 'INCOSE SECF: using the industry standard structure ensures professional quality and defensibility'],
-    ['FR-WIP-CI03', 'The system shall assign a Bloom\'s Taxonomy cognitive level to each proficiency level indicator, enabling training designers and assessors to understand the cognitive complexity expected at each level', 'Must', "Bloom's: cognitive complexity mapping enables L&D curriculum design aligned to proficiency targets"],
-    ['FR-WIP-CI04', 'Generated competency models shall include O*NET cross-references: the O*NET occupational code(s) the role maps to, and the specific KSA element IDs that underpin each competency', 'Must', 'O*NET: cross-referencing to O*NET provides external validation evidence for UGESP purposes'],
-    ['FR-WIP-CI05', 'The system shall support SME validation workflow: drafted competency models are routed to designated Subject Matter Experts for review and rating, with consolidated ratings producing a validated final model', 'Should', 'SIOP: SME validation is a required step in content validity evidence gathering'],
-    ['FR-WIP-CI06', 'All competency models shall be versioned, with changes tracked and attributed to support audit trail requirements for UGESP compliance', 'Must', 'UGESP: competency model changes must be auditable to defend selection procedure validity'],
-    ['FR-WIP-CI07', 'The system shall generate both a public-facing competency model (behavioural indicators, proficiency levels, development guidance) and a legal technical documentation package (job analysis rationale, content validity evidence, adverse impact monitoring plan)', 'Must', 'UGESP: two outputs are required — one for HR use, one for legal defensibility'],
-])
-
-# 6.11 Cascade Engine
-heading('6.11 Cascade Engine', 2)
+heading('7.2 SAP Action Log Integration (H2R Event Log)', 2)
 body(
-    'The cascade engine is the architectural mechanism that connects the four planning horizons. '
-    'It ensures that strategic decisions propagate downward to execution, and that operational '
-    'data feeds back upward to refine the strategic forecast. Without this engine, the platform '
-    'is a collection of isolated planning tools rather than an integrated workforce intelligence system.'
+    'The H2R action log is the primary process data source. In Phase 1 it is represented as '
+    'a synthetic flat file matching the SAP SuccessFactors event log schema. In Phase 2 it '
+    'is ingested via OData API. The action log is the foundation of process mining and '
+    'the Acquire ROAD pillar.'
 )
 req_table([
-    ['FR-WIP-CE01', 'The cascade engine shall propagate approved strategic capability requirements downward to the operational headcount plan: a new strategic capability gap automatically creates a planned headcount need in the operational layer', 'Must', 'Cascade: top-down propagation is the core cascade mechanism'],
-    ['FR-WIP-CE02', 'The cascade engine shall propagate approved operational headcount positions downward to the tactical hiring plan, generating requisition records with required competency profile attached', 'Must', 'Cascade: operational-to-tactical cascade ensures requisitions reflect strategic intent'],
-    ['FR-WIP-CE03', 'The cascade engine shall aggregate execution-layer data (H2R process KPIs, hire outcomes, attrition events) upward into the tactical and operational layers, updating plan vs actual metrics in real time after each pipeline run', 'Must', 'Cascade: bottom-up data flow enables self-correcting plans'],
-    ['FR-WIP-CE04', 'The cascade engine shall identify cascade breaks: where an approved strategic capability requirement has no corresponding operational headcount position, or a headcount position has no corresponding tactical requisition — flagged as planning gaps requiring action', 'Must', 'Cascade: breaks in the cascade are planning risks that must be visible'],
-    ['FR-WIP-CE05', 'The cascade engine shall produce a monthly cascade health report showing: strategic requirements with operational coverage, operational positions with tactical requisitions, and tactical requisitions with active H2R cases', 'Should', 'Governance: cascade health is a workforce planning maturity indicator'],
+    ['FR-WIP-V2-AL01', 'The system shall ingest the H2R action log: a timestamped record of every activity completed within each hiring or onboarding case (requisition raised, job posted, interview completed, offer extended, clearance initiated, background check, etc.). Minimum fields: case_id, activity_name, timestamp, actor_role, outcome, days_from_previous_activity.', 'Must', 'Process mining requires a complete event log with activity-level timestamps. Without this, bottleneck identification is not possible.'],
+    ['FR-WIP-V2-AL02', 'The action log shall capture the clearance initiation date for every case requiring security vetting, enabling lead time calculation from clearance initiation to clearance granted. This is the single most important date for "Ahead of Ready" analysis.', 'Must', 'Clearance lead time is the most common binding constraint in defence talent acquisition. Tracking it is non-negotiable.'],
+    ['FR-WIP-V2-AL03', 'The system shall calculate a risk score for each active H2R case based on: days since last activity (staleness), number of activities remaining, SLA proximity, and compliance completeness. Risk score shall be 0-100 with labels: Low / Medium / High / Critical.', 'Must', 'Case risk scoring is a core H2R intelligence capability inherited from H2R-SRNA-001.'],
+    ['FR-WIP-V2-AL04', 'The action log integration shall be a stated technical requirement (FR priority: Must) for the Phase 2 IT build. IT must provide OData API access to the SAP SuccessFactors Recruiting Management and Onboarding modules. This requirement is blocked on IT delivery.', 'Must', 'IT dependency: without action log API access, real-time process intelligence is not possible in production.'],
 ])
 
-# 6.12 UGESP Compliance Engine
-heading('6.12 UGESP Compliance & Legal Documentation Engine', 2)
-req_table([
-    ['FR-WIP-UC01', 'The system shall generate a UGESP-compliant Job Analysis Report for any role or job family, including: job title and O*NET code, task inventory with importance ratings, KSAO linkage table, and evidence of SME input', 'Must', 'Legal: UGESP requires documented job analysis as foundation for any selection procedure'],
-    ['FR-WIP-UC02', 'The system shall generate a Content Validity Evidence Summary for each competency model, documenting: the link from job analysis to competency identification, SME validation process, and the two-assertion framework (job→competency→HR process)', 'Must', 'UGESP: content validity is the primary legal defensibility mechanism for competency-based selection'],
-    ['FR-WIP-UC03', 'The system shall monitor adverse impact for any selection or assessment process linked to the platform: calculating the 4/5ths rule across protected groups and flagging violations for legal review', 'Should', 'UGESP Section 4D: adverse impact monitoring is a regulatory requirement'],
-    ['FR-WIP-UC04', 'All UGESP documentation shall be versioned, timestamped, and stored in the Databricks audit layer — retained for minimum 7 years to meet employment law record-keeping requirements', 'Must', 'Legal: employment documentation retention requirements vary by jurisdiction; 7 years is the conservative standard'],
-])
+heading('7.3 Process Mining Engine (Inherited from H2R-SRNA-001)', 2)
+body('FR-PM01 through FR-PM09 from H2R-SRNA-001 are carried forward unchanged. See H2R-SRNA-001 §4.2.')
 
-# 6.13 Talent Marketplace
-heading('6.13 Talent Marketplace', 2)
-req_table([
-    ['FR-WIP-TM01', 'The system shall maintain a competency profile for each employee, combining assessed proficiency levels (from performance data or self-assessment), current role requirements, and career pathway targets', 'Should', 'Talent Marketplace: individual profiles are the foundation of internal mobility matching'],
-    ['FR-WIP-TM02', 'When a new internal opportunity is created (promotion, lateral move, project assignment), the system shall calculate a fit score for all employees whose competency profile matches the opportunity requirements within a configurable gap threshold', 'Should', 'Talent Marketplace: internal mobility match reduces time-to-fill and supports career development'],
-    ['FR-WIP-TM03', 'The talent marketplace shall be accessible to employees as a self-service tool showing: current role competency requirements, assessed profile vs requirement gaps, recommended development actions, and open internal opportunities matching their profile', 'Could', 'Talent Marketplace: self-service career development is a retention tool'],
-])
-
-# 6.14 Visualisation (updated)
-heading('6.14 Visualisation (Extended from H2R-SRNA-001)', 2)
-body('All FR-VR01 through FR-VR09 and FR-VT01 through FR-VT08 from H2R-SRNA-001 are carried forward. The following new visualisation requirements are added.')
-req_table([
-    ['FR-WIP-VIS01', 'The strategic workforce planning dashboard shall display: 3-year capability gap heatmap by competency domain and department, Workforce Readiness Index trend, build/buy/borrow/bot recommendation summary, and scenario comparison panel', 'Must', 'Strategic WFP: executives require a single-screen strategic workforce view'],
-    ['FR-WIP-VIS02', 'The operational workforce planning dashboard shall display: headcount plan vs approved budget vs actual, succession risk matrix (critical roles × pipeline strength), L&D investment vs capability gap closure, and quarterly forecast vs actuals', 'Must', 'Operational WFP: HR VPs and CPOs require the operational planning view'],
-    ['FR-WIP-VIS03', 'The competency intelligence dashboard shall display: framework backbone coverage map, generated competency model library with version history, SME validation status, and UGESP documentation readiness indicator', 'Must', 'Competency: HR teams and workforce planning analysts need visibility into model quality and coverage'],
-    ['FR-WIP-VIS04', 'The cascade engine health view shall display: coverage rates at each cascade layer, cascade breaks requiring action, plan vs actual metrics across all horizons, and a traffic light status for each layer (Green/Amber/Red)', 'Must', 'Cascade: cascade health must be visible to workforce planning leadership'],
-])
-
-# 6.15 Action Plan Engine (inherited)
-heading('6.15 Action Plan Engine (Inherited from H2R-SRNA-001)', 2)
-body('All FR-AP01 through FR-AP06 from H2R-SRNA-001 are carried forward unchanged. The action plan engine is extended to generate recommendations across all planning horizons, not only H2R process improvements.')
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 7. NON-FUNCTIONAL REQUIREMENTS
-# ══════════════════════════════════════════════════════════════════════════════
-heading('7. Non-Functional Requirements', 1)
-body('All NFR sections from H2R-SRNA-001 (Performance, Security & Compliance, Availability & Recovery, Scalability, Data Residency & Sovereignty) are carried forward unchanged. Key additions below.')
-req_table([
-    ['NFR-WIP-P01', 'Strategic workforce planning pipeline (capability gap calculation, scenario modelling, cascade propagation) shall complete within 30 minutes for an organisation of up to 10,000 employees', 'Must', 'Operations: strategic planning pipeline is run on-demand and must be responsive'],
-    ['NFR-WIP-S01', 'Framework backbone data (O*NET, NICE, INCOSE SECF, R&M BoK) shall be stored in a read-only, immutable Bronze layer. No client process shall be able to modify framework source data', 'Must', 'Data integrity: framework backbone must be authoritative and unmodifiable'],
-    ['NFR-WIP-SC01', 'The architecture shall support extension to AFECD military classification data in Phase 2 without fundamental redesign of the ontology or data model', 'Must', 'Strategy: defense clients require military occupational classification integration'],
-    ['NFR-WIP-SC02', 'The competency model generation engine shall support multi-sector deployment: the same framework backbone and ontology shall serve defense, aerospace, cybersecurity, and engineering clients with sector-specific tailoring via configuration, not code change', 'Should', 'Strategy: platform must be commercially reusable across client sectors'],
-])
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 8. NOTIONAL ARCHITECTURE
-# ══════════════════════════════════════════════════════════════════════════════
-heading('8. Notional Architecture', 1)
-heading('8.1 Architecture Overview', 2)
+heading('7.4 Programme Execution Risk Management (NEW in v2.0)', 2)
 body(
-    'The Workforce Intelligence Platform architecture extends the H2R platform\'s seven-layer '
-    'stack with a new Strategic Intelligence Layer (Layer 5) and Cascade Engine (Layer 6). The '
-    'H2R execution layers (SAP Sources, Ingestion, Lakehouse, Semantic/Ontology, Analytics) are '
-    'unchanged. New layers handle multi-horizon workforce planning, competency intelligence, and '
-    'bidirectional cascade.'
+    'This module connects workforce data to programme delivery risk. It is the primary '
+    'differentiator of the v2.0 platform — making the link between HR decisions and '
+    'business outcomes explicit and quantified.'
 )
+req_table([
+    ['FR-WIP-V2-PER01', 'The system shall maintain a programme workforce risk assessment for each active programme: current headcount vs required headcount by role, "Ahead of Ready" status for each open role (comparing supply timeline to lead time + milestone date), and an overall delivery risk score (0-100).', 'Must', 'Programme delivery risk is the primary business driver for this platform. Every metric must trace to programme impact.'],
+    ['FR-WIP-V2-PER02', 'The system shall calculate "Ahead of Ready" status for each open role on each programme: a role is Ahead of Ready if the estimated date of supply (hire date + onboarding + ramp) precedes the milestone date by the required margin. A role is At Risk if supply will arrive at or after the milestone date. A role is Behind if current lead time means the milestone will be missed with no intervention.', 'Must', 'Ahead of Ready is the core supply chain concept. Talent must be deployed before demand is urgent, not in response to it.'],
+    ['FR-WIP-V2-PER03', 'The system shall identify the Theory of Constraints binding constraint in the talent pipeline: the single process stage with the largest gap between actual lead time and target lead time, representing the bottleneck that limits programme delivery readiness. Constraint shall be identified by programme and overall.', 'Must', 'TOC: identifying and exploiting the constraint is the most impactful action. All other improvements are secondary until the constraint is addressed.'],
+    ['FR-WIP-V2-PER04', 'The system shall produce a programme milestone risk assessment showing each upcoming milestone, its date, the workforce readiness status (On Track / At Risk / Delayed), and the specific talent gap contributing to risk where applicable.', 'Must', 'Programme Directors and HR Leaders require a milestone-linked talent risk view, not a generic vacancy report.'],
+    ['FR-WIP-V2-PER05', 'The system shall support lead time modelling: for each role type and clearance level, maintain a database of historical lead times (from need identified to productive in role) and compare to current open cases to identify cases tracking ahead of or behind their expected lead time.', 'Should', 'Lead time data enables proactive intervention. If a case is tracking 30% slower than the historical average, that is an early warning signal.'],
+])
 
-heading('8.2 Layer Definitions', 2)
-simple_table(
-    ['Layer', 'Name', 'Components', 'New vs Inherited'],
-    [
-        ['L0', 'Source Systems', 'SAP SuccessFactors, SAP HCM/ECC, SAP Payroll, O*NET API, NICE JSON, INCOSE SECF, R*M BoK, HRIS exports', 'Extended — framework sources added'],
-        ['L1', 'Ingestion', 'CSV Export, OData API, MCP (Google Drive), O*NET API connector, Framework parsers, ADF/Glue', 'Extended — framework ingestion added'],
-        ['L2', 'Lakehouse', 'Databricks Delta Lake (Bronze/Silver/Gold), Unity Catalog, MLflow, Workflows', 'Unchanged from H2R-SRNA-001'],
-        ['L3', 'Semantic / Ontology', 'dbt/Cube Semantic Layer, HR+Process+Framework Ontology (OWL), Knowledge Graph (Neo4j), ChromaDB Vector Store', 'Extended — framework ontology added'],
-        ['L4', 'Analytics Intelligence', 'PM4Py Process Mining, ML Models (RF+GBT), SHAP Explainability, Claude API Agent, Action Plan Engine', 'Unchanged from H2R-SRNA-001'],
-        ['L5', 'Strategic Intelligence (NEW)', 'Strategic WFP Engine, Capability Gap Calculator, Scenario Modeller, Competency Model Generator, UGESP Documentation Engine, Talent Marketplace', 'NEW — not in H2R-SRNA-001'],
-        ['L6', 'Cascade Engine (NEW)', 'Bidirectional cascade propagation, Plan synchronisation, Cascade break detection, Cross-horizon reporting', 'NEW — not in H2R-SRNA-001'],
-        ['L7', 'Visualisation & Delivery', 'React Dashboard (all horizons), Tableau (strategic + exec), AI Agent Chat UI, Email/Teams Alerts, UGESP Document Generator', 'Extended — new dashboards added'],
-    ]
-)
-
-heading('8.3 Cascade Engine Design', 2)
+heading('7.5 Retain — Attrition & Retention Intelligence (NEW in v2.0)', 2)
 body(
-    'The cascade engine operates as a scheduled and event-driven process within Databricks '
-    'Workflows. It runs after each pipeline completion and on-demand when planning data changes. '
-    'The cascade operates in two directions:'
+    'The Retain pillar stabilises the workforce stock by reducing regrettable outflows. '
+    'v2.0 introduces two significant changes: (1) attrition is classified by programme '
+    'execution impact, not by 9-box position; (2) turnover contagion is modelled at '
+    'team level. These changes ensure retention actions are prioritised by business '
+    'impact, not by HR convention.'
 )
-body('TOP-DOWN CASCADE (Strategy → Execution):', bold=True)
-bullet('Business strategy inputs → Strategic capability requirements → Operational headcount positions → Tactical requisition records → H2R case management')
-bullet('Each transition is governed by an approval gate and produces audit records for governance')
-body('BOTTOM-UP FEEDBACK (Execution → Strategy):', bold=True)
-bullet('H2R case outcomes (hire accepted/declined, time-to-fill actual) → Tactical plan actuals → Operational headcount actuals → Strategic capability coverage update')
-bullet('Attrition events → Succession risk recalculation → Strategic gap re-scoring')
+req_table([
+    ['FR-WIP-V2-R01', 'The system shall classify all employee departures as Regrettable, Non-Regrettable, or Neutral based on programme execution impact, NOT based on 9-box position or performance rating. A departure is Regrettable if it introduces risk into programme delivery. Classification criteria: (a) employee was on critical path for a programme AND held a scarce clearance (SC or DV); OR (b) employee had key person dependency designation; OR (c) employee was a succession nominee at Ready Now or Development Pipeline level with high performance. Classification must be transparent and auditable.', 'Must', 'Regrettability classification drives resource priority for retention actions. Basing it on programme impact ensures HR investment is aligned to business risk, not HR convention. 9-box is explicitly excluded as it blends development with talent management — these are managed separately in this organisation.'],
+    ['FR-WIP-V2-R02', 'The system shall calculate a flight risk score (0-100) for each employee using a composite of driving indicators: compa-ratio (pay vs peer midpoint), months since last promotion, engagement score, time-in-role, market demand for skills (approximated from discipline and clearance scarcity), and manager span-of-control. Each factor shall have a configurable weight. The score shall be recalculated with each data refresh.', 'Must', 'Flight risk scoring enables proactive intervention before departure intent is expressed. The score is a leading indicator — it rises before the person begins job searching.'],
+    ['FR-WIP-V2-R03', 'The system shall produce a plain-English narrative for each high-risk employee\'s flight risk score, explaining which factors are driving the score and what each means in practical terms. Example: "Sarah Chen is likely to leave within 6 months. Her salary is 11% below her peer group\'s midpoint, she has not been promoted in 3 years, and her skills are in high demand in the current market." This narrative must be understandable by a Line Manager with no data science background.', 'Must', 'VUCA Prime — Clarity: HR Business Partners and Line Managers are not data scientists. Plain English is not optional.'],
+    ['FR-WIP-V2-R04', 'The system shall model turnover contagion at the team level: when a regrettable departure occurs, the flight risk score for all direct team members shall be increased by a configurable uplift factor (default: 40% uplift, range 20-80%) for a configurable period (default: 6 months). Contagion events shall be surfaced as action plan triggers for the HR Business Partner.', 'Must', 'Research literature shows 40-80% increase in flight risk among direct teammates following a regrettable departure. Ignoring contagion systematically underestimates retention risk after any significant departure.'],
+    ['FR-WIP-V2-R05', 'For each regrettable attrition event, the system shall record: departure reason category, knowledge documentation status (Yes/Partial/No), team contagion assessment, estimated replacement cost, and estimated weeks to replace. This forms the attrition intelligence record used for trend analysis and action plan generation.', 'Must', 'Attrition intelligence is the foundation of "cost of inaction" calculations in action plans. Without it, return on impact cannot be calculated.'],
+])
 
-heading('8.4 Updated Component Registry', 2)
-body('Components C-01 through C-18 from H2R-SRNA-001 §7.2 are carried forward. The following new components are added.')
-simple_table(
-    ['ID', 'Component', 'Purpose', 'Technology', 'Tier', 'IT Question Ref'],
-    [
-        ['C-19', 'O*NET API Connector', 'Scheduled ingestion of occupational data from O*NET Web Services', 'REST API (X-API-Key), Python', 'Core', 'WIP-OG-01'],
-        ['C-20', 'Framework Ontology Builder', 'Parses NICE, INCOSE SECF, R&M BoK into structured ontology entities', 'Python (spaCy + custom parsers)', 'Core', 'WIP-OG-01'],
-        ['C-21', 'Competency Model Generator', 'AI-driven competency model drafting in INCOSE SECF format', 'Claude API + RAG over ChromaDB (framework backbone)', 'Core', 'IT-SEC-01'],
-        ['C-22', 'Strategic WFP Engine', 'Capability gap calculation, scenario modelling, build/buy/borrow/bot analysis', 'Python + Databricks Notebooks + Delta Lake', 'Platform', 'None — open source logic'],
-        ['C-23', 'UGESP Documentation Engine', 'Auto-generates legal technical documentation from competency models and job analysis data', 'Claude API + UGESP template library', 'Core', 'IT-SEC-01'],
-        ['C-24', 'Cascade Engine', 'Bidirectional planning layer synchronisation and cascade break detection', 'Databricks Workflows + Delta Lake', 'Platform', 'IT-DB-01'],
-        ['C-25', 'Talent Marketplace Engine', 'Competency-based internal mobility matching', 'pgvector / ChromaDB + Python scoring', 'Consumer', 'None'],
-    ]
-)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 9. VISUALISATION ARCHITECTURE — PLANNING RHYTHM
-# ══════════════════════════════════════════════════════════════════════════════
-heading('9. Visualisation Architecture — Multi-Horizon Planning Rhythm', 1)
+heading('7.6 Optimize — Organisational Performance (NEW in v2.0)', 2)
 body(
-    'The platform maintains distinct planning rhythms for each horizon. All rhythms are '
-    'grounded in the same Databricks Gold layer, ensuring a single version of truth. The '
-    'H2R execution rhythm from H2R-SRNA-001 §8.1 is carried forward unchanged.'
+    'The Optimize pillar accelerates organisational performance by identifying structural '
+    'and process issues that limit productivity. Version 2.0 introduces the Galbraith '
+    'STAR Model as the primary diagnostic framework.'
 )
+req_table([
+    ['FR-WIP-V2-OPT01', 'The system shall score each employee, team, and organisational unit against the Galbraith STAR Model: Strategy (workforce-strategy alignment), Structure (organisational design effectiveness), Processes (information flow and decision rights), Rewards (compensation and recognition effectiveness), People (development and succession quality). Scores are derived from existing survey and HR data, not from separate assessments.', 'Must', 'STAR Model provides a systems view of org effectiveness that goes beyond individual performance. It identifies structural constraints that individual interventions cannot fix.'],
+    ['FR-WIP-V2-OPT02', 'The system shall analyse span of control for all managers: direct reports count, engagement score of their team, average flight risk in their team, and performance distribution. Flag managers below the minimum span (default: 4) as over-managed, and above the maximum span (default: 12) as stretched. Both are Optimize risks.', 'Must', 'Span of control has documented productivity impacts. Over-management creates bottlenecks and slows decisions. Excessive span reduces development quality and increases manager burnout risk.'],
+    ['FR-WIP-V2-OPT03', 'The system shall analyse organisational layer distribution: count of employees at each layer (Executive, Senior Manager, Manager/Lead, Professional, Junior), and flag where the distribution is out of balance relative to organisation size and programme complexity benchmarks.', 'Should', 'Org layer imbalance is a leading indicator of decision velocity problems. Too many layers slow execution; too few layers overload senior people.'],
+])
 
+heading('7.7 Acquire — Talent Pipeline Management and Lead Time (NEW in v2.0)', 2)
+body(
+    'The Acquire pillar delivers talent at the right place, on time, at the right cost. '
+    'Version 2.0 extends the inherited H2R process intelligence with "Ahead of Ready" '
+    'lead time analysis and TOC constraint identification.'
+)
+req_table([
+    ['FR-WIP-V2-ACQ01', '"Ahead of Ready" status shall be displayed for every open requisition: the required completion date (derived from programme milestone), the expected completion date (based on current progress and historical lead time), the gap in days/weeks, and the risk colour (Green/Amber/Red). Green means supply arrives before demand is urgent. Red means supply will arrive after the milestone date without intervention.', 'Must', '"Ahead of Ready" is the core supply chain concept for this platform. It transforms talent acquisition from reactive gap-filling to proactive supply chain management.'],
+    ['FR-WIP-V2-ACQ02', 'The system shall maintain lead time benchmarks by role type and clearance level: Developed Vetting (DV) cleared roles, Security Check (SC) cleared roles, Baseline cleared roles, and Uncleared professionals. Benchmarks shall be updated from historical actuals each quarter. Lead time = time from requisition raised to person in seat and assessed as productive.', 'Must', 'Lead time benchmarks are the reference for "Ahead of Ready" calculation. Without them, the platform cannot determine whether a case is on track or behind.'],
+    ['FR-WIP-V2-ACQ03', 'The system shall identify and surface the binding constraint in the talent pipeline using the Theory of Constraints methodology: measure actual lead time at each H2R process stage, compare to target, identify the stage with the largest gap, and surface it as the Constraint with recommended exploit/subordinate/elevate actions.', 'Must', 'TOC constraint identification directs management attention to the one action that will have the most impact on throughput. Without it, organisations improve the non-constraints and wonder why throughput does not improve.'],
+    ['FR-WIP-V2-ACQ04', 'For roles requiring SC or DV clearance, the system shall track clearance initiation date separately from requisition date, and shall flag any case where clearance has not been initiated within 10 days of requisition raising. Late clearance initiation is the most common cause of "Behind" status in cleared role pipelines.', 'Must', 'Clearance initiation delay is an exploitable constraint — it can be fixed with process improvement alone, without structural change. It is the most common source of avoidable delay in defence talent acquisition.'],
+])
+
+heading('7.8 Develop — Capability Building (Inherited from H2R-SRNA-001 + Extended)', 2)
+body('FR-WIP-V1-CI01 through FR-WIP-V1-CI07 from v1.0 are carried forward. Key v2.0 additions:')
+req_table([
+    ['FR-WIP-V2-DEV01', 'The system shall calculate a competency match percentage for each employee: the proportion of their current role\'s competency requirements met by their assessed proficiency profile. A match below 70% shall trigger a Develop action plan. A match below 50% shall trigger a Critical priority Develop action plan.', 'Must', 'Competency match drives targeted development investment. Without it, L&D investment is distributed by request, not by need.'],
+    ['FR-WIP-V2-DEV02', 'The system shall assess succession depth for each key role: Ready Now (successor can take the role immediately), Development Pipeline 12-18 months (successor needs development time), Development Pipeline 24-36 months, and Not Nominated (no identified successor). Roles with key_person_dependency=True and succession_status=Not Nominated are flagged as Critical succession voids.', 'Must', 'Succession voids are "Ahead of Ready" failures in the internal talent supply chain. A key person departure with no successor is equivalent to a stock-out in manufacturing.'],
+])
+
+heading('7.9 Proactive Action Plans with Return on Impact (NEW in v2.0)', 2)
+body(
+    'Action plans are the primary output of the platform. Every action plan is generated '
+    'from driving indicators — the root causes of workforce risk — not from lagging '
+    'indicators. Every action plan includes a return on impact calculation: the cost of '
+    'taking the action compared to the cost of taking no action.'
+)
+req_table([
+    ['FR-WIP-V2-AP01', 'The system shall generate proactive action plans from driving indicator thresholds across all four ROAD pillars. An action plan shall include: (a) plain-English title; (b) driving indicator narrative explaining why this risk exists; (c) impact narrative explaining what happens if no action is taken; (d) specific recommended actions (numbered steps, not generic advice); (e) primary owner (Action Owner / Business Partner / Leader); (f) ROAD pillar tag; (g) priority level (Critical / High / Medium); (h) return on impact calculation.', 'Must', 'Action plans are the platform\'s primary value delivery. A risk score without a recommended action is a lagging indicator dashboard. The platform must tell people what to do, not just what is wrong.'],
+    ['FR-WIP-V2-AP02', 'The return on impact calculation for each action plan shall include: (a) cost of the recommended action (estimated management time, compensation adjustment, training investment, recruitment cost, etc.); (b) cost of inaction (replacement cost, programme delay cost, contagion multiplier, contractor premium, etc.); (c) return ratio (cost of inaction / cost of action). All costs shall be in GBP. Replacement cost default: 140% of annual salary (configurable). Programme delay cost: configurable per programme by HR VP.', 'Must', 'Return on impact makes the business case for every intervention. Leaders and Finance need to see the financial logic before approving expenditure. This is also the platform\'s strongest differentiator from conventional HR dashboards.'],
+    ['FR-WIP-V2-AP03', 'Action plans shall be filtered and presented differently for each ownership tier. Action Owner view: individual names, specific conversations, immediate next steps. Business Partner view: portfolio of actions across their client group, grouped by ROAD pillar and priority. Leader view: aggregated return on impact across portfolio, strategic decisions required, investment approvals.', 'Must', 'Ownership tier filtering is a core platform feature. Showing a Line Manager enterprise-wide trends is noise. Showing a CPO individual names is a GDPR risk.'],
+    ['FR-WIP-V2-AP04', 'Action plan status shall be tracked through a defined lifecycle: Generated (system-created) → Acknowledged (owner has seen it) → In Progress (action taken) → Resolved (risk mitigated) → Escalated (moved to higher ownership tier). Status updates shall be recorded for audit trail.', 'Should', 'Lifecycle tracking enables measurement of platform effectiveness. If action plans are generated but not acknowledged, the platform is not being used as intended.'],
+])
+
+heading('7.10 Predictive Analytics (Inherited from H2R-SRNA-001 + Extended)', 2)
+body('FR-PA01 through FR-PA07 from H2R-SRNA-001 are carried forward. FR-WIP-V1-PA01 through PA03 from v1.0 are carried forward. Key v2.0 addition:')
+req_table([
+    ['FR-WIP-V2-PA01', 'All ML model outputs shall be accompanied by a plain-English explanation of the three to five factors driving the score for each individual. The explanation shall be generated using SHAP values and translated into natural language by the AI agent. Technical ML outputs shall not be surfaced to HR users without plain-English translation.', 'Must', 'VUCA Prime — Clarity: HR Business Partners cannot act on a number without understanding why it is that number. SHAP explainability + plain English translation is a non-negotiable UX requirement.'],
+])
+
+heading('7.11 Ontology & Knowledge Graph (Inherited from H2R-SRNA-001 + Extended)', 2)
+body('FR-WIP-V1-OG01 through OG10 from v1.0 are carried forward. See v1.0 §6.4 for full definitions.')
+
+heading('7.12 Strategic Workforce Planning (Inherited from v1.0)', 2)
+body('FR-WIP-V1-SWP01 through SWP06 from v1.0 are carried forward. See v1.0 §6.7.')
+
+heading('7.13 Operational Workforce Planning (Inherited from v1.0)', 2)
+body('FR-WIP-V1-OWP01 through OWP05 from v1.0 are carried forward. See v1.0 §6.8.')
+
+heading('7.14 Tactical Workforce Planning (Inherited from v1.0)', 2)
+body('FR-WIP-V1-TWP01 through TWP05 from v1.0 are carried forward. See v1.0 §6.9.')
+
+heading('7.15 Competency Intelligence (Inherited from v1.0)', 2)
+body('FR-WIP-V1-CI01 through CI07 from v1.0 are carried forward. See v1.0 §6.10.')
+
+heading('7.16 Cascade Engine (Inherited from v1.0)', 2)
+body('FR-WIP-V1-CE01 through CE05 from v1.0 are carried forward. See v1.0 §6.11.')
+
+heading('7.17 UGESP Compliance Engine (Inherited from v1.0)', 2)
+body('FR-WIP-V1-UC01 through UC04 from v1.0 are carried forward. See v1.0 §6.12.')
+
+heading('7.18 AI Agent (Inherited + Extended)', 2)
+body('FR-H2R-AI01 through AI08 and FR-WIP-V1-AI01 through AI04 are carried forward. Key v2.0 additions:')
+req_table([
+    ['FR-WIP-V2-AI01', 'The AI agent shall answer questions grounded in real-time workforce data for the user\'s ownership tier: an Action Owner asking "Who on my team is most at risk of leaving?" receives individual-level data. A Leader asking the same question receives a programme-level risk summary. The agent shall enforce ownership-tier data scoping automatically.', 'Must', 'Ownership tier-aware AI responses prevent both information overload and PII exposure. The agent is not a raw data query tool — it is an intelligence interface with appropriate access controls.'],
+    ['FR-WIP-V2-AI02', 'All AI agent interactions shall strip employee PII (full name, grade, salary) before transmitting to the Claude API. The API receives anonymised, aggregated, or pseudonymised data only. PII is re-injected by the platform UI from local data after the API response is received.', 'Must', 'Data protection requirement: employee PII must not be sent to third-party AI APIs without explicit data processing agreements and employee consent. PII stripping is the technical control.'],
+])
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 8. NON-FUNCTIONAL REQUIREMENTS
+# ══════════════════════════════════════════════════════════════════════════════
+heading('8. Non-Functional Requirements', 1)
+body('All NFR sections from H2R-SRNA-001 (Performance, Security, Availability, Scalability, Data Residency) are carried forward. Key v2.0 additions:')
+req_table([
+    ['NFR-WIP-V2-P01', 'Programme delivery risk assessment (all programmes, all milestones, ahead-of-ready status) shall refresh within 5 minutes of data pipeline completion. Stale data must be flagged with a timestamp warning.', 'Must', 'Programme decisions are time-sensitive. A risk view that is 24 hours stale can miss a developing crisis.'],
+    ['NFR-WIP-V2-S01', 'Framework backbone data (O*NET, NICE, INCOSE SECF, R&M BoK) shall be stored in a read-only immutable Bronze layer. No process shall be able to modify framework source data.', 'Must', 'Data integrity: framework backbone is the authoritative source for competency definitions. Modification would undermine UGESP defensibility.'],
+    ['NFR-WIP-V2-P02', 'The Phase 1 static demo deployment (GitHub Pages) shall load all data and render the full dashboard within 3 seconds on a standard corporate laptop browser. JSON data files shall be pre-processed and minimised for performance.', 'Must', 'Demo requirement: a slow demo loses executive attention. 3 seconds is the maximum acceptable load time for a demonstration context.'],
+    ['NFR-WIP-V2-SC01', 'The flat-file schema used in Phase 1 shall be maintained as the canonical data requirements specification for Phase 2. IT integration in Phase 2 shall populate exactly the same fields as the flat-file schema. No field shall exist in the flat file that is not deliverable from SAP in Phase 2.', 'Must', 'Architecture continuity: Phase 1 flat files are the data requirements spec. This ensures Phase 2 IT integration does not require platform redesign.'],
+])
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 9. NOTIONAL ARCHITECTURE
+# ══════════════════════════════════════════════════════════════════════════════
+heading('9. Notional Architecture', 1)
+heading('9.1 Architecture Overview', 2)
+body(
+    'The Workforce Intelligence Platform is a nine-layer stack extending the H2R-SRNA-001 '
+    'seven-layer architecture. Phase 1 uses flat files and vector stores. Phase 2 connects '
+    'to live SAP via OData API. The flat-file schema in Phase 1 is the IT data requirements '
+    'specification for Phase 2.'
+)
 simple_table(
-    ['Rhythm', 'Trigger', 'Action', 'Consumer', 'Horizon'],
+    ['Phase', 'Data Architecture', 'Timeframe', 'SAP Connection'],
     [
-        ['Daily H2R Pipeline', '23:00 nightly', 'SAP ingestion → process mining → ML scoring → cascade feedback', 'All operations consumers', 'Execution'],
-        ['Monthly Tactical Review', '1st of month', 'Tactical plan vs actuals → retention risk → cascade break detection → monthly exec pack', 'HR BP, TA Leads, HR Ops Mgr', 'Tactical'],
-        ['Quarterly Operational Review', 'First Monday of quarter', 'Headcount plan vs budget vs actual → succession risk update → L&D progress → quarterly pack', 'HR VP, CPO, Dept Heads', 'Operational'],
-        ['Annual Strategic WFP Cycle', 'September (align to budget cycle)', 'Capability gap recalculation → scenario modelling → build/buy/borrow/bot recommendations → 3-year plan refresh', 'CPO, HR VP, CFO, Business Leaders', 'Strategic'],
-        ['Trigger: Major Event', 'Acquisition / contract award / restructure / new technology', 'Ad-hoc scenario modelling → cascade recalculation → revised strategic plan', 'CPO, HR VP, Executive Team', 'Strategic + Operational'],
-        ['Annual Competency Model Review', 'Aligned to performance cycle', 'Framework backbone version check → model refresh → UGESP documentation update', 'Competency SME, Legal, HR BP', 'Operational'],
+        ['Phase 1 — Demo & Proof of Concept', 'CSV/JSON flat files + ChromaDB vector store + static GitHub Pages deployment', 'Months 1-3', 'No live SAP connection — CSV export from SAP or synthetic data'],
+        ['Phase 2 — IT Integration', 'SAP OData API + Databricks Delta Lake (Bronze/Silver/Gold) + Unity Catalog + near-real-time pipeline', 'Months 4-12', 'Live SAP SuccessFactors and HCM/ECC connection via OData'],
+        ['Phase 3 — Event-Driven', 'Event-driven ingestion (SAP Change Data Capture), real-time ROAD action routing, self-updating cascade engine', 'Year 2+', 'Event-driven SAP integration via ADF/Kafka'],
     ]
 )
 
-heading('9.1 Extended Tableau Workbook Specification', 2)
-body('Workbooks 1–5 from H2R-SRNA-001 §8.2 are carried forward. The following new workbooks are added.')
+heading('9.2 Layer Definitions', 2)
 simple_table(
-    ['Workbook', 'Primary Audience', 'Key Views', 'Data Source', 'Refresh Cadence'],
+    ['Layer', 'Name', 'Components', 'Phase 1 State', 'Phase 2 State'],
     [
-        ['6. Strategic Workforce Plan', 'CPO, HR VP, Business Leaders', '3-year capability gap heatmap, Workforce Readiness Index, build/buy/borrow/bot summary, scenario comparison', 'gold_strategic_wfp', 'Annual + on trigger'],
-        ['7. Headcount Planning', 'HR VP, Finance, Dept Heads', 'Plan vs budget vs actual by dept/grade, succession risk matrix, pipeline strength, quarterly forecast', 'gold_headcount_plan', 'Monthly'],
-        ['8. Competency Intelligence', 'HR BP, Competency SME, L&D', 'Competency model library, coverage map, proficiency distribution, gap closure trend, UGESP readiness', 'gold_competency_models', 'Monthly'],
-        ['9. Talent Marketplace', 'HR BP, TA Recruiter, Line Manager', 'Internal mobility opportunities, fit score distribution, career pathway map, development plan status', 'gold_talent_marketplace', 'Weekly'],
+        ['L0', 'Source Systems', 'SAP SuccessFactors, SAP HCM/ECC, SAP Payroll, O*NET API, NICE JSON, INCOSE SECF, R&M BoK', 'CSV export from SAP; framework files downloaded', 'Live OData API connection'],
+        ['L1', 'Ingestion', 'CSV loader, framework parsers, O*NET API connector', 'Python script loading flat files', 'ADF / AWS Glue pipeline; OData connector'],
+        ['L2', 'Lakehouse', 'Databricks Delta Lake (Bronze/Silver/Gold), Unity Catalog, MLflow', 'Local file system (Phase 1 demo)', 'Full Databricks deployment'],
+        ['L3', 'Semantic / Ontology', 'Semantic layer, HR ontology (OWL), Knowledge Graph (Neo4j), ChromaDB vector store', 'ChromaDB local; JSON semantic layer', 'Full Neo4j + Databricks semantic layer'],
+        ['L4', 'Analytics', 'PM4Py process mining, ML models (RF+GBT), SHAP explainability, Claude API agent', 'Synthetic data analytics + Claude API RAG', 'Full ML pipeline on Databricks'],
+        ['L5', 'Strategic Intelligence (NEW)', 'Strategic WFP engine, capability gap calculator, scenario modeller, competency model generator, UGESP doc engine', 'Competency model generator + scenario modeller', 'Full strategic intelligence layer'],
+        ['L6', 'Cascade Engine (NEW)', 'Bidirectional cascade propagation, plan sync, cascade break detection', 'Manual cascade reporting', 'Automated cascade via Databricks Workflows'],
+        ['L7', 'Visualisation', 'React dashboard, Tableau, AI agent chat UI, ROAD action plan views', 'Static HTML + Chart.js + fetch() JSON', 'React SPA + Tableau Server'],
+        ['L8', 'Actions / Alerts', 'Email alerts, Teams webhook, compliance sentinel, ROAD action routing', 'Demo only — no live alerts', 'Teams/email integration; action routing to owner tiers'],
+    ]
+)
+
+heading('9.3 Synthetic Data Schema — Phase 1 Data Dictionary', 2)
+body(
+    'The following table defines the canonical data schema used in Phase 1 synthetic data '
+    'and specifies the SAP source field for Phase 2 integration. This table IS the data '
+    'requirements specification for IT.'
+)
+simple_table(
+    ['Field', 'Type', 'Description', 'Phase 1 Source', 'Phase 2 SAP Source'],
+    [
+        ['id', 'String', 'Unique employee identifier', 'Generated (EMP1001+)', 'SAP Employee ID (Infotype 0000)'],
+        ['name', 'String', 'Full name (PII — masked in AI calls)', 'Synthetic', 'SAP SuccessFactors person entity'],
+        ['department', 'String', 'Organisational department', 'Synthetic', 'SAP Org Unit (Infotype 0001)'],
+        ['grade', 'String', 'Pay grade with label', 'Synthetic', 'SAP Pay Scale Group (Infotype 0008)'],
+        ['clearance', 'Enum', 'Security clearance level (Baseline/SC/DV)', 'Synthetic', 'HRMS clearance field (custom infotype)'],
+        ['flight_risk_score', 'Integer 0-100', 'Composite flight risk indicator', 'Calculated from composite formula', 'Calculated from SAP data'],
+        ['compa_ratio', 'Float', 'Salary vs peer group midpoint', 'Synthetic', 'SAP Payroll / comp planning tool'],
+        ['engagement_score', 'Integer 0-100', 'Latest engagement survey score', 'Synthetic', 'Engagement survey integration (Phase 2)'],
+        ['would_be_regrettable', 'Boolean', 'Departure would introduce programme execution risk', 'Calculated from programme impact criteria', 'Calculated from SAP + programme data'],
+        ['on_critical_path', 'Boolean', 'Employee assigned to programme critical path', 'Synthetic', 'Programme management system integration (Phase 3)'],
+        ['succession_status', 'Enum', 'Succession readiness level', 'Synthetic', 'SAP SuccessFactors Succession Planning module'],
+        ['star_strategy / structure / processes / rewards / people / overall', 'Integer 0-100', 'Galbraith STAR Model scores', 'Synthetic', 'Derived from engagement survey + HR data'],
+        ['programs', 'Array[String]', 'Programme IDs this employee is allocated to', 'Synthetic', 'SAP Project System / PS module'],
+        ['program_allocation', 'Dict[String, Integer]', 'Programme allocation percentages', 'Synthetic', 'SAP PS / project costing'],
+        ['key_person_dependency', 'Boolean', 'Flagged as key person (departure = critical risk)', 'Synthetic', 'HR BP designation in SuccessFactors'],
     ]
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 10. TECHNOLOGY DECISIONS REQUIRED
+# 10. VISUALISATION ARCHITECTURE
 # ══════════════════════════════════════════════════════════════════════════════
-heading('10. Technology Decisions Required', 1)
-body('Technology decisions TD-01 through TD-10 from H2R-SRNA-001 §10 are carried forward. The following new decisions are added.')
+heading('10. Visualisation Architecture', 1)
+body('Visualisation requirements from H2R-SRNA-001 §8 are carried forward. Key v2.0 additions:')
 simple_table(
-    ['Decision ID', 'Decision Required', 'Options', 'Phase 1 Blocking?', 'IT Owner'],
+    ['Screen / View', 'Primary Audience', 'Key Content', 'Ownership Tier'],
     [
-        ['TD-11', 'O*NET API key registration', 'Register at services.onetcenter.org (free, requires organisational registration)', 'YES — required before framework backbone ingestion', 'HR Transformation'],
-        ['TD-12', 'Ontology modelling tool', 'Protégé (open source OWL editor) · TopBraid Composer · Custom JSON-LD', 'No — defaults to Protégé if no preference', 'Data Engineering'],
-        ['TD-13', 'UGESP documentation output format', 'Word/DOCX · PDF · HTML · All three', 'No — defaults to Word + PDF', 'Legal / HR'],
-        ['TD-14', 'Competency model SME validation workflow', 'Email-based review · Platform workflow (React) · SharePoint form', 'No — deferred to Sprint 3', 'HR Transformation'],
-        ['TD-15', 'Talent marketplace scope for Phase 1', 'Internal mobility matching only · Full self-service employee portal · None (Phase 2)', 'No — MVP defaults to internal mobility only', 'CPO / HR VP'],
+        ['Overview', 'All tiers', 'VUCA Prime status strip, ROAD health bars, delivery risk snapshot, top priority actions', 'All'],
+        ['Programme Delivery Risk', 'Leader + Business Partner', '"Ahead of Ready" supply vs demand bars, TOC constraint, milestone risk table', 'Leader + BP'],
+        ['Retain', 'Business Partner + Action Owner', 'Flight risk ranking, attrition classification, contagion events, regrettable departure trend', 'BP + AO'],
+        ['Optimize', 'Business Partner + Leader', 'STAR Model scores, span of control distribution, org layer analysis', 'BP + Leader'],
+        ['Acquire', 'Action Owner + Business Partner', 'H2R case risk scores, lead time vs benchmark, pipeline coverage, clearance status', 'AO + BP'],
+        ['Develop', 'Business Partner + Action Owner', 'Competency match distribution, succession depth, training investment vs gap closure', 'BP + AO'],
+        ['Action Plans', 'All tiers (filtered)', 'Full action plan cards with driving indicators, impact, recommended steps, and return on impact', 'All (filtered by tier)'],
+        ['People Data', 'Business Partner', 'Searchable, filterable employee table with key workforce attributes', 'BP only'],
+        ['AI Agent', 'All tiers', 'Natural language workforce questions grounded in real-time data, tier-aware responses', 'All (tier-scoped)'],
+        ['Architecture', 'IT VP + Leader', 'Nine-layer platform architecture, phase 1/2/3 roadmap, technology decisions', 'IT + Leader'],
     ]
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 11. ASSUMPTIONS & CONSTRAINTS
+# 11. TECHNOLOGY DECISIONS REQUIRED
 # ══════════════════════════════════════════════════════════════════════════════
-heading('11. Assumptions & Constraints', 1)
-heading('11.1 Assumptions', 2)
-body('Assumptions A01–A10 from H2R-SRNA-001 §11.1 are carried forward. The following are added.')
-bullet('A11: The O*NET Web Services API is accessible from the Databricks cloud environment. An organisational API key will be registered before Sprint 1.')
-bullet('A12: NICE Framework v2.2 (April 2025 release) JSON data is publicly available and will be downloaded as static seed data for the ontology build.')
-bullet('A13: INCOSE SECF (INCOSE-TP-2018-002-01.0) competency definitions can be parsed from the published PDF into structured data. No licence restriction prevents this use within an internal platform.')
-bullet('A14: The R&M BoK (December 2025) lifecycle-competency mappings can be parsed from the publicly released document. Distribution Statement A confirms public release.')
-bullet('A15: An initial competency model for at least three role families will be generated and validated in Phase 1 as proof of concept for the competency intelligence module.')
-bullet('A16: The platform operator has or will obtain a Data Processing Agreement with Anthropic before using the Claude API in production (NFR-DR03 from H2R-SRNA-001 applies).')
-bullet('A17: A Workforce Planning SME (0.5 FTE) with experience in strategic workforce planning methodology is available throughout the 12-week build for framework validation, scenario configuration, and UAT.')
-
-heading('11.2 Constraints', 2)
-body('Constraints C01–C06 from H2R-SRNA-001 §11.2 are carried forward. The following are added.')
-bullet('C07: AFECD military classification data integration is Phase 2 — the ontology data model in Phase 1 must be designed to accommodate AFSC entities without structural change.')
-bullet('C08: Full SIOP-compliant structured job analysis data collection (SME interviews, task rating surveys) is out of scope for Phase 1. The platform seeds competency models from framework backbone data; human validation is Sprint 3+.')
-bullet('C09: External talent market data (Lightcast, LinkedIn Talent Insights) is Phase 2. Phase 1 workforce analytics are based solely on internal data and framework backbone.')
+heading('11. Technology Decisions Required', 1)
+body('Technology decisions TD-01 through TD-15 from v1.0 are carried forward. Key v2.0 additions:')
+simple_table(
+    ['Decision ID', 'Decision Required', 'Default / Recommendation', 'Phase 1 Blocking?', 'Owner'],
+    [
+        ['TD-16', 'SAP SuccessFactors OData API access for H2R action log (Phase 2)', 'IT to provide API credentials and endpoint documentation', 'NO — Phase 1 uses flat files. BLOCKS Phase 2.', 'IT VP'],
+        ['TD-17', 'SAP HCM/ECC employee master data API or CSV export format (Phase 2)', 'IT to provide SAP HR Admin export spec or OData connection', 'NO — Phase 1 uses flat files. BLOCKS Phase 2.', 'IT VP'],
+        ['TD-18', 'Engagement survey platform integration (Phase 2)', 'IT to identify current engagement survey platform and data export format', 'NO — Phase 1 uses synthetic engagement scores', 'HR VP'],
+        ['TD-19', 'Anthropic Data Processing Agreement (DPA) for Claude API in production', 'Legal to review Anthropic DPA terms before production AI agent deployment', 'NO — demo uses Claude API without live PII. BLOCKS Phase 2 production.', 'Legal / CISO'],
+        ['TD-20', 'Programme critical path data source (which system tracks employee-to-programme-critical-path allocation?)', 'Likely SAP PS or project management tool — IT to confirm', 'NO — Phase 1 uses synthetic data. BLOCKS accurate "Ahead of Ready" in Phase 2.', 'IT VP + Programme Directors'],
+        ['TD-21', 'Security clearance status data source (which system tracks clearance level per employee?)', 'Likely custom SAP infotype or HRMS — IT to confirm field mapping', 'NO — Phase 1 uses synthetic data. Critical for DV/SC lead time analysis in Phase 2.', 'IT VP + CISO'],
+    ]
+)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 12. OPEN QUESTIONS REGISTER
+# 12. ASSUMPTIONS & CONSTRAINTS
 # ══════════════════════════════════════════════════════════════════════════════
-heading('12. Open Questions Register', 1)
-body('Open questions Q-01 through Q-14 from H2R-SRNA-001 §12 are carried forward. The following are added.')
+heading('12. Assumptions & Constraints', 1)
+heading('12.1 Assumptions', 2)
+body('Assumptions A01-A17 from v1.0 are carried forward. v2.0 additions:')
+bullet('A18: The synthetic data schema (95 employees, 5 programmes, 22 attrition records, 40 H2R action log records) accurately represents the structure of AeroDefend Group\'s production data. The schema was designed with this assumption and field-by-field mapping to SAP infotypes.')
+bullet('A19: Employee security clearance level is tracked in a structured field in SAP or HRMS. Without structured clearance data, "Ahead of Ready" analysis for cleared roles is not possible.')
+bullet('A20: Programme critical path allocation is tracked at the employee level in a system accessible to IT. If this data exists only in programme managers\' spreadsheets, Phase 2 integration requires a data governance decision to centralise it.')
+bullet('A21: The ROAD framework (Retain, Optimize, Acquire, Develop) is acceptable to HR leadership as the primary strategic framework for workforce action. v2.0 is built around ROAD as the navigation and action backbone.')
+bullet('A22: Regrettability classification by programme execution impact (not 9-box) is acceptable to HR leadership and will not conflict with existing performance management processes.')
+bullet('A23: The three-tier ownership model (Action Owner / Business Partner / Leader) accurately reflects the decision rights model in AeroDefend Group. Platform access scoping will be implemented according to this model.')
+bullet('A24: The "Ahead of Ready" lead time benchmarks in the Phase 1 synthetic data (DV: 14-18mo, SC: 9-12mo, Baseline: 3-6mo) are representative of AeroDefend Group\'s actual lead times. These will be calibrated from historical SAP data in Phase 2.')
+
+heading('12.2 Constraints', 2)
+body('Constraints C01-C09 from v1.0 are carried forward. v2.0 additions:')
+bullet('C10: The platform is analytics-only — no write-back to SAP, no case creation, no approval routing. Case management stays in SAP in all phases. The platform generates action recommendations; humans execute them in SAP.')
+bullet('C11: 9-box grid is explicitly excluded from this platform. Attrition regrettability and talent tiering are based on programme execution impact, not on performance/potential grids. This is a design constraint, not a technical constraint.')
+bullet('C12: The flat-file schema used in Phase 1 cannot be changed without reviewing the impact on Phase 2 IT integration planning. Schema changes require agreement between HR Transformation and IT Architecture.')
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 13. OPEN QUESTIONS REGISTER
+# ══════════════════════════════════════════════════════════════════════════════
+heading('13. Open Questions Register', 1)
+body('Open questions from v1.0 are carried forward. v2.0 additions:')
 simple_table(
     ['Ref', 'Question', 'Owner', 'Priority', 'Status'],
     [
-        ['WIP-OG-01', 'Does AeroDefend Group have an existing job family taxonomy, grade structure, or competency framework in structured format? This seeds the HR domain ontology.', 'HR + IT', 'CRITICAL', 'Open'],
-        ['WIP-OG-02', 'What is the current state of AeroDefend Group\'s workforce data? HRIS export available? Position descriptions in structured format? Incumbent competency profiles?', 'HR + IT', 'CRITICAL', 'Open'],
-        ['WIP-SWP-01', 'Does AeroDefend Group have an existing strategic workforce planning process or methodology? If so, the platform should align to it rather than replace it.', 'CPO / HR VP', 'HIGH', 'Open'],
-        ['WIP-SWP-02', 'What business strategy inputs are available to seed the 3-year capability requirements? (Business plan, programme pipeline, technology roadmap, contract forecast)', 'CPO / Business Leadership', 'HIGH', 'Open'],
-        ['WIP-CI-01', 'Which role families should be prioritised for Phase 1 competency model generation? (Recommendation: Systems Engineers, R&M Engineers, Cybersecurity roles as framework backbone coverage is strongest for these)', 'HR VP / CPO', 'HIGH', 'Open'],
-        ['WIP-UGESP-01', 'Has Legal confirmed that platform-generated competency models and UGESP documentation will be reviewed by a qualified I-O psychologist before use in hiring decisions? This is a legal risk management question.', 'Legal / CISO', 'HIGH', 'Open'],
-        ['WIP-API-01', 'O*NET API registration: who will register for the O*NET Web Services API key? (Requires organisational registration at services.onetcenter.org)', 'HR Transformation', 'MEDIUM', 'Open'],
-        ['WIP-AFECD-01', 'For Phase 2 AFECD integration: what military occupational data is held internally? Is there an existing AFSC-to-civilian role mapping that should seed the Phase 2 ontology?', 'HR + IT', 'LOW', 'Open'],
+        ['V2-SAP-01', 'What SAP infotype or field stores employee security clearance level? This is required for "Ahead of Ready" analysis for cleared roles in Phase 2.', 'IT VP', 'CRITICAL', 'Open'],
+        ['V2-SAP-02', 'What system tracks which employees are on the critical path for each programme? Is this in SAP PS, a project management tool, or Programme Directors\' own records?', 'IT VP + Programme Directors', 'CRITICAL', 'Open'],
+        ['V2-SAP-03', 'What is the H2R action log format in SAP SuccessFactors — is it available via OData API? What activities are logged? Is there a timestamp per activity?', 'IT VP', 'CRITICAL', 'Open'],
+        ['V2-ROAD-01', 'Has HR VP and CPO reviewed the ROAD framework? Are the four pillars (Retain, Optimize, Acquire, Develop) and their definitions acceptable as the platform\'s strategic architecture?', 'HR VP / CPO', 'HIGH', 'Open'],
+        ['V2-ROAD-02', 'Is the regrettability classification logic acceptable (programme execution impact, not 9-box)? Who has approval authority to designate an employee as "would be regrettable"?', 'HR VP', 'HIGH', 'Open'],
+        ['V2-ENGAGE-01', 'What engagement survey platform does AeroDefend Group use? Is data exportable in structured format? How frequently are surveys run?', 'HR VP', 'HIGH', 'Open'],
+        ['V2-OWNER-01', 'Is the three-tier ownership model (Action Owner / Business Partner / Leader) aligned to AeroDefend Group\'s HR operating model? Who has authority to update the ownership designation for each action?', 'HR VP', 'MEDIUM', 'Open'],
+        ['V2-LEGAL-01', 'Has Legal reviewed the turnover contagion model and its plain-English output? Is it acceptable to surface in writing that specific team members have elevated flight risk as a result of a colleague\'s departure?', 'Legal / HR VP', 'HIGH', 'Open'],
     ]
 )
 
-body('\nNext Steps', bold=True)
-bullet('1. Review this document alongside H2R-SRNA-001. This document supersedes H2R-SRNA-001 for the full platform scope.')
-bullet('2. Resolve all CRITICAL open questions (WIP-OG-01, WIP-OG-02 and H2R-SRNA-001 IT-INFRA-01, IT-SAP-01) before Sprint 1.')
-bullet('3. HR and CPO review of Section 6.7–6.9 (Strategic, Operational, Tactical WFP modules) to confirm scope and prioritisation.')
-bullet('4. Legal review of Section 6.12 (UGESP Compliance Engine) before competency models are used in any selection decision.')
-bullet('5. Confirm Phase 1 competency model priority role families (WIP-CI-01).')
-bullet('6. Sprint 0: confirm team, environments, SAP data access, O*NET API key, and framework backbone data download.')
+body('\nNext Steps — v2.0', bold=True)
+bullet('1. HR VP and CPO to review the ROAD framework and VUCA Prime framing — confirm these are acceptable as the platform strategy (V2-ROAD-01).')
+bullet('2. HR VP to review the three-tier ownership model — confirm it maps to AeroDefend Group\'s HR operating model (V2-OWNER-01).')
+bullet('3. IT VP to answer V2-SAP-01 through V2-SAP-03 — clearance data, critical path data, and action log format. These BLOCK Phase 2 planning.')
+bullet('4. Legal to review regrettability classification logic and turnover contagion output (V2-LEGAL-01).')
+bullet('5. All: review open questions from v1.0 that remain open (WIP-OG-01, WIP-OG-02, WIP-SWP-01, WIP-SWP-02 are still critical).')
+bullet('6. Programme Directors: validate the five rights of talent framing and the programme delivery risk view — confirm this is the right lens for executive workforce reporting.')
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SAVE
 # ══════════════════════════════════════════════════════════════════════════════
-output_path = r'C:\Users\traft\Desktop\WIP-SRNA-001-v1.0.docx'
+output_path = r'C:\Users\traft\Desktop\WIP-SRNA-001-v2.0.docx'
 doc.save(output_path)
 print(f'Document saved: {output_path}')
