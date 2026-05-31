@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HR Business Partner — Training Architecture Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#060a16;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── Header ── */
+.top-bar{background:#0b1221;border-bottom:1px solid #182035;padding:10px 20px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+.top-bar .back{font-size:.7rem;color:#64748b;text-decoration:none;display:flex;align-items:center;gap:5px;}
+.top-bar .back:hover{color:#94a3b8;}
+.top-bar h1{font-size:.9rem;font-weight:800;color:#e2e8f0;flex:1;}
+.top-bar .badge{font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:4px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2);color:#60a5fa;}
+
+/* ── Tab bar ── */
+.tab-bar{display:flex;gap:2px;padding:0 20px;background:#0b1221;border-bottom:1px solid #182035;}
+.tab{padding:10px 18px;font-size:.72rem;font-weight:700;cursor:pointer;color:#475569;border-bottom:2px solid transparent;transition:all .15s;font-family:'Inter',sans-serif;background:none;border-top:none;border-left:none;border-right:none;}
+.tab:hover{color:#94a3b8;}
+.tab.at{color:#60a5fa;border-bottom-color:#60a5fa;}
+
+/* ── Layout ── */
+.main{display:flex;flex:1;overflow:hidden;height:calc(100vh - 89px);}
+
+/* ── Sidebar ── */
+.sidebar{width:240px;background:#080f1d;border-right:1px solid #182035;overflow-y:auto;flex-shrink:0;padding:12px 0;}
+.sb-section{margin-bottom:4px;}
+.sb-domain{padding:8px 14px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;}
+.sb-domain .sb-chev{font-size:.7rem;color:#334155;transition:transform .2s;margin-left:auto;}
+.sb-domain .sb-chev.open{transform:rotate(90deg);}
+.sb-comps{padding-left:8px;display:none;}
+.sb-comps.open{display:block;}
+.sb-comp{padding:5px 14px;font-size:.68rem;color:#64748b;cursor:pointer;border-radius:4px;margin:1px 6px;display:flex;align-items:center;gap:6px;}
+.sb-comp:hover{background:#0f1929;color:#94a3b8;}
+.sb-comp.sel{background:rgba(59,130,246,.1);color:#60a5fa;}
+.sb-tier{padding:4px 14px 4px 28px;font-size:.63rem;color:#334155;cursor:pointer;border-radius:4px;margin:1px 6px;}
+.sb-tier:hover{background:#0f1929;color:#64748b;}
+.sb-tier.sel{color:#93c5fd;}
+
+/* ── Content ── */
+.content{flex:1;overflow-y:auto;padding:20px;}
+
+/* ── Domain block ── */
+.domain-block{margin-bottom:24px;}
+.domain-hdr{padding:10px 16px;border-radius:8px;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;}
+
+/* ── Competency block ── */
+.comp-block{background:#0b1221;border:1px solid #182035;border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.comp-hdr{padding:14px 18px;border-bottom:1px solid #0e1929;}
+.comp-name{font-size:.88rem;font-weight:800;color:#e2e8f0;margin-bottom:4px;}
+.comp-desc{font-size:.7rem;color:#64748b;line-height:1.5;}
+.comp-supporting{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.comp-supporting-lbl{font-size:.6rem;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.08em;}
+.comp-sup-chip{font-size:.6rem;padding:2px 8px;border-radius:3px;background:#080f1d;border:1px solid #182035;color:#475569;}
+
+/* ── Tier block ── */
+.tier-block{border-top:1px solid #0e1929;}
+.tier-hdr{padding:12px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.tier-label{font-size:.8rem;font-weight:800;}
+.tier-impact{font-size:.62rem;color:#475569;font-style:italic;margin-left:auto;}
+.tier-chev{font-size:.85rem;color:#334155;transition:transform .2s;}
+.tier-chev.open{transform:rotate(90deg);}
+.tier-body{padding:0 18px 16px;display:none;}
+.tier-body.open{display:block;}
+
+/* ── Required Behaviors ── */
+.req-behaviors{margin-bottom:12px;}
+.rb-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#334155;margin-bottom:6px;}
+.rb-item{font-size:.7rem;color:#94a3b8;padding:5px 0 5px 16px;position:relative;line-height:1.5;border-bottom:1px solid #080f1d;}
+.rb-item:last-child{border-bottom:none;}
+.rb-item::before{content:counter(rb);counter-increment:rb;position:absolute;left:0;font-size:.6rem;font-weight:800;color:#334155;}
+.req-behaviors{counter-reset:rb;}
+.criteria-box{background:#080f1d;border-radius:6px;padding:8px 12px;margin-bottom:12px;}
+.crit-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:3px;}
+.crit-val{font-size:.68rem;color:#facc15;font-style:italic;}
+
+/* ── Task table ── */
+.task-table-wrap{overflow-x:auto;}
+.task-table{width:100%;border-collapse:collapse;min-width:900px;font-size:.65rem;}
+.task-table thead tr th{padding:6px 8px;text-align:center;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#334155;background:#060a16;border:1px solid #0e1929;white-space:nowrap;}
+.task-table thead tr:first-child th{background:#080f1d;font-size:.62rem;}
+.task-table td{padding:6px 8px;border:1px solid #0e1929;vertical-align:middle;color:#94a3b8;}
+.task-table td.task-num{color:#475569;font-weight:700;white-space:nowrap;text-align:center;}
+.task-table td.task-stmt{text-align:left;min-width:200px;line-height:1.45;}
+.task-table td.task-diff{text-align:center;}
+.diff-1{color:#34d399;font-weight:700;}
+.diff-2{color:#facc15;font-weight:700;}
+.diff-3{color:#f87171;font-weight:700;}
+.task-table td.ctx-cell{text-align:center;}
+.ctx-icon{font-size:.75rem;cursor:default;}
+.ctx-icon.off{opacity:.15;}
+.prof-code{display:inline-block;width:24px;height:24px;border-radius:4px;font-size:.68rem;font-weight:800;text-align:center;line-height:24px;}
+.pc-A{background:rgba(249,115,22,.15);color:#fb923c;}
+.pc-B{background:rgba(234,179,8,.15);color:#facc15;}
+.pc-C{background:rgba(52,211,153,.15);color:#34d399;}
+.pc-star{background:rgba(59,130,246,.15);color:#60a5fa;}
+.pc-dash{background:rgba(71,85,105,.1);color:#334155;}
+.core-badge{font-size:.58rem;font-weight:700;padding:2px 5px;border-radius:3px;}
+.core-Core{background:rgba(59,130,246,.15);color:#60a5fa;}
+.core-Cert{background:rgba(168,85,247,.15);color:#c084fc;}
+.core-Opt{background:rgba(71,85,105,.1);color:#475569;}
+
+/* OJT cells */
+.ojt-cell{text-align:center;padding:4px;}
+.ojt-input{width:36px;background:#060a16;border:1px solid #182035;color:#94a3b8;font-size:.62rem;text-align:center;padding:3px;border-radius:3px;font-family:'Inter',sans-serif;}
+.ojt-input:focus{outline:none;border-color:#3b82f6;color:#e2e8f0;}
+.ojt-date{width:80px;background:#060a16;border:1px solid #182035;color:#94a3b8;font-size:.58rem;text-align:center;padding:3px;border-radius:3px;font-family:'Inter',sans-serif;}
+.ojt-date:focus{outline:none;border-color:#3b82f6;}
+.ojt-certified{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2)!important;}
+
+/* ── E&T Plan tab ── */
+.etp-section{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:18px;margin-bottom:14px;}
+.etp-sec-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#334155;margin-bottom:12px;}
+.career-path{display:flex;align-items:center;gap:0;margin-bottom:12px;}
+.cp-tier{flex:1;text-align:center;padding:14px 10px;position:relative;}
+.cp-tier::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:#1e3058;font-size:1rem;}
+.cp-tier:last-child::after{display:none;}
+.cp-tier-name{font-size:.75rem;font-weight:800;margin-bottom:4px;}
+.cp-tier-desc{font-size:.62rem;color:#64748b;line-height:1.4;}
+.cp-tier-impact{font-size:.58rem;color:#334155;margin-top:5px;font-style:italic;}
+.cp-basic{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:8px;}
+.cp-basic .cp-tier-name{color:#fb923c;}
+.cp-prac{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);border-radius:8px;}
+.cp-prac .cp-tier-name{color:#facc15;}
+.cp-exp{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:8px;}
+.cp-exp .cp-tier-name{color:#60a5fa;}
+.cp-master{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.2);border-radius:8px;}
+.cp-master .cp-tier-name{color:#a78bfa;}
+
+.pathway-row{display:grid;grid-template-columns:140px 1fr 1fr;gap:12px;margin-bottom:8px;align-items:start;}
+.pw-lbl{font-size:.68rem;font-weight:700;color:#94a3b8;padding-top:3px;}
+.pw-track{background:#080f1d;border-radius:6px;padding:10px 12px;}
+.pw-track-name{font-size:.7rem;font-weight:700;margin-bottom:5px;}
+.pw-track.initial .pw-track-name{color:#34d399;}
+.pw-track.lateral .pw-track-name{color:#f472b6;}
+.pw-track ul{list-style:none;padding:0;}
+.pw-track ul li{font-size:.65rem;color:#64748b;padding:2px 0 2px 12px;position:relative;line-height:1.4;}
+.pw-track ul li::before{content:'→';position:absolute;left:0;color:#334155;font-size:.58rem;}
+
+.col-obj-list{width:100%;}
+.col-row{display:grid;grid-template-columns:80px 1fr 90px 90px 90px;gap:8px;padding:6px 0;border-bottom:1px solid #0e1929;font-size:.68rem;align-items:start;}
+.col-row:last-child{border-bottom:none;}
+.col-row.col-hdr{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#334155;}
+.col-id{color:#475569;font-weight:700;}
+.col-obj{color:#94a3b8;line-height:1.45;}
+.col-tier{text-align:center;}
+.col-setting{text-align:center;font-size:.62rem;}
+.col-gap{text-align:center;}
+.setting-school{color:#60a5fa;}
+.setting-ojt{color:#34d399;}
+.setting-self{color:#a78bfa;}
+.gap-badge{font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:3px;}
+.gap-y{background:rgba(239,68,68,.12);color:#f87171;}
+.gap-n{background:rgba(52,211,153,.1);color:#34d399;}
+
+.constraint-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.constraint-card{background:#080f1d;border:1px solid #0e1929;border-radius:8px;padding:12px;}
+.constraint-card h5{font-size:.72rem;font-weight:700;color:#e2e8f0;margin-bottom:6px;}
+.constraint-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #060a16;font-size:.68rem;color:#94a3b8;}
+.constraint-item:last-child{border-bottom:none;}
+.constraint-item .ci-lbl{flex:1;}
+.constraint-sel{background:#060a16;border:1px solid #182035;color:#94a3b8;font-size:.62rem;border-radius:4px;padding:3px 6px;font-family:'Inter',sans-serif;}
+
+/* ── Individual tracking tab ── */
+.track-controls{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.track-sel{background:#0b1221;border:1px solid #182035;color:#e2e8f0;font-size:.72rem;padding:6px 10px;border-radius:6px;font-family:'Inter',sans-serif;}
+.track-sel:focus{outline:none;border-color:#3b82f6;}
+.track-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.ts-card{background:#0b1221;border:1px solid #182035;border-radius:8px;padding:14px;text-align:center;}
+.ts-num{font-size:1.8rem;font-weight:900;line-height:1;margin-bottom:4px;}
+.ts-lbl{font-size:.62rem;color:#475569;text-transform:uppercase;letter-spacing:.07em;}
+.cert-progress-wrap{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:16px;}
+.cert-comp-row{border-bottom:1px solid #0e1929;padding:10px 0;}
+.cert-comp-row:last-child{border-bottom:none;}
+.cert-comp-name{font-size:.75rem;font-weight:700;color:#e2e8f0;margin-bottom:6px;}
+.cert-tier-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.68rem;}
+.cert-tier-name{width:80px;color:#64748b;}
+.cert-bar-wrap{flex:1;height:5px;background:#0e1929;border-radius:2px;}
+.cert-bar{height:5px;border-radius:2px;transition:width .3s;}
+.cert-pct{width:30px;text-align:right;font-size:.62rem;font-weight:700;color:#64748b;}
+
+/* ── Credential panel ── */
+.cred-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.cred-card{background:#080f1d;border:1px solid #0e1929;border-radius:8px;padding:12px;}
+.cred-card h5{font-size:.72rem;font-weight:700;margin-bottom:4px;}
+.cred-card p{font-size:.63rem;color:#475569;line-height:1.45;}
+.cred-tier-badges{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#182035;border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="top-bar">
+  <a href="index.html" class="back">← Workflow</a>
+  <h1>HR Business Partner — Training Architecture Plan</h1>
+  <span class="badge">Ontology-Driven</span>
+  <span class="badge" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.2);color:#34d399;">3 Domains · 8 Competencies · 3 Tiers</span>
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab at" onclick="setTab('ontology')">Competency Ontology</button>
+  <button class="tab" onclick="setTab('etp')">E&T Plan</button>
+  <button class="tab" onclick="setTab('track')">Individual Tracking</button>
+</div>
+
+<!-- Main layout -->
+<div class="main">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <!-- Content area -->
+  <div class="content" id="content"></div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// ONTOLOGY DATA
+// Structure: Domain → Competency → Tier → Behaviors + Tasks
+// Proficiency codes: A=Awareness, B=Guided, C=Independent, *=Standard Required, -=Not Required
+// Context: S=Standard, D=Deployment, X=Specialized
+// ════════════════════════════════════════════════════════════════
+
+const ONTO = [
+  // ────────────────────────────────────────────────────────────
+  // DOMAIN 1: STRATEGIC HR
+  // ────────────────────────────────────────────────────────────
+  { id:'d1', name:'STRATEGIC HR', color:'#60a5fa', bgColor:'rgba(59,130,246,.08)',
+    comps:[
+
+      // COMPETENCY 1.1: PEOPLE ANALYTICS
+      { id:'c1', name:'People Analytics', num:'1.1',
+        desc:'The ability to collect, analyze, and translate workforce data into actionable business insights that drive strategic people decisions.',
+        supporting:['Workforce Planning','Business Acumen'],
+        tiers:[
+          { id:'c1t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Access and use HRIS systems to extract standard workforce reports',
+              'Interpret dashboard metrics to identify basic workforce trends and patterns',
+              'Document data sources and apply standard formatting for HR reporting'
+            ],
+            criterion:'Impact on... specific team or unit metrics',
+            tasks:[
+              { n:'1.1.1.1', stmt:'Access and navigate HRIS reporting modules to extract standard workforce reports', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.1.1.2', stmt:'Interpret pre-built dashboards to identify key metrics (headcount, turnover, time-to-fill)', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.1.1.3', stmt:'Document and validate data sources used in standard workforce reporting', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+              { n:'1.1.1.4', stmt:'Identify data quality issues and escalate to appropriate data owners', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.1.1.5', stmt:'Format and prepare workforce data for standard HR reports and presentations', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c1t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Build custom queries and reports to answer specific business questions',
+              'Analyze workforce trends using descriptive statistics and visualization tools',
+              'Identify correlations between HR metrics and business performance indicators'
+            ],
+            criterion:'Impact on... department or function-level decisions',
+            tasks:[
+              { n:'1.1.2.1', stmt:'Build custom HRIS queries and reports to answer specific workforce questions', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.1.2.2', stmt:'Analyze workforce trends using descriptive statistics and data visualization tools', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.1.2.3', stmt:'Identify correlations between HR metrics and business performance indicators', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.1.2.4', stmt:'Develop automated dashboards for leadership consumption and monitoring', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.1.2.5', stmt:'Conduct ad hoc workforce analytics to support business decision-making', diff:2, bMatch:true, coreCert:'Core', ctx:['S','D'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c1t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Design enterprise workforce analytics frameworks and governance standards',
+              'Lead development of predictive workforce models (attrition, supply/demand)',
+              'Translate complex analytics findings into executive-level strategic recommendations'
+            ],
+            criterion:'Impact on... enterprise-level strategic decisions',
+            tasks:[
+              { n:'1.1.3.1', stmt:'Design enterprise-wide workforce analytics frameworks and data governance standards', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.1.3.2', stmt:'Lead development of predictive workforce models for attrition and demand forecasting', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.1.3.3', stmt:'Translate complex analytics findings into executive-level strategic recommendations', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.1.3.4', stmt:'Evaluate and implement new workforce analytics tools and platforms', diff:3, bMatch:false, coreCert:'Cert', ctx:['S','X'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.1.3.5', stmt:'Develop and deliver analytics capability building programs for the HR function', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      },
+
+      // COMPETENCY 1.2: WORKFORCE PLANNING
+      { id:'c2', name:'Workforce Planning', num:'1.2',
+        desc:'The ability to analyze organizational workforce supply and demand, identify gaps, and develop actionable plans that align talent capacity to business strategy.',
+        supporting:['People Analytics','Organizational Development'],
+        tiers:[
+          { id:'c2t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Identify and gather data inputs required for workforce planning analysis',
+              'Apply standard workforce planning frameworks to structure demand and supply data',
+              'Document workforce planning assumptions and data sources'
+            ],
+            criterion:'Impact on... specific team or unit headcount',
+            tasks:[
+              { n:'1.2.1.1', stmt:'Gather and validate headcount, vacancy, and attrition data for workforce planning', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.2.1.2', stmt:'Apply standard demand forecasting templates to project near-term headcount needs', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.2.1.3', stmt:'Document workforce planning data sources and assumptions for review', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+              { n:'1.2.1.4', stmt:'Identify open roles and pipeline gaps at team or unit level', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c2t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Conduct three-level workforce planning analysis (demand, supply, gap identification)',
+              'Develop scenario-based workforce plans that address identified imbalances',
+              'Build workforce planning business cases to secure resources and leadership support'
+            ],
+            criterion:'Impact on... business unit or function workforce strategy',
+            tasks:[
+              { n:'1.2.2.1', stmt:'Conduct demand analysis using business drivers and productivity modeling', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.2.2.2', stmt:'Conduct supply analysis using internal mobility data, attrition rates, and pipeline data', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.2.2.3', stmt:'Identify and quantify workforce gaps between demand and supply projections', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.2.2.4', stmt:'Develop scenario-based workforce plans with build/buy/borrow strategy options', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.2.2.5', stmt:'Build workforce planning business cases for leadership approval', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c2t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Design enterprise workforce planning methodology and governance processes',
+              'Lead multi-year strategic workforce planning aligned to business strategy cycles',
+              'Develop workforce planning capability across the HRBP community'
+            ],
+            criterion:'Impact on... enterprise talent strategy and investment decisions',
+            tasks:[
+              { n:'1.2.3.1', stmt:'Design enterprise workforce planning methodology, tools, and governance processes', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.2.3.2', stmt:'Lead multi-year strategic workforce planning cycles aligned to business strategy', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.2.3.3', stmt:'Integrate workforce planning with financial planning and organizational design processes', diff:3, bMatch:false, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.2.3.4', stmt:'Build workforce planning capability across HRBP and business manager communities', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      },
+
+      // COMPETENCY 1.3: ORGANIZATIONAL DEVELOPMENT
+      { id:'c3', name:'Organizational Development', num:'1.3',
+        desc:'The ability to diagnose organizational effectiveness, design interventions, and facilitate change to improve performance and align structure with strategy.',
+        supporting:['Advisory & Consulting','Workforce Planning'],
+        tiers:[
+          { id:'c3t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Apply standard OD diagnostic frameworks to assess organizational issues',
+              'Support OD interventions under direction of experienced practitioners',
+              'Document organizational assessment findings and intervention activities'
+            ],
+            criterion:'Impact on... specific team or function effectiveness',
+            tasks:[
+              { n:'1.3.1.1', stmt:'Apply standard OD diagnostic models to assess team or function effectiveness', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.3.1.2', stmt:'Administer and analyze organizational surveys and climate assessments', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'1.3.1.3', stmt:'Support design and facilitation of team-level interventions under supervision', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+              { n:'1.3.1.4', stmt:'Document OD assessment findings using standard reporting templates', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c3t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Conduct independent OD diagnosis and design targeted interventions',
+              'Facilitate change readiness assessments and stakeholder engagement plans',
+              'Evaluate effectiveness of OD interventions against defined outcomes'
+            ],
+            criterion:'Impact on... department or business unit performance',
+            tasks:[
+              { n:'1.3.2.1', stmt:'Conduct independent OD diagnosis using multiple data sources and methods', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.3.2.2', stmt:'Design and facilitate targeted team and cross-functional OD interventions', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.3.2.3', stmt:'Conduct change readiness assessments and develop stakeholder engagement plans', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.3.2.4', stmt:'Evaluate OD intervention effectiveness using pre-defined success metrics', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'1.3.2.5', stmt:'Facilitate change management activities including communication and resistance management', diff:3, bMatch:true, coreCert:'Cert', ctx:['S','D'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c3t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Lead enterprise-wide OD and change management initiatives',
+              'Design organizational structures and operating models aligned to strategy',
+              'Build OD and change management capability across the organization'
+            ],
+            criterion:'Impact on... enterprise organizational effectiveness and culture',
+            tasks:[
+              { n:'1.3.3.1', stmt:'Lead enterprise-wide organizational design and restructuring initiatives', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.3.3.2', stmt:'Design and implement enterprise change management frameworks and toolkits', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.3.3.3', stmt:'Advise senior leadership on organizational effectiveness and culture strategy', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'1.3.3.4', stmt:'Build OD and change management capability across HR and business leader communities', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // ────────────────────────────────────────────────────────────
+  // DOMAIN 2: OPERATIONAL HR
+  // ────────────────────────────────────────────────────────────
+  { id:'d2', name:'OPERATIONAL HR', color:'#34d399', bgColor:'rgba(16,185,129,.06)',
+    comps:[
+
+      // COMPETENCY 2.1: EMPLOYEE RELATIONS
+      { id:'c4', name:'Employee Relations', num:'2.1',
+        desc:'The ability to manage employee-employer relationships, resolve workplace issues equitably, and ensure compliance with employment standards.',
+        supporting:['Business Acumen','Advisory & Consulting'],
+        tiers:[
+          { id:'c4t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Apply employment law and policy knowledge to handle standard employee inquiries',
+              'Document employee relations cases using established protocols',
+              'Escalate complex or high-risk cases appropriately and in a timely manner'
+            ],
+            criterion:'Impact on... specific employees or immediate work group',
+            tasks:[
+              { n:'2.1.1.1', stmt:'Respond to standard employee and manager policy inquiries using authoritative resources', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.1.1.2', stmt:'Document employee relations cases in case management systems per established protocols', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.1.1.3', stmt:'Identify and escalate complex, sensitive, or high-risk employee relations cases', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.1.1.4', stmt:'Apply employment law fundamentals to advise on standard performance and conduct matters', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c4t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Independently manage complex employee relations cases from intake to resolution',
+              'Conduct workplace investigations with appropriate rigor and objectivity',
+              'Advise managers on performance management processes with legal defensibility'
+            ],
+            criterion:'Impact on... department culture and compliance posture',
+            tasks:[
+              { n:'2.1.2.1', stmt:'Independently manage complex employee relations cases from intake through resolution', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.1.2.2', stmt:'Conduct workplace investigations applying appropriate rigor, objectivity, and documentation standards', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.1.2.3', stmt:'Advise managers on performance improvement plans with legal defensibility', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.1.2.4', stmt:'Identify patterns in employee relations cases to surface systemic organizational issues', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.1.2.5', stmt:'Manage separation and termination processes in compliance with employment law', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c4t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Design employee relations frameworks, policies, and case management governance',
+              'Lead high-stakes or legally complex cases requiring specialized expertise',
+              'Advise senior leadership on employment law risk and people strategy implications'
+            ],
+            criterion:'Impact on... organizational risk posture and employment brand',
+            tasks:[
+              { n:'2.1.3.1', stmt:'Design employee relations policies, frameworks, and case management governance', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'2.1.3.2', stmt:'Lead high-stakes, legally complex, or sensitive employee relations matters', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'2.1.3.3', stmt:'Advise senior leadership on employment law risk and workforce policy implications', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      },
+
+      // COMPETENCY 2.2: TALENT MANAGEMENT
+      { id:'c5', name:'Talent Management', num:'2.2',
+        desc:'The ability to design and execute talent acquisition, development, and succession processes that build organizational capability and career equity.',
+        supporting:['People Analytics','Workforce Planning'],
+        tiers:[
+          { id:'c5t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Support talent acquisition and selection processes using established standards',
+              'Conduct job analysis to define KSAO requirements for open roles',
+              'Apply structured interview and assessment methods consistently'
+            ],
+            criterion:'Impact on... specific roles or hiring outcomes',
+            tasks:[
+              { n:'2.2.1.1', stmt:'Conduct job analysis using KSAO frameworks to define role requirements', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.2.1.2', stmt:'Design structured interview guides linked to job-relevant KSAOs', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.2.1.3', stmt:'Apply standardized selection methods to ensure adverse impact compliance', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'2.2.1.4', stmt:'Support succession planning processes by maintaining talent profiles and pipelines', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c5t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Design end-to-end talent processes for attraction, assessment, and development',
+              'Facilitate succession planning reviews using structured talent frameworks',
+              'Identify high-potential talent and design accelerated development pathways'
+            ],
+            criterion:'Impact on... business unit talent pipeline and bench strength',
+            tasks:[
+              { n:'2.2.2.1', stmt:'Design end-to-end talent acquisition processes from sourcing strategy through onboarding', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.2.2.2', stmt:'Facilitate structured succession planning reviews using 9-box or equivalent talent methodology', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.2.2.3', stmt:'Identify high-potential employees and design targeted development plans', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'2.2.2.4', stmt:'Analyze talent pipeline data to identify diversity, equity, and inclusion gaps in talent flows', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c5t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Design enterprise talent management strategy and governance frameworks',
+              'Integrate talent management with workforce planning and business strategy cycles',
+              'Develop talent management capability across HR and business communities'
+            ],
+            criterion:'Impact on... enterprise talent pipeline and capability strategy',
+            tasks:[
+              { n:'2.2.3.1', stmt:'Design enterprise talent management strategy, governance, and measurement frameworks', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'2.2.3.2', stmt:'Integrate talent management processes with workforce planning and business strategy', diff:3, bMatch:false, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'2.2.3.3', stmt:'Lead enterprise-wide succession planning for critical roles', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // ────────────────────────────────────────────────────────────
+  // DOMAIN 3: BUSINESS PARTNERING
+  // ────────────────────────────────────────────────────────────
+  { id:'d3', name:'BUSINESS PARTNERING', color:'#f472b6', bgColor:'rgba(236,72,153,.06)',
+    comps:[
+
+      // COMPETENCY 3.1: BUSINESS ACUMEN
+      { id:'c6', name:'Business Acumen', num:'3.1',
+        desc:'The ability to understand how the business creates value, navigate financial and competitive contexts, and align HR actions to organizational priorities.',
+        supporting:['Advisory & Consulting','Workforce Planning'],
+        tiers:[
+          { id:'c6t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Understand the business unit\'s core purpose, key customers, and value drivers',
+              'Interpret basic financial statements and connect them to workforce decisions',
+              'Apply knowledge of industry and competitive context to HR conversations'
+            ],
+            criterion:'Impact on... specific HR recommendations for the business unit',
+            tasks:[
+              { n:'3.1.1.1', stmt:'Describe the business unit\'s core purpose, revenue drivers, and key performance indicators', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.1.1.2', stmt:'Interpret basic P&L and budget information to understand workforce cost implications', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.1.1.3', stmt:'Apply knowledge of industry dynamics and competitive context to HR practice decisions', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c6t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Connect HR recommendations to measurable business outcomes and financial impact',
+              'Navigate strategic priorities and translate them into people implications',
+              'Build credibility as a commercial advisor, not just an HR specialist'
+            ],
+            criterion:'Impact on... business unit strategic and financial performance',
+            tasks:[
+              { n:'3.1.2.1', stmt:'Connect HR recommendations to measurable business outcomes and ROI framing', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.1.2.2', stmt:'Translate business strategy and market context into workforce and people implications', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.1.2.3', stmt:'Participate in business planning processes as a credible commercial contributor', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.1.2.4', stmt:'Develop cost-benefit analyses for major HR investments and programs', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c6t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Shape business strategy by contributing people and organizational insights at the executive level',
+              'Lead enterprise-wide HR investment analysis and prioritization',
+              'Build commercial acumen capability across the HRBP community'
+            ],
+            criterion:'Impact on... enterprise strategy, investment decisions, and competitive positioning',
+            tasks:[
+              { n:'3.1.3.1', stmt:'Contribute people and organizational insights to executive-level strategy discussions', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.1.3.2', stmt:'Lead enterprise HR investment analysis, prioritization, and portfolio management', diff:3, bMatch:false, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.1.3.3', stmt:'Build commercial acumen capability across the HRBP community through coaching and development', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      },
+
+      // COMPETENCY 3.2: ADVISORY & CONSULTING
+      { id:'c7', name:'Advisory & Consulting', num:'3.2',
+        desc:'The ability to diagnose complex organizational problems, develop evidence-based recommendations, and influence stakeholders to drive meaningful action.',
+        supporting:['Business Acumen','Organizational Development'],
+        tiers:[
+          { id:'c7t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Apply structured problem diagnosis to understand root causes before recommending solutions',
+              'Communicate HR recommendations clearly with supporting rationale',
+              'Build productive working relationships with managers and stakeholders'
+            ],
+            criterion:'Impact on... specific manager decisions or team outcomes',
+            tasks:[
+              { n:'3.2.1.1', stmt:'Apply structured problem diagnosis to identify root causes before recommending solutions', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.2.1.2', stmt:'Communicate HR recommendations with clear rationale, evidence, and business framing', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.2.1.3', stmt:'Build productive working relationships with managers across assigned business units', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.2.1.4', stmt:'Identify situations requiring escalation to senior HR or legal expertise', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c7t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Lead end-to-end consulting engagements from problem framing through recommendation delivery',
+              'Navigate organizational politics and influence without direct authority',
+              'Challenge and coach senior managers on people practices with constructive candor'
+            ],
+            criterion:'Impact on... senior manager effectiveness and team performance',
+            tasks:[
+              { n:'3.2.2.1', stmt:'Lead end-to-end consulting engagements from problem diagnosis through action planning', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.2.2.2', stmt:'Navigate organizational politics to influence stakeholders without direct authority', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.2.2.3', stmt:'Challenge and coach senior managers on people practices with constructive candor', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.2.2.4', stmt:'Develop and deliver evidence-based recommendations to leadership audiences', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.2.2.5', stmt:'Manage difficult stakeholder conversations with psychological safety and productive outcomes', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c7t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Advise C-suite and executive leaders on complex people and organizational challenges',
+              'Shape the HRBP consulting model and standard of practice for the function',
+              'Build advisory and consulting capability across the HRBP community'
+            ],
+            criterion:'Impact on... executive decision-making and enterprise people strategy',
+            tasks:[
+              { n:'3.2.3.1', stmt:'Advise C-suite and executive leaders on complex people and organizational challenges', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.2.3.2', stmt:'Shape the HRBP consulting model, standards, and methodologies for the function', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.2.3.3', stmt:'Build advisory and consulting capability across the HRBP community through coaching and modeling', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      },
+
+      // COMPETENCY 3.3: TRAINING & DEVELOPMENT (mirrors 3.1.4 from 2W1X1)
+      { id:'c8', name:'Training & Development', num:'3.3',
+        desc:'The ability to identify training needs, design learning interventions, and build individual and organizational capability aligned to performance requirements.',
+        supporting:['People Analytics','Organizational Development'],
+        tiers:[
+          { id:'c8t1', label:'Basic', color:'#fb923c',
+            behaviors:[
+              'Identify training needs using standard TNA methods at team or individual level',
+              'Coordinate access to available training resources and learning pathways',
+              'Track training completion and learning outcomes for assigned population'
+            ],
+            criterion:'Impact on... specific workplace task performance',
+            tasks:[
+              { n:'3.3.1.1', stmt:'Conduct basic training needs assessments at team or individual level using standard methods', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.3.1.2', stmt:'Identify and connect employees to available training resources and learning pathways', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+              { n:'3.3.1.3', stmt:'Track training completion and maintain records for assigned employee population', diff:1, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'A',j:'B',e:'-',m:'-'} },
+              { n:'3.3.1.4', stmt:'Evaluate training effectiveness using Level 1 and Level 2 evaluation methods', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'B',j:'C',e:'-',m:'-'} },
+            ]
+          },
+          { id:'c8t2', label:'Practitioner', color:'#facc15',
+            behaviors:[
+              'Design and implement targeted learning interventions based on systematic needs analysis',
+              'Develop individual development plans aligned to career and performance goals',
+              'Evaluate learning transfer and business impact of training investments'
+            ],
+            criterion:'Impact on... department capability and performance outcomes',
+            tasks:[
+              { n:'3.3.2.1', stmt:'Conduct systematic training needs analysis using organizational, task, and person-level data', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.3.2.2', stmt:'Design targeted learning interventions matched to identified gaps and learning objectives', diff:3, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.3.2.3', stmt:'Develop individual development plans that align employee growth to organizational needs', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.3.2.4', stmt:'Evaluate learning transfer and business impact of training investments (Levels 3-4)', diff:3, bMatch:true, coreCert:'Cert', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+              { n:'3.3.2.5', stmt:'Develop and reviews course content to ensure continued relevancy and accuracy', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'B',e:'C',m:'-'} },
+            ]
+          },
+          { id:'c8t3', label:'Expert', color:'#60a5fa',
+            behaviors:[
+              'Develop and implement career field training strategies aligned to organizational requirements',
+              'Identify training requirements and advocate for resources to ensure programs are funded',
+              'Align training requirements based on evaluation of environmental factors and emerging needs'
+            ],
+            criterion:'Impact on... enterprise learning strategy and workforce capability',
+            tasks:[
+              { n:'3.3.3.1', stmt:'Develop and implement training strategies aligned to organizational mission requirements', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.3.3.2', stmt:'Identify training requirements and advocate for funding to ensure resources are available', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.3.3.3', stmt:'Evaluate and update learning curriculum to ensure relevancy, accuracy, and effectiveness', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.3.3.4', stmt:'Align training requirements based on evaluation of environmental factors and emerging needs', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+              { n:'3.3.3.5', stmt:'Build learning and development capability across managers and the HRBP community', diff:2, bMatch:true, coreCert:'Core', ctx:['S'], prof:{f:'-',j:'-',e:'*',m:'-'} },
+            ]
+          }
+        ]
+      }
+
+    ]
+  }
+];
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let activeTab = 'ontology';
+let openDomains = new Set(['d1','d2','d3']);
+let openComps = new Set();
+let openTiers = new Set();
+let selectedComp = null;
+
+// OJT cert state (persisted in localStorage)
+function loadCertState() {
+  try { return JSON.parse(localStorage.getItem('hrbp_cert')||'{}'); } catch { return {}; }
+}
+function saveCertState(s) {
+  try { localStorage.setItem('hrbp_cert', JSON.stringify(s)); } catch {}
+}
+let certState = loadCertState();
+
+function getCert(taskId) {
+  return certState[taskId] || { started:'', complete:'', trainee:'', trainer:'', certifier:'' };
+}
+function updateCert(taskId, field, val) {
+  if (!certState[taskId]) certState[taskId] = { started:'', complete:'', trainee:'', trainer:'', certifier:'' };
+  certState[taskId][field] = val;
+  saveCertState(certState);
+  updateCertSummary();
+}
+
+function isCertified(taskId) {
+  const c = getCert(taskId);
+  return c.trainee && c.trainer && c.certifier;
+}
+
+// ════════════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════════════
+function setTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('at', ['ontology','etp','track'][i] === tab);
+  });
+  renderSidebar();
+  renderContent();
+}
+
+// ════════════════════════════════════════════════════════════════
+// SIDEBAR
+// ════════════════════════════════════════════════════════════════
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (activeTab === 'track') { sb.innerHTML = '<div style="padding:12px 14px;font-size:.65rem;color:#334155;">Select a competency in the tracking view</div>'; return; }
+
+  sb.innerHTML = ONTO.map(dom => `
+    <div class="sb-section">
+      <div class="sb-domain" style="color:${dom.color}" onclick="toggleDom('${dom.id}')">
+        <span>${dom.name}</span>
+        <span class="sb-chev ${openDomains.has(dom.id)?'open':''}">›</span>
+      </div>
+      <div class="sb-comps ${openDomains.has(dom.id)?'open':''}">
+        ${dom.comps.map(comp => `
+          <div class="sb-comp ${selectedComp===comp.id?'sel':''}" onclick="selectComp('${comp.id}')">
+            <span style="color:${dom.color};font-size:.6rem;font-weight:800">${comp.num}</span>
+            <span>${comp.name}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleDom(id) {
+  openDomains.has(id) ? openDomains.delete(id) : openDomains.add(id);
+  renderSidebar();
+}
+
+function selectComp(id) {
+  selectedComp = id;
+  openComps.add(id);
+  renderSidebar();
+  renderContent();
+  // Scroll to comp
+  setTimeout(() => {
+    const el = document.getElementById('comp_' + id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+// ════════════════════════════════════════════════════════════════
+// PROF CODE RENDER
+// ════════════════════════════════════════════════════════════════
+function profBadge(code) {
+  const map = { A:'pc-A', B:'pc-B', C:'pc-C', '*':'pc-star', '-':'pc-dash' };
+  const display = code === '*' ? '★' : code;
+  return `<span class="prof-code ${map[code]||'pc-dash'}">${display}</span>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// ONTOLOGY VIEW
+// ════════════════════════════════════════════════════════════════
+function renderOntology() {
+  return ONTO.map(dom => `
+    <div class="domain-block" id="dom_${dom.id}">
+      <div class="domain-hdr" style="background:${dom.bgColor};color:${dom.color}">${dom.name}</div>
+      ${dom.comps.map(comp => renderCompBlock(comp, dom.color)).join('')}
+    </div>`).join('');
+}
+
+function renderCompBlock(comp, domColor) {
+  const isOpen = openComps.has(comp.id);
+  return `
+    <div class="comp-block" id="comp_${comp.id}">
+      <div class="comp-hdr">
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="toggleComp('${comp.id}')">
+          <span style="font-size:.7rem;font-weight:800;color:${domColor}">${comp.num}</span>
+          <span class="comp-name">${comp.name}</span>
+          <span style="font-size:.85rem;color:#334155;margin-left:auto;transition:transform .2s;${isOpen?'transform:rotate(90deg)':''}">›</span>
+        </div>
+        <div class="comp-desc" style="margin-top:6px">${comp.desc}</div>
+        <div class="comp-supporting">
+          <span class="comp-supporting-lbl">Supporting Competencies:</span>
+          ${comp.supporting.map(s=>`<span class="comp-sup-chip">${s}</span>`).join('')}
+        </div>
+      </div>
+      <div style="display:${isOpen?'block':'none'}" id="compbody_${comp.id}">
+        ${comp.tiers.map(tier => renderTierBlock(tier, comp.id)).join('')}
+      </div>
+    </div>`;
+}
+
+function toggleComp(id) {
+  openComps.has(id) ? openComps.delete(id) : openComps.add(id);
+  const body = document.getElementById('compbody_' + id);
+  const chev = document.querySelector(`#comp_${id} .comp-hdr [onclick]`);
+  if (body) body.style.display = openComps.has(id) ? 'block' : 'none';
+  if (chev) {
+    const s = chev.querySelector('span:last-child');
+    if (s) s.style.transform = openComps.has(id) ? 'rotate(90deg)' : '';
+  }
+}
+
+function renderTierBlock(tier, compId) {
+  const key = compId + '_' + tier.id;
+  const isOpen = openTiers.has(key);
+  const tierColors = { Basic:'#fb923c', Practitioner:'#facc15', Expert:'#60a5fa', Master:'#a78bfa' };
+  const tc = tier.color || tierColors[tier.label] || '#94a3b8';
+
+  return `
+    <div class="tier-block">
+      <div class="tier-hdr" onclick="toggleTier('${key}')">
+        <span class="tier-label" style="color:${tc}">${tier.label}</span>
+        <span class="tier-impact">${tier.criterion}</span>
+        <span class="tier-chev ${isOpen?'open':''}">›</span>
+      </div>
+      <div class="tier-body ${isOpen?'open':''}" id="tier_${key}">
+        <div class="req-behaviors">
+          <div class="rb-lbl">Required Behaviors</div>
+          ${tier.behaviors.map(b=>`<div class="rb-item">${b}</div>`).join('')}
+        </div>
+        <div class="criteria-box">
+          <div class="crit-lbl">Criteria</div>
+          <div class="crit-val">${tier.criterion}</div>
+        </div>
+        <div class="task-table-wrap">
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align:left;min-width:40px">#</th>
+                <th rowspan="2" style="text-align:left;min-width:180px">1. Tasks, Knowledge &amp; Technical References</th>
+                <th rowspan="2">Diff</th>
+                <th colspan="3" style="border-bottom:1px solid #182035">2. Tasks</th>
+                <th colspan="5" style="border-bottom:1px solid #182035">3. Certification for OJT</th>
+                <th colspan="4" style="border-bottom:1px solid #182035">4. Proficiency Codes</th>
+              </tr>
+              <tr>
+                <th>Behavior Match</th><th>Core/Cert</th><th>Context</th>
+                <th>A — Tng Start</th><th>B — Tng Complete</th><th>C — Trainee</th><th>D — Trainer</th><th>E — Certifier</th>
+                <th>Foundation</th><th>Journeyman</th><th>Expert</th><th>Master</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tier.tasks.map(t => renderTaskRow(t)).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleTier(key) {
+  openTiers.has(key) ? openTiers.delete(key) : openTiers.add(key);
+  const el = document.getElementById('tier_' + key);
+  const hdr = el?.previousElementSibling?.querySelector('.tier-chev');
+  if (el) el.classList.toggle('open', openTiers.has(key));
+  if (hdr) hdr.classList.toggle('open', openTiers.has(key));
+}
+
+function renderTaskRow(t) {
+  const c = getCert(t.n);
+  const certified = isCertified(t.n);
+  const certClass = certified ? 'ojt-certified' : '';
+  return `
+    <tr>
+      <td class="task-num">${t.n}</td>
+      <td class="task-stmt">${t.stmt}</td>
+      <td class="task-diff"><span class="diff-${t.diff}">${t.diff}</span></td>
+      <td style="text-align:center">${t.bMatch ? '<span style="color:#34d399;font-weight:700;">✓</span>' : '<span style="color:#334155;">—</span>'}</td>
+      <td style="text-align:center"><span class="core-badge core-${t.coreCert}">${t.coreCert}</span></td>
+      <td class="ctx-cell">
+        <span class="ctx-icon ${t.ctx.includes('S')?'':'off'}" title="Standard">⬤</span>
+        <span class="ctx-icon ${t.ctx.includes('D')?'':'off'}" title="Deployment">✈</span>
+        <span class="ctx-icon ${t.ctx.includes('X')?'':'off'}" title="Specialized">★</span>
+      </td>
+      <td class="ojt-cell ${certClass}"><input class="ojt-date" type="text" placeholder="mm/dd" value="${c.started}" onchange="updateCert('${t.n}','started',this.value)"></td>
+      <td class="ojt-cell ${certClass}"><input class="ojt-date" type="text" placeholder="mm/dd" value="${c.complete}" onchange="updateCert('${t.n}','complete',this.value)"></td>
+      <td class="ojt-cell ${certClass}"><input class="ojt-input" placeholder="Init" value="${c.trainee}" onchange="updateCert('${t.n}','trainee',this.value)" maxlength="4"></td>
+      <td class="ojt-cell ${certClass}"><input class="ojt-input" placeholder="Init" value="${c.trainer}" onchange="updateCert('${t.n}','trainer',this.value)" maxlength="4"></td>
+      <td class="ojt-cell ${certClass}"><input class="ojt-input" placeholder="Init" value="${c.certifier}" onchange="updateCert('${t.n}','certifier',this.value)" maxlength="4"></td>
+      <td style="text-align:center">${profBadge(t.prof.f)}</td>
+      <td style="text-align:center">${profBadge(t.prof.j)}</td>
+      <td style="text-align:center">${profBadge(t.prof.e)}</td>
+      <td style="text-align:center">${profBadge(t.prof.m)}</td>
+    </tr>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// E&T PLAN VIEW
+// ════════════════════════════════════════════════════════════════
+function renderETP() {
+  // Build course objective list
+  const colRows = [];
+  ONTO.forEach(dom => dom.comps.forEach(comp => comp.tiers.forEach(tier => {
+    tier.tasks.forEach(t => {
+      const setting = t.prof.f !== '-' || t.prof.j !== '-' ? 'school' : 'ojt';
+      const hasGap = t.prof.e !== '-' || t.prof.m !== '-';
+      colRows.push({ n:t.n, stmt:t.stmt, tierLabel:tier.label, tierColor:tier.color||'#94a3b8', compName:comp.name, setting, hasGap });
+    });
+  })));
+
+  const constraintCategories = [
+    { name:'Time & Scheduling', items:['Annual training hours available', 'Cohort size limits', 'Business blackout periods', 'Time zones (virtual delivery)'] },
+    { name:'Resources', items:['Training budget per employee', 'SME availability for OJT', 'Formal course seat availability', 'Technology & platform access'] },
+    { name:'Delivery', items:['Minimum viable classroom size', 'Virtual vs. in-person preference', 'Language and accessibility requirements', 'Geographic distribution of learners'] },
+  ];
+
+  return `
+    <!-- Career Architecture -->
+    <div class="etp-section">
+      <div class="etp-sec-lbl">Part I — Career Development Architecture</div>
+      <div class="career-path" style="gap:8px">
+        <div class="cp-tier cp-basic"><div class="cp-tier-name">Foundation</div><div class="cp-tier-desc">Core task performance with guidance. Building awareness of role requirements.</div><div class="cp-tier-impact">Impact: Specific workplace tasks</div></div>
+        <div class="cp-tier cp-prac"><div class="cp-tier-name">Practitioner</div><div class="cp-tier-desc">Independent proficiency. Applying skills across standard situations without assistance.</div><div class="cp-tier-impact">Impact: Dept / function decisions</div></div>
+        <div class="cp-tier cp-exp"><div class="cp-tier-name">Expert</div><div class="cp-tier-desc">Complex application and leadership. Coaching others; owning standards.</div><div class="cp-tier-impact">Impact: Enterprise strategy</div></div>
+        <div class="cp-tier cp-master"><div class="cp-tier-name">Master</div><div class="cp-tier-desc">Field leadership. Developing others; shaping the function and profession.</div><div class="cp-tier-impact">Impact: Organizational capability</div></div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="etp-sec-lbl" style="margin-bottom:8px">Training Pathways</div>
+        <div class="pathway-row">
+          <div class="pw-lbl">Initial Entry</div>
+          <div class="pw-track initial"><div class="pw-track-name">Initial Entry Track</div><ul><li>Foundation tier: All Core competencies (formal training + OJT)</li><li>Target timeline: 12–18 months to Practitioner</li><li>Certifier: Direct supervisor or designated trainer</li></ul></div>
+          <div class="pw-track lateral"><div class="pw-track-name">Lateral / Cross-Functional Track</div><ul><li>Gap assessment against Foundation + Practitioner required behaviors</li><li>Accelerated pathway for demonstrated prior proficiency</li><li>Certifier: Senior HRBP or HR Manager</li></ul></div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="etp-sec-lbl" style="margin-bottom:8px">External Credential Pathway</div>
+        <div class="cred-grid">
+          <div class="cred-card"><h5 style="color:#fb923c;">Foundation Tier</h5><p>SHRM-CP (Society for Human Resource Management — Certified Professional)</p><div class="cred-tier-badges"><span style="font-size:.6rem;padding:2px 7px;border-radius:3px;background:rgba(249,115,22,.12);color:#fb923c;border:1px solid rgba(249,115,22,.2)">Foundation → Practitioner</span></div></div>
+          <div class="cred-card"><h5 style="color:#facc15;">Practitioner Tier</h5><p>SHRM-SCP (Senior Certified Professional) · ATD CPTD (Talent Development) · HRCI PHR/SPHR</p><div class="cred-tier-badges"><span style="font-size:.6rem;padding:2px 7px;border-radius:3px;background:rgba(234,179,8,.12);color:#facc15;border:1px solid rgba(234,179,8,.2)">Practitioner → Expert</span></div></div>
+          <div class="cred-card"><h5 style="color:#60a5fa;">Expert Tier</h5><p>SHRM-SCP with Strategic Specialization · OD Certification (IODA) · Advanced Analytics (people analytics certifications)</p><div class="cred-tier-badges"><span style="font-size:.6rem;padding:2px 7px;border-radius:3px;background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2)">Expert → Master</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Objective List -->
+    <div class="etp-section">
+      <div class="etp-sec-lbl">Part II — Course Objective List (Formal Training vs. OJT Mapping)</div>
+      <div class="col-obj-list">
+        <div class="col-row col-hdr">
+          <span>Task #</span><span>Objective / Task Statement</span><span style="text-align:center">Tier</span><span style="text-align:center">Setting</span><span style="text-align:center">COL Gap</span>
+        </div>
+        ${colRows.slice(0,30).map(r => `
+          <div class="col-row">
+            <span class="col-id">${r.n}</span>
+            <span class="col-obj">${r.stmt}</span>
+            <span class="col-tier"><span style="font-size:.6rem;font-weight:700;color:${r.tierColor}">${r.tierLabel}</span></span>
+            <span class="col-setting setting-${r.setting}">${r.setting === 'school' ? '🎓 Formal' : '🔧 OJT'}</span>
+            <span class="col-gap"><span class="gap-badge gap-n">Covered</span></span>
+          </div>`).join('')}
+        <div style="padding:8px 0;font-size:.65rem;color:#334155;text-align:center">Showing 30 of ${colRows.length} objectives · Full list available in Ontology view</div>
+      </div>
+    </div>
+
+    <!-- Resource Constraints -->
+    <div class="etp-section">
+      <div class="etp-sec-lbl">Part III — Resource Constraints</div>
+      <div class="constraint-grid">
+        ${constraintCategories.map(cat => `
+          <div class="constraint-card">
+            <h5>${cat.name}</h5>
+            ${cat.items.map(item => `
+              <div class="constraint-item">
+                <span class="ci-lbl">${item}</span>
+                <select class="constraint-sel">
+                  <option>— Not set —</option>
+                  <option>Available</option>
+                  <option>Limited</option>
+                  <option>Constrained</option>
+                </select>
+              </div>`).join('')}
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// INDIVIDUAL TRACKING VIEW
+// ════════════════════════════════════════════════════════════════
+function renderTrack() {
+  const allTasks = [];
+  ONTO.forEach(dom => dom.comps.forEach(comp => comp.tiers.forEach(tier => {
+    tier.tasks.forEach(t => allTasks.push({ ...t, compName: comp.name, tierLabel: tier.label }));
+  })));
+
+  const total = allTasks.length;
+  const started = allTasks.filter(t => getCert(t.n).started).length;
+  const certified = allTasks.filter(t => isCertified(t.n)).length;
+
+  const compProgress = ONTO.flatMap(dom => dom.comps.map(comp => {
+    const tiers = comp.tiers.map(tier => {
+      const tasks = tier.tasks;
+      const certCount = tasks.filter(t => isCertified(t.n)).length;
+      return { label: tier.label, color: tier.color||'#94a3b8', pct: tasks.length > 0 ? Math.round(certCount/tasks.length*100) : 0 };
+    });
+    return { name: comp.name, tiers };
+  }));
+
+  return `
+    <div class="track-controls">
+      <span style="font-size:.72rem;color:#94a3b8;">OJT Certification Progress — All Competencies</span>
+      <button onclick="clearAllCerts()" style="font-size:.62rem;padding:4px 10px;border-radius:5px;background:#080f1d;border:1px solid #182035;color:#64748b;cursor:pointer;font-family:'Inter',sans-serif;">Clear All</button>
+    </div>
+    <div class="track-summary">
+      <div class="ts-card"><div class="ts-num" style="color:#60a5fa;">${total}</div><div class="ts-lbl">Total Tasks</div></div>
+      <div class="ts-card"><div class="ts-num" style="color:#facc15;">${started}</div><div class="ts-lbl">Training Started</div></div>
+      <div class="ts-card"><div class="ts-num" style="color:#34d399;">${certified}</div><div class="ts-lbl">Fully Certified</div></div>
+    </div>
+    <div class="cert-progress-wrap" id="cert-progress">
+      ${compProgress.map(comp => `
+        <div class="cert-comp-row">
+          <div class="cert-comp-name">${comp.name}</div>
+          ${comp.tiers.map(tier => `
+            <div class="cert-tier-row">
+              <span class="cert-tier-name" style="color:${tier.color}">${tier.label}</span>
+              <div class="cert-bar-wrap"><div class="cert-bar" style="width:${tier.pct}%;background:${tier.color}"></div></div>
+              <span class="cert-pct" style="color:${tier.color}">${tier.pct}%</span>
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:14px;padding:12px;background:#0b1221;border:1px solid #182035;border-radius:8px;font-size:.68rem;color:#475569;">
+      OJT certification data is stored locally in this browser. To certify a task, open the <strong style="color:#94a3b8;">Competency Ontology</strong> tab, navigate to any tier, and fill in the Training Start, Training Complete, Trainee, Trainer, and Certifier fields. A task is fully certified when all three initials (Trainee + Trainer + Certifier) are present.
+    </div>`;
+}
+
+function updateCertSummary() {
+  if (activeTab === 'track') {
+    document.getElementById('content').innerHTML = renderTrack();
+  }
+}
+
+function clearAllCerts() {
+  if (confirm('Clear all OJT certification records?')) {
+    certState = {};
+    saveCertState(certState);
+    renderContent();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// MAIN RENDER
+// ════════════════════════════════════════════════════════════════
+function renderContent() {
+  const el = document.getElementById('content');
+  if (activeTab === 'ontology') el.innerHTML = renderOntology();
+  else if (activeTab === 'etp') el.innerHTML = renderETP();
+  else el.innerHTML = renderTrack();
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+renderSidebar();
+renderContent();
+</script>
+</body>
+</html>
