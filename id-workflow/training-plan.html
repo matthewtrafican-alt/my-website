@@ -192,6 +192,122 @@ body{font-family:'Inter',sans-serif;background:#060a16;color:#e2e8f0;min-height:
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#182035;border-radius:2px;}
+
+/* ── Proficiency Rubric ── */
+.rubric-wrap{margin-bottom:14px;background:#0b1221;border:1px solid #182035;border-radius:10px;overflow:hidden;}
+.rubric-toggle{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;}
+.rubric-toggle h5{font-size:.78rem;font-weight:700;color:#e2e8f0;flex:1;}
+.rubric-toggle .rt-chev{font-size:.85rem;color:#334155;transition:transform .2s;}
+.rubric-toggle .rt-chev.open{transform:rotate(90deg);}
+.rubric-body{display:none;padding:0 16px 16px;}
+.rubric-body.open{display:block;}
+.rubric-table{width:100%;border-collapse:collapse;min-width:600px;}
+.rubric-table th{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:7px 10px;text-align:center;border:1px solid #0e1929;}
+.rubric-table th.crit-col{text-align:left;color:#475569;}
+.rubric-table td{font-size:.67rem;padding:8px 10px;border:1px solid #0e1929;color:#94a3b8;line-height:1.45;vertical-align:top;}
+.rubric-table td.crit-name{color:#e2e8f0;font-weight:600;white-space:nowrap;}
+.th-foundation{color:#fb923c;background:rgba(249,115,22,.06);}
+.th-practitioner{color:#facc15;background:rgba(234,179,8,.06);}
+.th-expert{color:#60a5fa;background:rgba(59,130,246,.06);}
+.th-master{color:#a78bfa;background:rgba(139,92,246,.06);}
+.td-f{background:rgba(249,115,22,.04);}
+.td-p{background:rgba(234,179,8,.04);}
+.td-e{background:rgba(59,130,246,.04);}
+.td-m{background:rgba(139,92,246,.04);}
+
+/* ── Onboarding tab ── */
+.emp-setup{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.emp-field{background:#0b1221;border:1px solid #182035;border-radius:8px;padding:12px;}
+.emp-field label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;display:block;margin-bottom:5px;}
+.emp-field input,.emp-field select{width:100%;background:#060a16;border:1px solid #182035;color:#e2e8f0;font-size:.72rem;padding:6px 8px;border-radius:5px;font-family:'Inter',sans-serif;}
+.emp-field input:focus,.emp-field select:focus{outline:none;border-color:#3b82f6;}
+.emp-select-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.emp-select-wrap label{font-size:.7rem;color:#64748b;white-space:nowrap;}
+
+/* Timeline */
+.ttp-wrap{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:16px;margin-bottom:14px;}
+.ttp-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ttp-hdr h5{font-size:.8rem;font-weight:700;color:#e2e8f0;flex:1;}
+.ttp-stat{font-size:.68rem;font-weight:700;}
+.ttp-track{position:relative;height:36px;margin:0 0 8px;}
+.ttp-bar-bg{position:absolute;top:13px;left:0;right:0;height:10px;background:#0e1929;border-radius:5px;}
+.ttp-bar-plan{position:absolute;top:13px;left:0;height:10px;border-radius:5px;background:linear-gradient(to right,rgba(59,130,246,.3),rgba(59,130,246,.5));transition:width .4s;}
+.ttp-bar-actual{position:absolute;top:13px;left:0;height:10px;border-radius:5px;background:linear-gradient(to right,#34d399,#22d3ee);transition:width .4s;}
+.ttp-milestones{display:flex;position:relative;margin-top:6px;}
+.ttp-milestone{position:absolute;transform:translateX(-50%);text-align:center;}
+.ttp-m-tick{width:1px;height:8px;background:#182035;margin:0 auto 2px;}
+.ttp-m-lbl{font-size:.55rem;color:#334155;white-space:nowrap;}
+.ttp-today{position:absolute;top:10px;width:2px;height:16px;background:#f87171;border-radius:1px;}
+.ttp-today::before{content:'Today';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:.55rem;color:#f87171;white-space:nowrap;}
+.ttp-legend{display:flex;gap:16px;margin-top:14px;}
+.ttp-leg-item{display:flex;align-items:center;gap:5px;font-size:.62rem;color:#475569;}
+.ttp-leg-swatch{width:20px;height:6px;border-radius:3px;}
+
+/* 30/60/90 Cards */
+.checkpoint-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+.ck-card{background:#0b1221;border:1px solid #182035;border-radius:10px;overflow:hidden;}
+.ck-card-hdr{padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.ck-day-badge{font-size:.7rem;font-weight:900;padding:4px 10px;border-radius:6px;}
+.ck-status-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:auto;}
+.ck-card-body{padding:0 14px 14px;}
+.ck-section{margin-bottom:10px;}
+.ck-section-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;}
+.ck-item{font-size:.67rem;color:#94a3b8;padding:3px 0 3px 12px;position:relative;line-height:1.4;}
+.ck-item::before{content:'→';position:absolute;left:0;color:#334155;font-size:.6rem;}
+.ck-progress-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #0e1929;margin-top:8px;}
+.ck-prog-lbl{font-size:.62rem;color:#475569;flex:1;}
+.ck-prog-pct{font-size:.75rem;font-weight:800;}
+.ck-prog-bar{flex:2;height:5px;background:#0e1929;border-radius:2px;}
+.ck-prog-fill{height:5px;border-radius:2px;transition:width .3s;}
+.ck-rating-row{padding:8px 0 0;border-top:1px solid #0e1929;margin-top:8px;display:flex;align-items:center;gap:8px;}
+.ck-rating-lbl{font-size:.62rem;color:#475569;}
+.ck-rating-btn{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:4px;border:1px solid #182035;background:#080f1d;color:#475569;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.ck-rating-btn.r-met{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.2);color:#34d399;}
+.ck-rating-btn.r-partial{background:rgba(234,179,8,.1);border-color:rgba(234,179,8,.2);color:#facc15;}
+.ck-rating-btn.r-not{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171;}
+
+/* ── Status Report tab ── */
+.sr-filter-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.sr-filter-btn{font-size:.68rem;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid #182035;background:#0b1221;color:#64748b;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.sr-filter-btn:hover{color:#94a3b8;border-color:#334155;}
+.sr-filter-btn.active{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.25);color:#60a5fa;}
+.sr-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.sr-kpi{background:#0b1221;border:1px solid #182035;border-radius:8px;padding:14px;text-align:center;}
+.sr-kpi-num{font-size:1.7rem;font-weight:900;line-height:1;margin-bottom:4px;}
+.sr-kpi-lbl{font-size:.6rem;color:#475569;text-transform:uppercase;letter-spacing:.07em;}
+.sr-kpi-sub{font-size:.58rem;color:#334155;margin-top:3px;}
+.sr-table{width:100%;border-collapse:collapse;}
+.sr-table th{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#334155;padding:7px 10px;text-align:left;border-bottom:1px solid #0e1929;white-space:nowrap;}
+.sr-table td{font-size:.68rem;padding:8px 10px;border-bottom:1px solid #080f1d;color:#94a3b8;vertical-align:middle;}
+.sr-table tr:hover td{background:#080f1d;}
+.status-pill{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:999px;}
+.sp-ahead{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2);}
+.sp-on{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2);}
+.sp-behind{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.sp-new{background:rgba(71,85,105,.1);color:#64748b;border:1px solid #182035;}
+.velocity-bar{display:inline-flex;align-items:center;gap:4px;}
+.vb-track{width:50px;height:5px;background:#0e1929;border-radius:2px;}
+.vb-fill{height:5px;border-radius:2px;}
+.fn-group-hdr{font-size:.65rem;font-weight:800;color:#e2e8f0;padding:10px 10px 6px;background:#080f1d;border-bottom:1px solid #0e1929;}
+.cut-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.cut-card{background:#0b1221;border:1px solid #182035;border-radius:8px;padding:14px;}
+.cut-card h5{font-size:.75rem;font-weight:700;color:#e2e8f0;margin-bottom:10px;}
+.cut-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #080f1d;font-size:.68rem;}
+.cut-row:last-child{border-bottom:none;}
+.cut-lbl{flex:1;color:#94a3b8;}
+.cut-bar-wrap{width:80px;height:5px;background:#0e1929;border-radius:2px;}
+.cut-bar-fill{height:5px;border-radius:2px;transition:width .3s;}
+.cut-pct{font-size:.65rem;font-weight:700;width:30px;text-align:right;}
+.pending-list{background:#0b1221;border:1px solid #182035;border-radius:8px;overflow:hidden;}
+.pending-hdr{padding:10px 14px;background:#080f1d;border-bottom:1px solid #0e1929;font-size:.65rem;font-weight:700;color:#e2e8f0;}
+.pending-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #080f1d;font-size:.67rem;}
+.pending-row:last-child{border-bottom:none;}
+.pending-emp{color:#e2e8f0;font-weight:600;width:110px;flex-shrink:0;}
+.pending-task{color:#94a3b8;flex:1;line-height:1.3;}
+.pending-type{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:3px;}
+.pt-trainer{background:rgba(59,130,246,.1);color:#60a5fa;}
+.pt-certifier{background:rgba(234,179,8,.1);color:#facc15;}
+.pending-days{font-size:.62rem;color:#f87171;}
 </style>
 </head>
 <body>
@@ -208,6 +324,8 @@ body{font-family:'Inter',sans-serif;background:#060a16;color:#e2e8f0;min-height:
 <div class="tab-bar">
   <button class="tab at" onclick="setTab('ontology')">Competency Ontology</button>
   <button class="tab" onclick="setTab('etp')">E&T Plan</button>
+  <button class="tab" onclick="setTab('onboard')">Onboarding & 30/60/90</button>
+  <button class="tab" onclick="setTab('report')">Status Report</button>
   <button class="tab" onclick="setTab('track')">Individual Tracking</button>
 </div>
 
@@ -700,7 +818,7 @@ function isCertified(taskId) {
 function setTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('at', ['ontology','etp','track'][i] === tab);
+    t.classList.toggle('at', ['ontology','etp','onboard','report','track'][i] === tab);
   });
   renderSidebar();
   renderContent();
@@ -1041,8 +1159,495 @@ function clearAllCerts() {
 function renderContent() {
   const el = document.getElementById('content');
   if (activeTab === 'ontology') el.innerHTML = renderOntology();
-  else if (activeTab === 'etp') el.innerHTML = renderETP();
+  else if (activeTab === 'etp') el.innerHTML = renderRubric(true) + renderETP();
+  else if (activeTab === 'onboard') el.innerHTML = renderOnboarding();
+  else if (activeTab === 'report') el.innerHTML = renderReport();
   else el.innerHTML = renderTrack();
+}
+
+// ════════════════════════════════════════════════════════════════
+// PROFICIENCY RUBRIC (Figure 1.4 — civilian translation)
+// ════════════════════════════════════════════════════════════════
+const RUBRIC = [
+  { criteria:'Depth of Knowledge',
+    f:'Established practice with key elements of the role',
+    p:'Established practices across all elements of the role',
+    e:'Introduces and applies new practices across all role elements',
+    m:'Develops new concepts and theories; recognized as a credible resource in the field' },
+  { criteria:'Consistency of Application',
+    f:'Sustained application in routine situations',
+    p:'Sustained application in a variety of situations',
+    e:'Sustained application in complex and ambiguous situations',
+    m:'Innovates; formulates new strategies; teaches others how to apply the competency' },
+  { criteria:'Thinking Challenge',
+    f:'Within established procedures and similar situations',
+    p:'Across a wide variety of situations',
+    e:'Without established procedures',
+    m:'Creates novel frameworks and imaginative approaches' },
+  { criteria:'Scope',
+    f:'Specific functional area',
+    p:'Integration across related functional areas',
+    e:'Integration with organizational strategy',
+    m:'Integration at enterprise and industry level' },
+  { criteria:'Impact on...',
+    f:'Specific workplace tasks',
+    p:'Specific workplace projects',
+    e:'Management and leadership decisions',
+    m:'Organizational practices and industry standards' },
+  { criteria:'Reach of Influence',
+    f:'Individuals',
+    p:'Teams and departments',
+    e:'Organization / Institution',
+    m:'Enterprise and industry' },
+];
+
+function renderRubric(startOpen) {
+  const open = startOpen;
+  return `<div class="rubric-wrap">
+    <div class="rubric-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.rt-chev').classList.toggle('open')">
+      <h5>Proficiency Level Reference — Figure 1.4</h5>
+      <span class="rt-chev ${open?'open':''}">›</span>
+    </div>
+    <div class="rubric-body ${open?'open':''}">
+      <div style="overflow-x:auto">
+      <table class="rubric-table">
+        <thead>
+          <tr>
+            <th class="crit-col">Criteria</th>
+            <th class="th-foundation">Foundation</th>
+            <th class="th-practitioner">Practitioner</th>
+            <th class="th-expert">Expert</th>
+            <th class="th-master">Master</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${RUBRIC.map(r=>`<tr>
+            <td class="crit-name">${r.criteria}</td>
+            <td class="td-f">${r.f}</td>
+            <td class="td-p">${r.p}</td>
+            <td class="td-e">${r.e}</td>
+            <td class="td-m">${r.m}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// SAMPLE EMPLOYEE DATA
+// ════════════════════════════════════════════════════════════════
+const EMPLOYEES = [
+  { id:'e1', name:'Sarah Chen',      fn:'HRBP — Finance',     program:'initial', start:'2024-11-01', manager:'J. Williams', trainer:'M. Torres',   certifier:'R. Patel' },
+  { id:'e2', name:'Marcus Johnson',  fn:'HRBP — Technology',  program:'initial', start:'2024-10-15', manager:'K. Adams',   trainer:'M. Torres',   certifier:'R. Patel' },
+  { id:'e3', name:'Priya Nair',      fn:'HRBP — Operations',  program:'lateral', start:'2024-12-01', manager:'J. Williams', trainer:'L. Kim',      certifier:'R. Patel' },
+  { id:'e4', name:'David Brooks',    fn:'HRBP — Finance',     program:'initial', start:'2025-01-15', manager:'K. Adams',   trainer:'L. Kim',      certifier:'R. Patel' },
+  { id:'e5', name:'Lisa Martinez',   fn:'L&D',                program:'lateral', start:'2024-09-01', manager:'R. Patel',   trainer:'S. Williams', certifier:'J. Adams'  },
+  { id:'e6', name:'James Okafor',    fn:'HRBP — Technology',  program:'initial', start:'2025-02-01', manager:'K. Adams',   trainer:'M. Torres',   certifier:'R. Patel' },
+  { id:'e7', name:'Emma Walsh',      fn:'L&D',                program:'initial', start:'2024-08-15', manager:'R. Patel',   trainer:'S. Williams', certifier:'J. Adams'  },
+  { id:'e8', name:'Carlos Rivera',   fn:'HRBP — Operations',  program:'initial', start:'2024-07-01', manager:'J. Williams', trainer:'M. Torres',   certifier:'R. Patel' },
+];
+
+// Pre-seeded sample certifications per employee (subset of Foundation tasks)
+const SAMPLE_CERTS = {
+  e1:['1.1.1.1','1.1.1.2','1.2.1.1','2.1.1.1','3.1.1.1'],
+  e2:['1.1.1.1','1.1.1.2','1.1.1.3','1.2.1.1','1.2.1.4','2.1.1.1','2.1.1.2'],
+  e3:['1.1.1.1','1.1.1.2','1.1.1.3','1.1.1.4','1.2.1.1','1.2.1.4','2.1.1.1','2.1.1.2','2.2.1.1','3.1.1.1','3.3.1.1'],
+  e4:['1.1.1.1','1.1.1.2'],
+  e5:['1.1.1.1','1.1.1.2','1.1.1.3','1.1.1.4','1.2.1.1','1.2.1.4','2.1.1.1','2.1.1.2','2.2.1.1','3.1.1.1','3.3.1.1','3.3.1.2','3.3.1.3'],
+  e6:[],
+  e7:['1.1.1.1','1.1.1.2','1.1.1.3','1.1.1.4','1.2.1.1','1.2.1.4','2.1.1.1','2.1.1.2','2.2.1.1','2.2.1.2','3.1.1.1','3.3.1.1','3.3.1.2','3.3.1.3','3.3.1.4'],
+  e8:['1.1.1.1','1.1.1.2','1.1.1.3','1.1.1.4','1.2.1.1','1.2.1.4','2.1.1.1','2.1.1.2','2.2.1.1','2.2.1.2','3.1.1.1','3.3.1.1','3.3.1.2'],
+};
+
+// Certification state that includes sample data
+function getEmployeeCerts(empId) {
+  return SAMPLE_CERTS[empId] || [];
+}
+
+// All Foundation Core tasks (difficulty 1 & 2, coreCert='Core', tier=Basic)
+function getFoundationCoreTasks() {
+  const tasks = [];
+  ONTO.forEach(dom => dom.comps.forEach(comp => {
+    const basicTier = comp.tiers[0];
+    if (basicTier) basicTier.tasks.filter(t => t.coreCert === 'Core').forEach(t => tasks.push(t));
+  }));
+  return tasks;
+}
+
+// ════════════════════════════════════════════════════════════════
+// ONBOARDING & 30/60/90
+// ════════════════════════════════════════════════════════════════
+const CHECKPOINTS = [
+  { day:30, label:'Day 30', color:'#fb923c', theme:'Learn',
+    desc:'Orient to the role, business, and team',
+    help:[
+      'Schedule stakeholder introductions across key business unit functions',
+      'Provide access to HRIS, shared drives, and reporting tools',
+      'Assign a buddy or peer mentor from the HRBP team',
+      'Walk through current workforce data and active HR priorities',
+      'Review the E&T plan and Foundation tier expectations together',
+    ],
+    evaluate:[
+      'Can describe the business unit\'s core purpose, customers, and key metrics',
+      'Can access HRIS and pull at least two standard workforce reports',
+      'Has identified the 3–5 most critical priorities for the role',
+      'Depth of Knowledge: established practice with key elements of the role',
+      'Reach of Influence: demonstrating positive impact on individuals',
+    ],
+    expectedPct:15,
+    rubricFocus:'Foundation — Depth of Knowledge + Scope',
+  },
+  { day:60, label:'Day 60', color:'#facc15', theme:'Apply',
+    desc:'Begin contributing independently in routine situations',
+    help:[
+      'Debrief after first solo manager consultations — what worked, what didn\'t',
+      'Review OJT task progress together and identify any certification blockers',
+      'Introduce to broader HR community and cross-functional partners',
+      'Provide a stretch assignment appropriate to Foundation tier',
+      'Discuss early observations about team dynamics and organizational culture',
+    ],
+    evaluate:[
+      'Handles standard HR manager inquiries independently without escalating routine matters',
+      'Has at least 3–5 Foundation Core tasks fully certified (Trainee + Trainer + Certifier)',
+      'Can apply established procedures consistently across similar situations',
+      'Consistency of Application: sustained application in routine situations',
+      'Thinking Challenge: performing within established procedures',
+    ],
+    expectedPct:35,
+    rubricFocus:'Foundation — Consistency of Application + Thinking Challenge',
+  },
+  { day:90, label:'Day 90', color:'#60a5fa', theme:'Contribute',
+    desc:'Demonstrate sustained Foundation-tier performance',
+    help:[
+      'Set formal Practitioner-tier development goals for the next 12 months',
+      'Identify one cross-functional or stretch project to build breadth',
+      'Introduce to higher-complexity situations with coaching support',
+      'Formally review E&T plan progress and update projected completion dates',
+      'Conduct a career conversation: depth vs. breadth development preferences',
+    ],
+    evaluate:[
+      'Foundation tier Required Behaviors are consistently demonstrated',
+      'Foundation Core tasks 40–60% certified; remaining tasks have Training Start dates',
+      'Impact is observable on specific workplace tasks (not just activities)',
+      'Can articulate a development plan for the next 12 months',
+      'Transition readiness: beginning to encounter a wider variety of situations',
+    ],
+    expectedPct:55,
+    rubricFocus:'Foundation — Impact + Reach of Influence',
+  },
+];
+
+let selectedEmp = 'e1';
+let ckRatings = JSON.parse(localStorage.getItem('ck_ratings')||'{}');
+
+function saveRatings() { try { localStorage.setItem('ck_ratings', JSON.stringify(ckRatings)); } catch {} }
+
+function daysInRole(empId) {
+  const emp = EMPLOYEES.find(e => e.id === empId);
+  if (!emp || !emp.start) return 0;
+  return Math.floor((new Date() - new Date(emp.start)) / 86400000);
+}
+
+function ckStatus(day) {
+  const d = daysInRole(selectedEmp);
+  if (d < day - 14) return { label:'Upcoming', cls:'sp-new' };
+  if (d >= day) return { label:'Past Due / Active', cls:'sp-on' };
+  return { label:'Active Window', cls:'sp-ahead' };
+}
+
+function setRating(empId, day, val) {
+  const key = empId + '_' + day;
+  ckRatings[key] = ckRatings[key] === val ? '' : val;
+  saveRatings();
+  renderContent();
+}
+
+function getRating(empId, day) { return ckRatings[empId + '_' + day] || ''; }
+
+function renderOnboarding() {
+  const emp = EMPLOYEES.find(e => e.id === selectedEmp) || EMPLOYEES[0];
+  const fTasks = getFoundationCoreTasks();
+  const certs = getEmployeeCerts(selectedEmp);
+  const certPct = fTasks.length > 0 ? Math.round(certs.length / fTasks.length * 100) : 0;
+  const days = daysInRole(selectedEmp);
+
+  // Timeline math (plan baseline: Foundation in 365 days)
+  const planDays = 365;
+  const planPct = Math.min(days / planDays * 100, 100);
+  const actualPct = certPct;
+  const variance = actualPct - (days / planDays * 100);
+  const varianceLabel = variance >= 5 ? `▲ ${Math.abs(Math.round(variance))}% ahead` : variance <= -5 ? `▼ ${Math.abs(Math.round(variance))}% behind` : 'On track';
+  const varianceColor = variance >= 5 ? '#34d399' : variance <= -5 ? '#f87171' : '#facc15';
+
+  // Milestone positions as % of planDays
+  const milestones = [
+    { label:'Day 30',  pct: 30/planDays*100 },
+    { label:'Day 60',  pct: 60/planDays*100 },
+    { label:'Day 90',  pct: 90/planDays*100 },
+    { label:'6 mo',    pct: 180/planDays*100 },
+    { label:'12 mo',   pct: 365/planDays*100 },
+  ];
+  const todayPct = Math.min(days / planDays * 100, 100);
+
+  return `
+    <!-- Employee selector -->
+    <div class="emp-select-wrap">
+      <label>Employee:</label>
+      <select class="track-sel" onchange="selectedEmp=this.value;renderContent()">
+        ${EMPLOYEES.map(e => `<option value="${e.id}" ${e.id===selectedEmp?'selected':''}>${e.name} · ${e.fn} · ${e.program==='initial'?'Initial Entry':'Lateral'}</option>`).join('')}
+      </select>
+    </div>
+
+    <!-- Profile card -->
+    <div class="emp-setup">
+      <div class="emp-field"><label>Name</label><input value="${emp.name}" readonly></div>
+      <div class="emp-field"><label>Function</label><input value="${emp.fn}" readonly></div>
+      <div class="emp-field"><label>Start Date (Day 1)</label><input value="${emp.start}" readonly></div>
+      <div class="emp-field"><label>Days in Role</label><input value="${days} days" readonly style="color:${days<30?'#fb923c':days<90?'#facc15':'#34d399'}"></div>
+      <div class="emp-field"><label>Program / Pathway</label><input value="${emp.program==='initial'?'Initial Entry':'Lateral / Cross-Functional'}" readonly></div>
+      <div class="emp-field"><label>Manager</label><input value="${emp.manager}" readonly></div>
+      <div class="emp-field"><label>Trainer</label><input value="${emp.trainer}" readonly></div>
+      <div class="emp-field"><label>Certifier</label><input value="${emp.certifier}" readonly></div>
+    </div>
+
+    <!-- Time to Productivity Timeline -->
+    <div class="ttp-wrap">
+      <div class="ttp-hdr">
+        <h5>Time to Productivity — Foundation Tier</h5>
+        <span class="ttp-stat" style="color:${varianceColor}">${varianceLabel}</span>
+        <span class="ttp-stat" style="color:#94a3b8;margin-left:8px;">${certPct}% certified · Day ${days} of ${planDays}</span>
+      </div>
+      <div class="ttp-track">
+        <div class="ttp-bar-bg"></div>
+        <div class="ttp-bar-plan" style="width:${planPct}%"></div>
+        <div class="ttp-bar-actual" style="width:${actualPct}%"></div>
+        <div class="ttp-today" style="left:${todayPct}%"></div>
+      </div>
+      <div class="ttp-milestones" style="position:relative;height:22px;">
+        ${milestones.map(m=>`
+          <div class="ttp-milestone" style="left:${m.pct}%">
+            <div class="ttp-m-tick"></div>
+            <div class="ttp-m-lbl">${m.label}</div>
+          </div>`).join('')}
+      </div>
+      <div class="ttp-legend">
+        <div class="ttp-leg-item"><div class="ttp-leg-swatch" style="background:rgba(59,130,246,.4)"></div>Plan (time elapsed)</div>
+        <div class="ttp-leg-item"><div class="ttp-leg-swatch" style="background:linear-gradient(to right,#34d399,#22d3ee)"></div>Actual (tasks certified)</div>
+      </div>
+    </div>
+
+    <!-- 30/60/90 Cards -->
+    <div class="checkpoint-grid">
+      ${CHECKPOINTS.map(ck => {
+        const st = ckStatus(ck.day);
+        const rating = getRating(selectedEmp, ck.day);
+        const ckPct = Math.min(certPct / ck.expectedPct * 100, 100);
+        const onTrack = certPct >= ck.expectedPct * 0.8;
+        return `
+        <div class="ck-card" style="border-color:${ck.color}22">
+          <div class="ck-card-hdr" style="background:${ck.color}0d">
+            <span class="ck-day-badge" style="background:${ck.color}20;color:${ck.color}">${ck.label}</span>
+            <span style="font-size:.7rem;font-weight:700;color:${ck.color}">${ck.theme}</span>
+            <span class="ck-status-badge ${st.cls}">${st.label}</span>
+          </div>
+          <div class="ck-card-body">
+            <p style="font-size:.65rem;color:#475569;margin-bottom:10px">${ck.desc}</p>
+            <div class="ck-section">
+              <div class="ck-section-lbl" style="color:${ck.color}">How to Help</div>
+              ${ck.help.map(h=>`<div class="ck-item">${h}</div>`).join('')}
+            </div>
+            <div class="ck-section" style="margin-top:10px">
+              <div class="ck-section-lbl" style="color:#34d399">How to Evaluate</div>
+              ${ck.evaluate.map(e=>`<div class="ck-item">${e}</div>`).join('')}
+            </div>
+            <div style="font-size:.6rem;color:#334155;margin-top:6px;font-style:italic">Rubric focus: ${ck.rubricFocus}</div>
+            <div class="ck-progress-row">
+              <span class="ck-prog-lbl">Task cert. progress</span>
+              <div class="ck-prog-bar"><div class="ck-prog-fill" style="width:${Math.min(certPct/ck.expectedPct*100,100)}%;background:${onTrack?'#34d399':'#f87171'}"></div></div>
+              <span class="ck-prog-pct" style="color:${onTrack?'#34d399':'#f87171'}">${certPct}%<span style="color:#334155;font-weight:400"> / ${ck.expectedPct}%</span></span>
+            </div>
+            <div class="ck-rating-row">
+              <span class="ck-rating-lbl">Rating:</span>
+              ${['Met','Partial','Not Met'].map(r=>`<button class="ck-rating-btn ${rating===r?'r-'+r.toLowerCase().replace(' ','-').replace('not-met','not'):''}" onclick="setRating('${selectedEmp}',${ck.day},'${r}')">${r}</button>`).join('')}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Proficiency rubric reference -->
+    ${renderRubric(false)}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// STATUS REPORT
+// ════════════════════════════════════════════════════════════════
+let reportFilter = 'all'; // 'all', 'function', 'program'
+let reportFnFilter = '';
+let reportPgFilter = '';
+
+function setReportFilter(f, val) {
+  if (f === 'fn') { reportFnFilter = reportFnFilter === val ? '' : val; reportFilter = reportFnFilter ? 'function' : 'all'; }
+  else if (f === 'pg') { reportPgFilter = reportPgFilter === val ? '' : val; reportFilter = reportPgFilter ? 'program' : 'all'; }
+  renderContent();
+}
+
+function empKPIs(emp) {
+  const fTasks = getFoundationCoreTasks();
+  const certs = getEmployeeCerts(emp.id);
+  const pct = fTasks.length > 0 ? Math.round(certs.length / fTasks.length * 100) : 0;
+  const days = daysInRole(emp.id) || 1;
+  const velocity = Math.round(certs.length / (days / 30) * 10) / 10; // tasks/month
+  const planPct = Math.min(days / 365 * 100, 100);
+  const variance = pct - planPct;
+  const status = days < 30 ? 'new' : variance >= 5 ? 'ahead' : variance <= -10 ? 'behind' : 'on';
+  const projDays = velocity > 0 ? Math.round(days + (fTasks.length - certs.length) / (velocity / 30)) : null;
+  return { pct, days, velocity, variance: Math.round(variance), status, projDays, certCount: certs.length, totalTasks: fTasks.length };
+}
+
+function renderReport() {
+  const fns = [...new Set(EMPLOYEES.map(e => e.fn))].sort();
+  const programs = ['initial','lateral'];
+
+  let filtered = EMPLOYEES;
+  if (reportFnFilter) filtered = filtered.filter(e => e.fn === reportFnFilter);
+  if (reportPgFilter) filtered = filtered.filter(e => e.program === reportPgFilter);
+
+  const allKPIs = filtered.map(e => ({ emp: e, kpi: empKPIs(e) }));
+  const avgDays = allKPIs.length ? Math.round(allKPIs.reduce((s,k)=>s+k.kpi.days,0)/allKPIs.length) : 0;
+  const avgPct = allKPIs.length ? Math.round(allKPIs.reduce((s,k)=>s+k.kpi.pct,0)/allKPIs.length) : 0;
+  const avgVel = allKPIs.length ? Math.round(allKPIs.reduce((s,k)=>s+k.kpi.velocity,0)/allKPIs.length*10)/10 : 0;
+  const onTrack = allKPIs.filter(k=>k.kpi.status==='ahead'||k.kpi.status==='on').length;
+  const pending = allKPIs.reduce((total, k) => {
+    const c = getEmployeeCerts(k.emp.id).length;
+    return total + Math.max(0, Math.floor(k.kpi.days/30) - c);
+  }, 0);
+
+  // Function cut data
+  const fnData = fns.map(fn => {
+    const emps = EMPLOYEES.filter(e => e.fn === fn);
+    const avg = emps.length ? Math.round(emps.reduce((s,e)=>s+empKPIs(e).pct,0)/emps.length) : 0;
+    return { fn, avg, n: emps.length };
+  });
+
+  // Program cut data
+  const pgData = programs.map(pg => {
+    const emps = EMPLOYEES.filter(e => e.program === pg);
+    const avg = emps.length ? Math.round(emps.reduce((s,e)=>s+empKPIs(e).pct,0)/emps.length) : 0;
+    const avgDaysToF = emps.length ? Math.round(emps.reduce((s,e)=>s+empKPIs(e).days,0)/emps.length) : 0;
+    return { pg, avg, n: emps.length, avgDays: avgDaysToF };
+  });
+
+  // Pending actions (tasks started but not certified = trainer/certifier needed)
+  const pendingActions = [];
+  EMPLOYEES.forEach(emp => {
+    const certs = getEmployeeCerts(emp.id);
+    if (certs.length > 0 && certs.length < 5) {
+      pendingActions.push({ emp: emp.name, task:'Foundation Core task batch', type:'trainer', days: Math.floor(Math.random()*8)+1 });
+    }
+  });
+
+  const statusColors = { ahead:'#34d399', on:'#facc15', behind:'#f87171', new:'#64748b' };
+  const statusLabels = { ahead:'Ahead', on:'On Track', behind:'Behind', new:'New' };
+
+  return `
+    <!-- Filter bar -->
+    <div class="sr-filter-bar">
+      <span style="font-size:.68rem;color:#475569;padding:5px 0">Filter by:</span>
+      ${fns.map(fn=>`<button class="sr-filter-btn ${reportFnFilter===fn?'active':''}" onclick="setReportFilter('fn','${fn}')">${fn}</button>`).join('')}
+      <span style="width:1px;background:#182035;margin:0 4px"></span>
+      ${programs.map(pg=>`<button class="sr-filter-btn ${reportPgFilter===pg?'active':''}" onclick="setReportFilter('pg','${pg}')">${pg==='initial'?'Initial Entry':'Lateral Hire'}</button>`).join('')}
+      ${(reportFnFilter||reportPgFilter)?`<button class="sr-filter-btn" onclick="reportFnFilter='';reportPgFilter='';renderContent()" style="color:#f87171">✕ Clear</button>`:''}
+    </div>
+
+    <!-- KPI row -->
+    <div class="sr-kpi-row">
+      <div class="sr-kpi"><div class="sr-kpi-num" style="color:#60a5fa">${filtered.length}</div><div class="sr-kpi-lbl">Employees</div><div class="sr-kpi-sub">in view</div></div>
+      <div class="sr-kpi"><div class="sr-kpi-num" style="color:#34d399">${avgPct}%</div><div class="sr-kpi-lbl">Avg Foundation Complete</div><div class="sr-kpi-sub">plan: ${Math.round(avgDays/365*100)}%</div></div>
+      <div class="sr-kpi"><div class="sr-kpi-num" style="color:#facc15">${avgVel}</div><div class="sr-kpi-lbl">Avg Tasks / Month</div><div class="sr-kpi-sub">certification velocity</div></div>
+      <div class="sr-kpi"><div class="sr-kpi-num" style="color:#a78bfa">${onTrack}/${filtered.length}</div><div class="sr-kpi-lbl">On Track or Ahead</div><div class="sr-kpi-sub">vs. plan baseline</div></div>
+      <div class="sr-kpi"><div class="sr-kpi-num" style="color:#fb923c">${pendingActions.length}</div><div class="sr-kpi-lbl">Pending Actions</div><div class="sr-kpi-sub">trainer / certifier queue</div></div>
+    </div>
+
+    <!-- Function + Program cuts -->
+    <div class="cut-grid">
+      <div class="cut-card">
+        <h5>By Function — Foundation Completion %</h5>
+        ${fnData.map(f=>`
+          <div class="cut-row">
+            <span class="cut-lbl">${f.fn} <span style="color:#334155">(n=${f.n})</span></span>
+            <div class="cut-bar-wrap"><div class="cut-bar-fill" style="width:${f.avg}%;background:${f.avg>=50?'#34d399':f.avg>=25?'#facc15':'#f87171'}"></div></div>
+            <span class="cut-pct" style="color:${f.avg>=50?'#34d399':f.avg>=25?'#facc15':'#f87171'}">${f.avg}%</span>
+          </div>`).join('')}
+      </div>
+      <div class="cut-card">
+        <h5>By Program — Avg Foundation Completion %</h5>
+        ${pgData.map(p=>`
+          <div class="cut-row">
+            <span class="cut-lbl">${p.pg==='initial'?'Initial Entry':'Lateral Hire'} <span style="color:#334155">(n=${p.n})</span></span>
+            <div class="cut-bar-wrap"><div class="cut-bar-fill" style="width:${p.avg}%;background:${p.avg>=50?'#34d399':p.avg>=25?'#facc15':'#f87171'}"></div></div>
+            <span class="cut-pct" style="color:${p.avg>=50?'#34d399':p.avg>=25?'#facc15':'#f87171'}">${p.avg}%</span>
+          </div>
+          <div class="cut-row" style="padding-top:0">
+            <span class="cut-lbl" style="color:#334155;font-size:.62rem">Avg days in role</span>
+            <span style="font-size:.65rem;color:#475569;margin-left:auto">${p.avgDays} days</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Individual table -->
+    <div style="background:#0b1221;border:1px solid #182035;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+      <table class="sr-table" style="width:100%">
+        <thead>
+          <tr>
+            <th>Employee</th><th>Function</th><th>Program</th><th>Days in Role</th>
+            <th>Foundation %</th><th>Velocity (tasks/mo)</th><th>Plan vs. Actual</th><th>Status</th><th>90-Day Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${allKPIs.map(({emp, kpi}) => {
+            const rating = getRating(emp.id, 90);
+            const ratingBadge = rating ? `<span class="ck-rating-btn r-${rating.toLowerCase().replace(' ','-').replace('not-met','not')}">${rating}</span>` : '<span style="color:#334155;font-size:.62rem">—</span>';
+            const maxVel = 5;
+            return `<tr>
+              <td style="color:#e2e8f0;font-weight:600">${emp.name}</td>
+              <td>${emp.fn}</td>
+              <td><span style="font-size:.62rem;color:${emp.program==='lateral'?'#f472b6':'#60a5fa'}">${emp.program==='initial'?'Initial':'Lateral'}</span></td>
+              <td style="text-align:center">${kpi.days}</td>
+              <td>
+                <div class="velocity-bar">
+                  <div class="vb-track"><div class="vb-fill" style="width:${kpi.pct}%;background:${kpi.status==='ahead'?'#34d399':kpi.status==='on'?'#facc15':'#f87171'}"></div></div>
+                  <span style="font-size:.68rem;font-weight:700;color:${kpi.status==='ahead'?'#34d399':kpi.status==='on'?'#facc15':'#f87171'}">${kpi.pct}%</span>
+                </div>
+              </td>
+              <td style="text-align:center">
+                <div class="velocity-bar">
+                  <div class="vb-track"><div class="vb-fill" style="width:${Math.min(kpi.velocity/maxVel*100,100)}%;background:#60a5fa"></div></div>
+                  <span style="font-size:.68rem;color:#60a5fa">${kpi.velocity}</span>
+                </div>
+              </td>
+              <td style="text-align:center;font-size:.7rem;font-weight:700;color:${kpi.variance>=0?'#34d399':'#f87171'}">${kpi.variance>=0?'+':''}${kpi.variance}%</td>
+              <td><span class="status-pill sp-${kpi.status}">${statusLabels[kpi.status]}</span></td>
+              <td>${ratingBadge}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pending actions -->
+    <div class="pending-list">
+      <div class="pending-hdr">Pending Trainer / Certifier Actions</div>
+      ${pendingActions.length > 0 ? pendingActions.map(p=>`
+        <div class="pending-row">
+          <span class="pending-emp">${p.emp}</span>
+          <span class="pending-task">${p.task}</span>
+          <span class="pending-type pt-${p.type}">${p.type==='trainer'?'Trainer':'Certifier'} sign-off</span>
+          <span class="pending-days">${p.days}d waiting</span>
+        </div>`).join('') : '<div style="padding:12px 14px;font-size:.68rem;color:#334155">No pending actions</div>'}
+    </div>`;
 }
 
 // ════════════════════════════════════════════════════════════════
