@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workforce Intelligence Prompt Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --surface: #111520;
+      --surface2: #161b2a;
+      --border: #1e2740;
+      --text: #d4e0ff;
+      --muted: #5a6a9a;
+      --heading: #ffffff;
+      --cyan: #00d4ff;
+      --purple: #8b5cf6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --sidebar-w: 268px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-eyebrow {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .logo-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1.3;
+    }
+
+    .logo-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .sidebar-nav { padding: 12px 0 32px; }
+
+    .nav-group-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 20px 5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 20px;
+      cursor: pointer;
+      transition: background 0.12s;
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover { background: var(--surface2); }
+
+    .nav-item.active {
+      background: rgba(0,212,255,0.07);
+      color: var(--cyan);
+    }
+
+    .nav-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 9.5px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    /* ── MAIN ── */
+    #app {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #header {
+      position: sticky;
+      top: 0;
+      background: rgba(10,13,20,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 13px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 50;
+    }
+
+    .search-wrap {
+      flex: 1;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    #search {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px 9px 36px;
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #search:focus { border-color: var(--cyan); }
+    #search::placeholder { color: var(--muted); }
+
+    #search-count {
+      font-size: 11.5px;
+      color: var(--muted);
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── CONTENT ── */
+    #content {
+      padding: 40px 44px 100px;
+      max-width: 920px;
+    }
+
+    .section-block {
+      padding-top: 52px;
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-block:first-child {
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .section-tagline {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    .file-block {
+      margin-bottom: 44px;
+      scroll-margin-top: 80px;
+    }
+
+    .file-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .file-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--heading);
+    }
+
+    .file-count {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .file-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.55;
+    }
+
+    .prompts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 48px 13px 48px;
+      position: relative;
+      transition: border-color 0.13s, background 0.13s;
+    }
+
+    .prompt-card:hover {
+      border-color: rgba(0,212,255,0.25);
+      background: var(--surface2);
+    }
+
+    .prompt-card:hover .copy-btn { opacity: 1; }
+
+    .prompt-num {
+      position: absolute;
+      left: 16px; top: 14px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      width: 22px;
+      text-align: right;
+    }
+
+    .prompt-text {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 11px; top: 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.13s, color 0.13s, border-color 0.13s;
+      letter-spacing: 0.04em;
+    }
+
+    .copy-btn:hover {
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    mark {
+      background: rgba(0,212,255,0.18);
+      color: var(--cyan);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    .hidden { display: none !important; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state p { margin-top: 8px; font-size: 13px; }
+
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--cyan);
+      color: #0a0d14;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.18s, transform 0.18s;
+      pointer-events: none;
+      z-index: 300;
+    }
+
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #app { margin-left: 0; }
+      #content { padding: 24px 20px 80px; }
+      #header { padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-eyebrow">WFI Prompt Book</div>
+    <div class="logo-title">Workforce Intelligence<br>Prompt Book</div>
+    <div class="logo-meta" id="total-display">— prompts</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+
+<div id="app">
+  <header id="header">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="search" id="search" placeholder="Search all prompts…" autocomplete="off" spellcheck="false" />
+    </div>
+    <span id="search-count"></span>
+  </header>
+  <main id="content"></main>
+</div>
+
+<div id="toast">Copied to clipboard</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   PROMPT DATA — EDIT HERE
+   ─────────────────────────────────────────────────────────────────────
+   To ADD a prompt:    copy any line inside a "prompts" array and paste
+   To EDIT a prompt:   change the text between the double quotes
+   To REMOVE a prompt: delete the entire line (including the comma)
+   To ADD a new file:  copy an entire {...} file block and paste it
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const SECTIONS = [
+
+  /* ── 1. DIAGNOSTIC SKILLS ─────────────────────────────────────────── */
+  {
+    id: "diagnostic",
+    title: "Diagnostic Skills",
+    color: "#00d4ff",
+    colorBg: "rgba(0,212,255,0.08)",
+    tagline: "Map the work before you automate it",
+    files: [
+      {
+        id: "workforce-data-audit",
+        title: "Workforce Data Audit",
+        desc: "Assess the quality and coverage of your people data before building any models",
+        prompts: [
+          "Map every data field currently collected in our HRIS and flag any field with more than 10% missing values. For each gap, identify which workforce planning models or decisions depend on that field.",
+          "Review our job architecture data for consistency: flag duplicate job codes, titles with no mapped competencies, and roles where the salary grade has not been updated in more than three years.",
+          "Assess our attrition tracking methodology. Do we distinguish voluntary vs. involuntary exits? Regrettable vs. non-regrettable? If not, draft a taxonomy we could adopt and the system changes needed to support it.",
+          "Audit the freshness of our headcount data: how often is it updated, who owns it, and where do the numbers diverge between HR, Finance, and business unit reports?",
+          "Identify the top five data quality issues that currently limit our ability to run a reliable workforce demand forecast. For each, estimate the effort to fix it and the risk of proceeding without fixing it.",
+          "Map our current workforce data assets against a standard people analytics maturity model. Where are we at Level 1 (descriptive), Level 2 (diagnostic), or Level 3 (predictive)?",
+          "List every external labor market data source we currently subscribe to or use ad hoc. Evaluate each for coverage, update frequency, and cost-to-value ratio.",
+          "Review our performance data for rating distribution: are we experiencing compression? How does this affect our ability to use performance as a variable in talent decisions?",
+          "Identify all the places where the same workforce metric is defined differently across HR, Finance, and the business. Draft a data dictionary entry for headcount that all three functions could agree on.",
+          "Audit our diversity data: which demographic fields are collected, what are the opt-out rates, and which analyses are currently blocked by data gaps?",
+          "Assess whether our current HR data infrastructure can support a skills ontology. What are the key technical and governance requirements we would need to meet?",
+          "Map the lineage of our standard headcount report from raw data source through transformation to final metric. Identify every step where human intervention creates error risk.",
+          "Identify our riskiest single point of data dependency — the one dataset that, if lost or corrupted, would most severely limit our workforce planning capability.",
+          "Evaluate the gap between the workforce data we collect and the data needed to answer the CHRO's top three board-level people questions. Prioritize the gaps by strategic impact.",
+          "Review our internal mobility data: do we track lateral moves, project assignments, and stretch roles? What is missing that would give us a better picture of talent flow?",
+          "Compare our actual data governance practices to what is documented in our HR data policy. List the top five deviations and the risk each creates.",
+          "Estimate the cost of our current workforce data quality problems in analyst hours, bad decisions, and delayed projects. Use this to build a business case for a data quality initiative.",
+          "Identify which of our workforce KPIs are lagging indicators vs. leading indicators. What leading indicators are we currently not tracking that would improve our ability to anticipate workforce problems?"
+        ]
+      },
+      {
+        id: "ai-readiness",
+        title: "AI Readiness",
+        desc: "Evaluate the organization's readiness to adopt AI across workforce intelligence functions",
+        prompts: [
+          "Assess our organization's AI readiness across five dimensions: data infrastructure, talent capability, governance, leadership alignment, and change appetite. Rate each 1–5 and identify the two lowest-scoring dimensions as priority gaps.",
+          "Write 10 interview questions to run with HR leaders to assess how comfortable they are with AI-assisted decision-making in talent processes.",
+          "Identify the top three workforce processes in our HR function where AI could add immediate value with the lowest implementation risk. Explain the selection criteria.",
+          "Map our current HR technology stack and identify which tools already have embedded AI features we are not using. Estimate the value being left on the table.",
+          "Draft a one-page AI literacy assessment for HR business partners that tests their ability to interpret model outputs, recognize bias, and apply ethical guardrails.",
+          "Identify the three biggest AI-related risks in our workforce intelligence function — data privacy, algorithmic bias, and explainability gaps. For each, assess current exposure and the mitigation we should put in place.",
+          "Evaluate our current data governance framework against the requirements for responsible AI use in people decisions. List the gaps and prioritize them by risk level.",
+          "Assess leadership readiness: what signals from the C-suite indicate support for AI in HR? What signals indicate resistance? How do we close the gap?",
+          "Identify the legal and regulatory constraints on AI use in employment decisions in our operating jurisdictions. Summarize the no-go zones and the gray areas.",
+          "Draft a vendor assessment rubric for AI-powered HR tools covering: explainability, bias testing, data security, compliance certifications, and model refresh cadence.",
+          "Map the current decision rights for people analytics outputs: who can see model results, who can act on them, and who is accountable for outcomes? Identify the gaps and ambiguities.",
+          "Evaluate the skills gap in our people analytics team against the requirements for building and deploying AI models. What roles do we need that we do not currently have?",
+          "Create a readiness scorecard for piloting AI-assisted workforce planning: data readiness (0–25), process readiness (0–25), talent readiness (0–25), governance readiness (0–25).",
+          "Identify our most data-rich HR process — the one with the most complete, clean, longitudinal data — and assess whether it is the right place to start an AI pilot.",
+          "Draft the questions our CHRO will get asked by the board about AI in HR, and write model answers for each.",
+          "Map AI adoption barriers by stakeholder group: HR leaders, HRBPs, business unit leaders, employees. What is the primary concern for each group?",
+          "Evaluate three AI deployment models — build in-house, configure vendor platform, partner with a consulting firm — against our specific organizational constraints and risk appetite.",
+          "Write a 90-day AI readiness sprint plan covering the assessments, pilots, governance decisions, and stakeholder engagements that need to happen before we commit to a full AI roadmap."
+        ]
+      },
+      {
+        id: "use-case-prioritization",
+        title: "Use Case Prioritization",
+        desc: "Identify and sequence AI use cases with the highest value-to-risk ratio",
+        prompts: [
+          "List the top 10 use cases for AI in our workforce planning function. Score each on strategic value (1–5), data readiness (1–5), implementation complexity (1–5 inverse), and stakeholder appetite (1–5).",
+          "Apply a 2x2 prioritization matrix — impact vs. feasibility — to our potential AI use cases. Identify the quick wins quadrant and the big bets quadrant.",
+          "Write a one-paragraph business case for each of our top three AI use cases, covering the problem being solved, the expected outcome, the investment required, and the risk profile.",
+          "Identify AI use cases that could be funded through cost savings vs. those that require net-new investment. Which set is easier to move through budget approval?",
+          "Map each proposed AI use case to a specific CHRO or CEO priority. Eliminate or defer any use case that cannot be tied to a strategic objective.",
+          "Assess the organizational cost of not automating our top three manual workforce processes. Use this as the do-nothing baseline in our prioritization model.",
+          "For our highest-priority AI use case, write the user story: as a [role], I want [AI capability] so that I can [outcome]. Include the acceptance criteria.",
+          "Identify which AI use cases require changes to decision rights or governance before they can be deployed. Separate can-start-now cases from needs-governance-change cases.",
+          "Map our AI use case roadmap over 18 months: what do we pilot in months 1–3, scale in months 4–9, and institutionalize in months 10–18?",
+          "Evaluate whether our current AI use case list is too operationally focused. Are we missing any strategic uses of AI in workforce planning that could differentiate us?",
+          "Identify the AI use case that would have the highest impact on manager experience. This is often an underweighted constituency in HR technology prioritization.",
+          "Assess each AI use case for employee trust risk: which ones could damage trust if misunderstood or misapplied? How do we sequence communications around them?",
+          "Write the scoring rubric we will use to evaluate proposals for AI investment from HR business partners. What are the five criteria and their relative weights?",
+          "Identify any AI use cases that overlap with initiatives already underway in IT, Finance, or the business. Where can we piggyback rather than build separately?",
+          "Stress-test our top AI use case: what are the three most likely failure modes? For each, assess probability and impact, and write a mitigation plan.",
+          "Estimate the total addressable value of AI across our workforce planning function over three years using conservative, base, and optimistic scenarios.",
+          "Draft the criteria for deciding when to pause or kill an AI pilot that is not delivering expected results.",
+          "Write a one-page executive summary of our AI use case roadmap for the CHRO: what we are doing, why, in what order, and what we need to succeed."
+        ]
+      },
+      {
+        id: "build-vs-buy",
+        title: "Build vs. Buy",
+        desc: "Evaluate make, buy, and partner decisions for workforce intelligence tools and capabilities",
+        prompts: [
+          "For our top AI use case, evaluate three options: build in-house, configure an existing vendor platform, and purchase a point solution. Compare on total cost of ownership, time to value, and flexibility.",
+          "Write the vendor RFP criteria for a workforce planning platform: what are the must-haves, nice-to-haves, and disqualifiers?",
+          "Assess our internal capability to build and maintain a workforce forecasting model. What skills, infrastructure, and time are required? What is the realistic total cost?",
+          "Identify which of our workforce intelligence capabilities should be treated as core differentiators to build vs. commodity functions to buy.",
+          "Evaluate our current HR tech vendors for AI capabilities they are rolling out that we have not yet activated. What is the low-effort, high-value activation list?",
+          "Write a risk register for a build-in-house workforce analytics platform covering technology risk, talent risk, timeline risk, and adoption risk.",
+          "Draft the contract terms we should insist on with any AI vendor handling employee data: data residency, model explainability, audit rights, and termination and data-return provisions.",
+          "Map the hidden costs of a buy decision: implementation, customization, integration, training, and ongoing licensing. Compare to the visible price tag.",
+          "Identify which workforce intelligence capabilities we currently rely on consultants or vendors for that we should bring in-house. What is the build plan?",
+          "Assess the opportunity cost of build: if our people analytics team builds a custom tool, what vendor relationships and strategic projects get deprioritized?",
+          "Write the criteria for evaluating a partnership model — with a labor market data provider or an AI research firm — vs. build or buy.",
+          "Identify the single workforce intelligence capability that is most critical to own ourselves. What would we lose by outsourcing it?",
+          "Draft a three-year technology roadmap for our workforce intelligence function assuming a buy-and-integrate strategy. What platforms, in what sequence?",
+          "Evaluate the market for workforce planning platforms: who are the top five vendors, what are their differentiating capabilities, and what are their known weaknesses?",
+          "Write the business case for consolidating three separate HR analytics tools onto one platform. Quantify the integration overhead we are currently paying.",
+          "Assess our vendor dependency risk: which of our current workforce intelligence capabilities would be severely disrupted if our primary vendor were acquired or shut down?"
+        ]
+      }
+    ]
+  },
+
+  /* ── 2. WORKFORCE PLANNING ────────────────────────────────────────── */
+  {
+    id: "planning",
+    title: "Workforce Planning",
+    color: "#8b5cf6",
+    colorBg: "rgba(139,92,246,0.08)",
+    tagline: "Translate strategy into supply, demand, and gap",
+    files: [
+      {
+        id: "demand-forecasting",
+        title: "Demand Forecasting",
+        desc: "Translate business strategy and operational drivers into headcount and capability requirements",
+        prompts: [
+          "Build a structured intake template for collecting workforce demand drivers from business unit leaders. Include revenue targets, productivity assumptions, new capability needs, and planned exits.",
+          "Convert our three-year strategic plan into a headcount demand model. For each business initiative, identify the role families impacted, the net headcount change, and the timeline.",
+          "Write the questions I should ask the CFO to understand which financial assumptions drive their headcount model. How do I reconcile HR's view with Finance's?",
+          "Identify the top five external drivers that should inform our workforce demand forecast: economic, competitive, regulatory, technological, and demographic.",
+          "Draft a demand forecast methodology one-pager for business unit leaders: what inputs we need from them, how we will use the data, and what they will get back.",
+          "Build a productivity assumption template: for each major role family, document the current output-per-FTE baseline and the expected change over the planning horizon.",
+          "Identify the workforce demand signals most likely to be wrong in our current forecast. What assumptions are we most uncertain about, and how do we bound the uncertainty?",
+          "Write the logic for converting a revenue growth assumption into a headcount number for a specific function such as sales, engineering, or operations. What is the ratio, and what breaks it?",
+          "Map the demand forecast to cost: for each role family in the plan, calculate the fully-loaded cost per FTE and the total forecasted labor cost in each scenario.",
+          "Identify which business units are most likely to understate their demand because they are optimistic about efficiency, and which are likely to overstate it because they are padding.",
+          "Write a set of calibration questions to stress-test headcount requests from business unit leaders before including them in the enterprise forecast.",
+          "Build a demand sensitivity analysis: how does our headcount forecast change if revenue grows 10% faster or slower than plan? Which roles are most elastic?",
+          "Identify the workforce demand implications of our top three technology investments — automation, ERP upgrade, AI deployment. How do these change role mix and headcount?",
+          "Draft a demand forecast review cadence: when do we update the forecast, who attends, and what triggers an off-cycle revision?",
+          "Write the CHRO's demand forecast narrative for the board: what are we planning to hire, why, and what are the key risks to achieving those plans?",
+          "Identify roles where demand is growing faster than our ability to source or develop talent internally. These are our critical supply-risk roles.",
+          "Build a workforce demand waterfall: starting from current headcount, model growth hires, backfill hires, and attrition to arrive at total hiring volume by quarter.",
+          "Write the definition of headcount we will use in our demand forecast — does it include contractors, part-time, offshore — and get every stakeholder aligned before modeling."
+        ]
+      },
+      {
+        id: "supply-modeling",
+        title: "Supply Modeling",
+        desc: "Model internal talent supply through attrition, mobility, and pipeline analysis",
+        prompts: [
+          "Build a talent supply model for our top ten critical role families. For each, project the internal supply at the end of each planning year using historical attrition rates and promotion rates.",
+          "Identify the attrition drivers in our highest-priority role families. Use exit survey data, tenure distributions, and compensation benchmarks to diagnose root causes.",
+          "Write a methodology for segmenting attrition into planned vs. unplanned and regrettable vs. non-regrettable. How do we use each segment differently in our supply model?",
+          "Model our internal mobility rate: what percentage of open roles are filled internally vs. externally? How does this compare to industry benchmarks and our strategic intent?",
+          "Build a pipeline health assessment for our top five critical roles: how many qualified internal candidates are in a 0–12 month, 12–24 month, and 24–36 month readiness window?",
+          "Identify the supply bottlenecks in our talent pipeline: which roles have the thinnest bench, and what is the consequence if those positions turn over?",
+          "Write the logic for a retirement risk model: using age, tenure, and benefits vesting data, estimate which employees are likely to retire in each planning year.",
+          "Build a promotion velocity model: how long does it take for talent to move from one level to the next in our organization? How does this compare to employee expectations?",
+          "Identify the supply implications of our current L&D investments. Which programs are producing ready-now talent for critical roles, and which have low ROI?",
+          "Model the impact of a 20% increase in voluntary attrition in our technology roles. What is the cascading effect on project delivery and workforce cost?",
+          "Write a talent supply risk report for the CHRO: the top five role families where supply is most at risk of falling short of demand in the next 24 months.",
+          "Build a sourcing channel analysis: for each role family, what percentage of successful hires came from internal mobility, employee referrals, direct sourcing, and agencies? What does this tell us about where to invest?",
+          "Identify the supply of diverse talent in our pipeline for leadership roles. Where are the greatest gaps, and at what career stage are we losing diverse talent?",
+          "Model the supply impact of a hybrid or remote policy change. How does offering full remote affect our ability to access talent in new geographies?",
+          "Write the assumptions our supply model makes about productivity ramp-up for new hires and transfers. How does ramp time affect our effective supply?",
+          "Identify which of our talent pools are shared with competitors and therefore most at risk of rapid supply deterioration in a hot labor market.",
+          "Build a contractor-to-employee conversion model: for our most-used contractor roles, what are the cost, speed, and quality tradeoffs of converting to FTE?",
+          "Write a supply model refresh protocol: what data inputs are updated monthly, quarterly, and annually, and who is responsible for each?"
+        ]
+      },
+      {
+        id: "scenario-planning",
+        title: "Scenario Planning",
+        desc: "Build and analyze workforce futures under different strategic and environmental conditions",
+        prompts: [
+          "Define three workforce scenarios for our planning cycle — base case, optimistic (higher growth, lower attrition), and stress case (market slowdown, talent crunch). For each, specify the key assumptions.",
+          "Write a scenario planning facilitation guide for a three-hour workshop with senior HR and business leaders. What are the key questions, decision points, and outputs?",
+          "Build a scenario matrix for our workforce: on one axis, pace of technology adoption (slow vs. fast); on the other, availability of skilled talent (tight vs. abundant). What are the workforce implications of each quadrant?",
+          "Identify the three external wild-card events that could most disrupt our workforce plan. For each, describe the trigger signal we would watch for and the contingency response.",
+          "Write the workforce implications of an acquisition scenario: if we acquired a company of 500–1,000 employees in our core business, what integration planning would be required in the first 90 days?",
+          "Build a scenario where AI automates 30% of tasks in our top five role families over three years. What are the headcount, skill, and cost implications?",
+          "Draft the workforce response playbook for a recession scenario: hiring freeze, attrition management, targeted reductions, and capability protection decisions in sequence.",
+          "Identify the assumptions in our base-case scenario that are most sensitive to error. If we are wrong about any one of them, which has the biggest knock-on effect on our workforce plan?",
+          "Write a scenario planning narrative for the board: here are the three futures we are planning for, here is what we would do differently in each, and here are the decision triggers for each pivot.",
+          "Model a talent market inflection: if the labor market tightens by 15% in our core engineering roles, what are the cost and timeline impacts on our hiring plan?",
+          "Build a scenario for workforce transformation at scale: if we need to reskill 40% of our workforce over four years, what are the infrastructure, investment, and attrition implications?",
+          "Write the assumptions audit for our workforce scenarios: for each scenario, list the five most critical assumptions, their basis, and their confidence interval.",
+          "Identify leading indicators we will monitor to determine which scenario is materializing. What are the early signals, thresholds, and decision triggers?",
+          "Draft a scenario for a major organizational redesign: if we move from a functional to a business unit structure, what are the workforce transition implications?",
+          "Build a geopolitical risk scenario: if a key offshore delivery location becomes unavailable in 12 months, what is our workforce continuity plan?",
+          "Write a scenario planning debrief framework: after a plan cycle, how do we evaluate which scenarios were most accurate and improve our future forecasting?",
+          "Identify the workforce scenarios that require board-level decision authority vs. those that can be managed at the CHRO or business unit level.",
+          "Build a real-options model for our workforce plan: which investments should we make now (low cost of delay), which should we stage (high uncertainty), and which should we defer (low urgency)?"
+        ]
+      },
+      {
+        id: "gap-analysis",
+        title: "Gap Analysis",
+        desc: "Synthesize supply and demand forecasts into a prioritized gap and surplus map",
+        prompts: [
+          "Build a workforce gap analysis for our top 20 critical role families: for each, show current headcount, forecasted demand, projected supply, and the net gap or surplus by year.",
+          "Prioritize our workforce gaps by strategic impact: which gaps, if unfilled, most directly threaten our ability to execute the business strategy?",
+          "Write the logic for a gap severity score that combines gap size, time-to-fill, cost-to-fill, and strategic criticality into a single prioritization metric.",
+          "Identify the gaps that can be closed through internal development vs. those that require external hiring. What is the split, and what are the cost implications?",
+          "Build a capability gap map: beyond headcount, where do we have skills gaps that cannot be solved by hiring alone? Which of these are the most strategically critical?",
+          "Write a gap analysis one-pager for each business unit: here is your current talent position, here is where you are heading, here is the gap, here is the recommended action.",
+          "Identify surplus positions in our workforce plan. How do we manage planned surpluses through attrition, redeployment, or restructuring rather than layoffs?",
+          "Model the cost of our talent gaps: unfilled roles multiplied by productivity cost plus overtime plus contractor backfill. Use this to quantify the business risk of inaction.",
+          "Build a gap closure options analysis: for our top three critical gaps, evaluate build (develop internally), buy (hire externally), borrow (contingent or partner), and bot (automate) solutions.",
+          "Write a gap analysis narrative for the CFO: here is what we need, here is what we have, here is the funding required to close the gap, and here is the cost of not closing it.",
+          "Identify the gaps in our leadership pipeline: for each critical senior role, how many ready-now successors do we have? What is the average readiness deficit?",
+          "Map our capability gaps against the market availability of that talent. Which gaps are hard to close because the skills are scarce externally as well as internally?",
+          "Build a gap analysis sensitivity table: how does our talent gap change if attrition is five points higher than forecast? Ten points higher?",
+          "Write the intake questions for a gap validation workshop with business unit leaders: how do we pressure-test the model outputs with the people who know their businesses best?",
+          "Identify the gaps that are structural — will persist for three or more years — vs. transient — will self-correct within 12 months. Different strategies are needed for each.",
+          "Build an action registry from the gap analysis: for each prioritized gap, document the owner, the strategy, the target close date, and the leading indicator of progress.",
+          "Write a gap analysis refresh protocol: when do we update the gap map, who reviews it, and what threshold triggers a change in strategy?",
+          "Draft the executive summary of our annual workforce gap analysis: the three biggest gaps, the three biggest surpluses, and the recommended portfolio of responses."
+        ]
+      }
+    ]
+  },
+
+  /* ── 3. SKILLS & CAPABILITY ───────────────────────────────────────── */
+  {
+    id: "skills",
+    title: "Skills & Capability",
+    color: "#10b981",
+    colorBg: "rgba(16,185,129,0.08)",
+    tagline: "Build the skills map that drives every talent decision",
+    files: [
+      {
+        id: "skills-taxonomy",
+        title: "Skills Taxonomy",
+        desc: "Build and govern a skills framework for the organization",
+        prompts: [
+          "Draft the architecture for an enterprise skills taxonomy: how many levels (categories, clusters, individual skills), what naming conventions, and how do we handle adjacent or overlapping skills?",
+          "Identify the top ten skills categories most critical to our business strategy. For each, list five to eight specific skills that would sit underneath them.",
+          "Write a skills taxonomy governance model: who owns the taxonomy, how often is it reviewed, how are new skills added or deprecated, and how are disputes resolved?",
+          "Map our existing job architecture to a skills framework: for each job family, identify the five to seven skills that are most differentiating — not just present in every role.",
+          "Evaluate three approaches to building our skills taxonomy — bottom-up from job descriptions, top-down from strategy, and market-in from a commercial ontology — and compare the tradeoffs.",
+          "Write the validation protocol for our skills taxonomy: how do we test whether the skills we have identified are actually predictive of performance in each role?",
+          "Identify which skills in our taxonomy are rapidly growing in market demand. These are the appreciating assets we should invest in developing now.",
+          "Build a skills deprecation process: how do we identify skills that are becoming obsolete, how quickly, and how do we communicate this to employees affected?",
+          "Write the prompt template for using AI to extract skills from job descriptions at scale. What instructions produce the most consistent and useful output?",
+          "Assess the gap between the skills in our current job descriptions and the skills actually required to perform the job today. How large is the drift?",
+          "Map our skills taxonomy to external frameworks such as O*NET, ESCO, or the LinkedIn Skills Graph. Where do we align, and where do we need proprietary additions?",
+          "Write a skills confidence scoring model: how do we rate whether an employee has a skill, knows about it, or can lead others in it?",
+          "Identify the skills that are critical for our business but exist nowhere in our current job architecture. These are the hidden skills that management relies on but does not formally recognize.",
+          "Build a skills adjacency map for our top five critical skills: what related skills does someone already need in order to develop each one efficiently?",
+          "Draft the employee communication for rolling out skills profiles: why we are doing this, what we will do with the data, and how it benefits them.",
+          "Write a skills taxonomy ROI model: what business decisions will be better because we have a skills taxonomy? Quantify the value of three use cases.",
+          "Identify the data sources we will use to keep our skills taxonomy current: job market data, internal performance data, L&D completion rates, and manager assessments. How do we integrate them?",
+          "Build a skills taxonomy implementation roadmap: pilot with one function, validate, then scale. What are the milestones, risks, and success criteria at each phase?"
+        ]
+      },
+      {
+        id: "capability-assessment",
+        title: "Capability Assessment",
+        desc: "Assess current vs. future-state capability at organizational, team, and individual levels",
+        prompts: [
+          "Design a capability assessment framework for our organization: what are the 8–12 core capability areas we will assess, and how does this connect to our strategy?",
+          "Write the survey items for a manager capability assessment. Cover technical depth, team development, execution rigor, and strategic thinking. Five items per domain.",
+          "Build a capability heat map template: rows are role families, columns are capability areas, and cells show current proficiency vs. required proficiency.",
+          "Identify the three capabilities where we have the largest gap between current and required levels. What is the root cause in each case?",
+          "Write an assessment calibration guide for managers: how do we reduce rater bias and ensure consistent capability ratings across teams and functions?",
+          "Design a 360-degree capability assessment for senior leaders: what sources — peers, direct reports, stakeholders — and what capability dimensions?",
+          "Build a capability assessment scoring rubric: define what Level 1 (developing), Level 2 (proficient), Level 3 (advanced), and Level 4 (expert) looks like behaviorally for our top three critical capabilities.",
+          "Identify the capabilities that are most difficult to assess accurately through self-report. What supplementary assessment methods would give us more reliable data?",
+          "Write the debrief guide for sharing capability assessment results with employees: how do we make it developmental rather than evaluative?",
+          "Map the capability assessment results to workforce planning outputs: how does the capability heat map inform our build vs. buy vs. borrow decisions?",
+          "Design a team-level capability assessment: how do we aggregate individual capability data to produce an accurate view of team-level strength and risk?",
+          "Build a capability assessment cadence: how often do we assess, for which populations, and how do we track progress over time without assessment fatigue?",
+          "Identify the capabilities that are most predictive of high performance in our most critical roles. These should get the most weight in our assessment and development investments.",
+          "Write a capability assessment validation study design: how do we test whether our capability ratings predict the outcomes we care about — performance, retention, promotion?",
+          "Design a leadership capability assessment for our succession pipeline. What is the minimum capability bar for each executive role, and how many successors currently clear it?",
+          "Build a capability gap prioritization matrix combining gap size, strategic importance, and time sensitivity. Use this to sequence capability investments.",
+          "Write the capability assessment report for the CHRO: here is our current capability profile, here is where we need to be in three years, here is the gap, and here is the investment required.",
+          "Design an ongoing capability sensing mechanism: how do we monitor capability levels between formal assessment cycles using performance data, project outcomes, and manager signals?"
+        ]
+      },
+      {
+        id: "reskilling-roadmap",
+        title: "Reskilling Roadmap",
+        desc: "Plan and sequence workforce reskilling and upskilling investments",
+        prompts: [
+          "Build a reskilling needs analysis: identify which employee populations need to reskill, in what skills, and on what timeline based on our workforce plan.",
+          "Write the business case for a reskilling investment: projected cost of building vs. buying talent, reduced attrition benefit, and productivity ramp comparison.",
+          "Map our existing L&D programs to the capability gaps in our workforce plan. Identify programs that are addressing real gaps vs. programs that are legacy investments.",
+          "Build a reskilling pathway for our most at-risk employee population: step-by-step from current skills to target skills, with timeline, format, and cost for each step.",
+          "Write a reskilling build-vs-buy analysis: for our top three critical skill gaps, is it faster and cheaper to reskill existing employees or hire people who already have the skills?",
+          "Identify the employees most likely to successfully reskill based on prior learning agility, adjacent skills, and career stage. How do we target our investment toward those with the highest ROI?",
+          "Design the reskilling program for a specific role-to-role transition — for example, data analyst to machine learning engineer. What are the required learning milestones and the realistic timeline?",
+          "Write the change management plan for a reskilling initiative affecting 20% or more of a workforce. How do we build motivation, manage anxiety, and sustain momentum over 12–18 months?",
+          "Build a reskilling ROI measurement framework: what metrics do we track before, during, and after the program to evaluate whether it is working?",
+          "Identify which skills can realistically be developed through formal training vs. on-the-job experience vs. stretch assignments. Sequence the reskilling pathway accordingly.",
+          "Write the manager enablement plan for supporting reskilling in your team: what do managers need to know, do differently, and stop doing to create a reskilling culture?",
+          "Design a reskilling cohort model: how do we create peer learning groups, accountability structures, and shared milestones to improve completion rates?",
+          "Identify the structural barriers to reskilling in our organization — time (workload), incentive (pay linked to current role), access (program availability) — and write a mitigation plan for each.",
+          "Build a reskilling vendor selection rubric: what criteria do we use to evaluate L&D providers, online platforms, and bootcamp partners for enterprise reskilling programs?",
+          "Write the employee value proposition for our reskilling program: why should an employee invest time in this, and what will they get in return?",
+          "Design an apprenticeship or cohort-based learning model for critical roles where formal training alone is insufficient. What are the components, timeline, and governance?",
+          "Map the reskilling roadmap to the workforce plan: which reskilling investments need to be completed by quarter to keep pace with the demand forecast?",
+          "Write a reskilling risk register: what are the top risks to program success — engagement, manager resistance, content quality, speed — and the mitigation for each?"
+        ]
+      },
+      {
+        id: "critical-roles",
+        title: "Critical Roles",
+        desc: "Identify, protect, and plan succession for high-impact positions",
+        prompts: [
+          "Design a critical role identification methodology: what criteria — strategic impact, replaceability, skill scarcity, value creation — determine whether a role is critical? Weight each criterion.",
+          "Map our current critical roles against succession depth: for each, how many ready-now, one-year, and two-year successors do we have? Where are the single points of failure?",
+          "Write the business case for investing in succession planning for our top 20 critical roles: what is the cost of an unplanned vacancy in each, and what would a strong bench be worth?",
+          "Identify the critical roles at highest attrition risk in the next 12 months. Combine flight risk indicators with role criticality to build a prioritized risk register.",
+          "Build a critical role profile template capturing key accountabilities, required experiences, success factors, and time to productivity for each role.",
+          "Design the assessment process for evaluating successor readiness. What combination of track record, capability assessment, and development need gives us the most accurate picture?",
+          "Write a succession acceleration plan for a specific critical role: identify the gap between a named successor and readiness, and design the 18-month development plan to close it.",
+          "Identify the critical roles most exposed to external talent poaching. What retention strategies are most effective for each role type?",
+          "Build an emergency succession protocol: if a top-three critical role became vacant today, what is the decision process for interim assignment and permanent succession?",
+          "Write the governance model for succession planning: who nominates successors, who assesses readiness, who approves succession decisions, and how often is the plan reviewed?",
+          "Identify critical roles likely to change significantly in scope over the next three years due to technology or strategy shifts. How does this affect our succession planning?",
+          "Design the development assignment portfolio for high-potential successors: what mix of stretch assignments, cross-functional moves, and external exposure develops the broadest experience base?",
+          "Write the metrics dashboard for succession health: successor coverage ratio, readiness scores, diversity of successor pool, and vacancy fill time for critical roles.",
+          "Build a critical role network map: which critical roles are most interdependent, and how does a vacancy in one cascade into risk in others?",
+          "Write a succession planning communication strategy: how do we tell high-potentials they are in the pipeline, what do we promise them, and how do we retain them if succession takes longer than expected?",
+          "Design the annual talent review process for critical roles: who attends, what data is reviewed, what decisions are made, and what follow-through accountability exists?"
+        ]
+      }
+    ]
+  },
+
+  /* ── 4. ORG DESIGN ────────────────────────────────────────────────── */
+  {
+    id: "orgdesign",
+    title: "Org Design",
+    color: "#f59e0b",
+    colorBg: "rgba(245,158,11,0.08)",
+    tagline: "Structure the organization to win",
+    files: [
+      {
+        id: "structural-alternatives",
+        title: "Structural Alternatives",
+        desc: "Evaluate and design organizational structure options against strategic criteria",
+        prompts: [
+          "Map our current organizational structure and identify the three design tensions most limiting performance: speed of decision, coordination cost, or role clarity.",
+          "Generate three alternative org design options for a function or business unit — functional, business unit, and matrix. For each, list the performance benefits, coordination costs, and implementation risks.",
+          "Write the design criteria for our org redesign: what does the new structure need to optimize for, and what are the explicit tradeoffs we are willing to make?",
+          "Build a decision rights analysis for our current structure: where are decisions made too high (bottlenecks), too low (risk), or in the wrong function (friction)?",
+          "Identify the top five coordination failure points in our current structure. For each, diagnose whether it is a structural problem or a process and culture problem.",
+          "Write a pros-and-cons analysis of moving from a functional to a business unit structure. Include speed, cost, talent development, and cultural implications.",
+          "Design the interface model between two functions that currently have high friction: what decisions need to be made jointly, who has final call, and what escalation path clears deadlock?",
+          "Build a structural alignment check: does our current org structure optimally support our primary value creation model — cost, speed, innovation, or relationship?",
+          "Write the criteria for deciding when a matrix structure is appropriate vs. when it creates more complexity than it solves.",
+          "Map the informal organization: who are the central connectors, the brokers between silos, and the isolated nodes? How does this differ from the formal chart?",
+          "Design a team-of-teams model for an initiative that cuts across three or more functions. Who owns what, how do they coordinate, and how do we prevent re-centralization?",
+          "Identify which parts of our organization are over-structured — too many layers, too many committees — and which are under-structured — unclear accountability, informal workarounds.",
+          "Write a redesign impact assessment: if we implement the preferred option, what roles are eliminated, what roles are created, what roles change significantly, and what is the people transition plan?",
+          "Build an org design evaluation scorecard: rate each structural option on strategic alignment, operating efficiency, talent development, customer focus, and change cost.",
+          "Write the change narrative for a proposed redesign: why now, what is changing, what is not changing, and what will be better for employees and customers?",
+          "Design the transition state: what interim structure do we use between current and future state, and how long does the transition period last?",
+          "Identify the key risks of a decentralized structure for our organization — talent fragmentation, inconsistent practices, scale loss — and write the mitigation plan.",
+          "Write a stakeholder analysis for an org redesign: who wins, who loses, who is uncertain, and how do we manage each group through the process?"
+        ]
+      },
+      {
+        id: "spans-and-layers",
+        title: "Spans & Layers",
+        desc: "Analyze and optimize management spans of control and organizational layers",
+        prompts: [
+          "Analyze our current span of control by function and level. Where are we below the target minimum of four direct reports and above the target maximum of twelve?",
+          "Benchmark our spans and layers against industry norms for an organization of our size and complexity. Where are we materially different, and is that intentional?",
+          "Identify the cost of excess layers in our organization: how many management roles exist primarily to supervise rather than add value? What is the fully-loaded cost?",
+          "Write the criteria for an appropriate span of control: what factors — work complexity, geographic dispersion, employee tenure, task interdependence — justify a narrower span?",
+          "Build a spans and layers optimization model: if we move to a target number of layers and average span, what is the impact on headcount, cost, and decision speed?",
+          "Identify the functions or teams where narrow spans of control are creating slow decision-making and excessive escalation. What is the recommended redesign?",
+          "Write a manager effectiveness analysis: do managers with wider spans have better or worse team outcomes — engagement, performance, retention — in our data? What does this tell us?",
+          "Design the role of the middle manager in a leaner, flatter structure. What does the job need to look like for the new span to be manageable?",
+          "Identify the organizational symptoms of too many layers: slow decisions, distorted information, manager disengagement, high span-to-benefit ratio. Where do we see these signals?",
+          "Write the communication strategy for a spans and layers redesign that reduces management headcount. How do we explain the rationale, manage transitions, and preserve trust?",
+          "Build a role elimination and consolidation plan: for managers with fewer than three direct reports, what are the options — consolidate, convert to individual contributor, eliminate?",
+          "Design the governance for spans and layers standards: how do we prevent layer creep over time, who owns the standard, and what triggers a review?",
+          "Identify the relationship between spans and layers and our engagement scores: are employees in over-managed teams less engaged? Use this as a business case for redesign.",
+          "Write a spans and layers change management plan: how do we help managers transition from managing a narrow team to managing a wider, more empowered one?",
+          "Build the metrics we will track post-redesign to evaluate whether the new spans and layers structure is performing as intended.",
+          "Write the senior leader talking points for explaining why the organization needs fewer layers: the employee benefit, the business benefit, and the commitment to people whose roles change."
+        ]
+      },
+      {
+        id: "role-clarity",
+        title: "Role Clarity",
+        desc: "Design clear accountabilities, job architecture, and decision rights",
+        prompts: [
+          "Audit our job architecture for the top 20 most common roles: do each have clear, differentiated accountabilities at each level, or is there significant overlap and confusion?",
+          "Write a RACI matrix for our top three cross-functional processes. Identify every step where there are two or more R's — indicating unclear ownership — or no R — indicating an accountability gap.",
+          "Design a role profile template for critical roles capturing key decisions owned, stakeholders managed, and success criteria beyond the standard job description.",
+          "Identify the top three recurring accountability disputes in our organization. For each, diagnose whether the root cause is structural — wrong design — or behavioral — right design, wrong behavior.",
+          "Write a job leveling framework for our engineering function: what are the differentiating criteria between levels, and how do we apply them consistently in compensation and promotion decisions?",
+          "Build a decision authority matrix for a function: what decisions can be made at each level without approval, which require one level up, and which require executive sign-off?",
+          "Identify roles in our organization that have expanded significantly beyond their original scope without being formally reclassified. What are the equity and retention risks?",
+          "Write the process for resolving a role conflict between two teams that both claim ownership of a key deliverable. What is the escalation path, the decision criteria, and the governance?",
+          "Design a role clarity workshop for a team experiencing high friction: what exercises surface hidden assumptions about who owns what, and how do we reach durable agreements?",
+          "Build a job architecture review cadence: how often do we audit role profiles, who participates, and what triggers an off-cycle review?",
+          "Identify the roles most at risk of scope creep in our organization. What structural or governance interventions prevent the problem rather than just diagnosing it?",
+          "Write the role transition plan for a significant scope expansion: how do we set new expectations, provide support, and adjust compensation when a role meaningfully changes?",
+          "Design the process for creating a new role: what approvals are required, what analysis is needed — market data, internal equity, strategic rationale — and how is it integrated into job architecture?",
+          "Identify the accountability gaps created by our recent org redesign: which activities previously owned by eliminated roles are now unowned? How do we close those gaps?",
+          "Write a role clarity assessment survey for teams: five to eight questions that quickly surface ambiguity about ownership, decision rights, and success criteria.",
+          "Build the governance model for our job architecture: who owns it, who can modify it, and how do we prevent divergence between the formal architecture and actual practice?",
+          "Identify the impact of role ambiguity on engagement scores in our data. Use this as a business case for investing in role clarity.",
+          "Write the job architecture change communication: when we update levels, titles, or role profiles, how do we explain the change and minimize anxiety?"
+        ]
+      },
+      {
+        id: "effectiveness-measurement",
+        title: "Effectiveness Measurement",
+        desc: "Measure organizational and team health with indicators that predict business outcomes",
+        prompts: [
+          "Design an org effectiveness measurement framework: what are the five to eight dimensions we will assess — agility, alignment, execution, culture, innovation, collaboration, efficiency, talent health?",
+          "Build an org health diagnostic survey: 15–20 items that give us a reliable snapshot of team-level health across our priority dimensions.",
+          "Identify the leading vs. lagging indicators of organizational effectiveness. Which metrics predict problems early enough to intervene?",
+          "Write a team performance measurement model: how do we assess whether a team is achieving its intended outputs, using its resources efficiently, and building capability over time?",
+          "Design a network analysis approach to measure informal collaboration patterns. What does the data tell us about information flow, silos, and key connectors?",
+          "Build an effectiveness metric dashboard for a business unit leader: the five to seven people and organization health metrics that most predict business outcomes.",
+          "Identify the organizational behaviors most associated with high performance in our context. How do we measure whether those behaviors are present at scale?",
+          "Write the measurement framework for evaluating the success of an org redesign: what do we measure before, during, and after the transition?",
+          "Design a manager effectiveness index: what combination of team outcomes — engagement, attrition, performance distribution, internal mobility — gives us the most reliable signal?",
+          "Build a collaboration effectiveness measure: for cross-functional teams, how do we assess whether they are working well together vs. experiencing structural friction?",
+          "Identify the measurement gaps in our current org effectiveness toolkit. What are we not measuring that we should be?",
+          "Write the governance for our org effectiveness measurement program: how often do we measure, who sees the results, and what decision rights follow from the data?",
+          "Design an early warning system for organizational dysfunction: what signals — attrition clustering, engagement outliers, escalation frequency — indicate a team is at risk?",
+          "Build a benchmark database for our org health metrics: how do we compare our scores to industry norms and our own historical trend?",
+          "Write the debrief process for org effectiveness results: how do leaders receive feedback, what is the action planning process, and how do we follow up on commitments?",
+          "Identify the relationship between our org health scores and business unit performance outcomes. Where is the correlation strongest? Use this to prioritize where to focus effectiveness interventions."
+        ]
+      }
+    ]
+  },
+
+  /* ── 5. TRANSFORMATION ────────────────────────────────────────────── */
+  {
+    id: "transformation",
+    title: "Transformation",
+    color: "#3b82f6",
+    colorBg: "rgba(59,130,246,0.08)",
+    tagline: "Turn strategy into sustained behavior change",
+    files: [
+      {
+        id: "change-strategy",
+        title: "Change Strategy",
+        desc: "Design and execute workforce transformation and change management",
+        prompts: [
+          "Build a change impact assessment for our transformation initiative: which employee populations are affected, how significantly, and in what dimensions — role, skills, ways of working, culture?",
+          "Write a change readiness assessment: 10–12 survey items that measure employee readiness across awareness, understanding, acceptance, and capability dimensions.",
+          "Design a change management strategy for a transformation affecting 50% or more of the workforce. What are the key phases, milestones, and the critical path?",
+          "Identify the top five change risks in our transformation initiative. For each, assess probability and impact, and write a mitigation plan.",
+          "Write the change narrative: why are we transforming, what will be different, what will stay the same, and what is the benefit for employees?",
+          "Build a resistance management plan: who are the most likely resisters, what are their concerns, and how do we engage them before they become blockers?",
+          "Design the leader activation plan: what do senior leaders need to do differently to model the change, and how do we build their readiness?",
+          "Write a change agent network design: how many change champions do we need, how do we select them, and what do we ask them to do?",
+          "Identify the cultural barriers to our transformation. Which existing norms, beliefs, and behaviors are most at odds with what the new operating model requires?",
+          "Build a change measurement model: how do we track adoption, behavior change, and outcome realization at each phase of the transformation?",
+          "Write the manager activation guide for the transformation: what do managers need to know, communicate, and do differently to support their teams through the change?",
+          "Design an employee listening strategy for the transformation: what channels, what cadence, and how do we close the loop on what we hear?",
+          "Identify the quick wins in the transformation that will build credibility and momentum. What visible changes can we deliver in the first 90 days?",
+          "Write the escalation protocol for the transformation: what issues get escalated to the steering committee, what gets handled at the program level, and who decides?",
+          "Build a change saturation analysis: how many other major changes are employees absorbing simultaneously? Where is the overload risk highest?",
+          "Design the transition support package for employees most significantly impacted: what career counseling, reskilling support, and transition time do we provide?",
+          "Write the post-transformation sustainment plan: what governance, reinforcement, and measurement ensures the change sticks rather than reverting?",
+          "Identify the behavioral signals that indicate the transformation is working vs. stalling. What does healthy adoption look like at 30, 60, and 90 days?",
+          "Write the lessons learned framework for our transformation: what did we plan for that we did not need, what caught us off guard, and how do we apply this to the next change?",
+          "Design the transformation governance model: who is on the steering committee, what decisions do they own, and how does program management connect to the business?"
+        ]
+      },
+      {
+        id: "stakeholder-mapping",
+        title: "Stakeholder Mapping",
+        desc: "Map and manage stakeholder influence, interest, and engagement throughout transformation",
+        prompts: [
+          "Build a stakeholder map for our transformation initiative: identify every key stakeholder group, their level of interest, their level of influence, and their current stance — champion, neutral, or resistant.",
+          "Write a stakeholder engagement strategy for each quadrant of our influence-interest matrix: high influence and high interest (manage closely), high influence and low interest (keep satisfied), low influence and high interest (keep informed), low influence and low interest (monitor).",
+          "Identify the three stakeholders whose resistance could most derail our transformation. Write a targeted engagement plan for each.",
+          "Design a coalition-building strategy: which stakeholders, if aligned, would give us enough momentum to move the transformation forward without requiring universal buy-in?",
+          "Write the executive sponsor brief: what does our most senior sponsor need to do, say, and model at each phase of the transformation to maintain credibility and momentum?",
+          "Build a stakeholder sentiment tracker: how do we monitor stakeholder stance over time, and what signals tell us a previously supportive stakeholder is moving toward resistance?",
+          "Identify the informal influencers in our organization who are not on the org chart but significantly shape opinion. How do we engage them effectively?",
+          "Write stakeholder-specific messages for our transformation: the CHRO message, the business unit leader message, the front-line manager message, and the employee message.",
+          "Design the stakeholder engagement rhythm: who do we meet with, how often, and for what purpose at each phase of the transformation?",
+          "Build a power-interest grid for our transformation and identify the fence-sitters — the high-influence stakeholders who are currently undecided. What is our strategy for each?",
+          "Write the briefing document for a skeptical CFO on our transformation ROI: here is the investment, here is the return, here is the risk-adjusted case.",
+          "Identify the stakeholder groups most likely to experience loss in the transformation — status, power, resources, familiarity. How do we acknowledge and manage that loss?",
+          "Design a board-level engagement strategy for the transformation: what do we communicate, when, and how do we build board confidence in our execution capability?",
+          "Write the cross-functional alignment session agenda for the leaders of the three functions most impacted by the transformation. What decisions need to be made in the room?",
+          "Build a stakeholder accountability matrix: for each key stakeholder commitment in the transformation, who made it, what specifically did they commit to, and how do we track follow-through?",
+          "Identify the external stakeholders — union, regulators, customers, investors — who have a stake in our workforce transformation. How does their involvement change our approach?",
+          "Write the burning platform narrative for stakeholders who believe the status quo is acceptable. What evidence, framing, and urgency level is appropriate for each audience?",
+          "Design the post-transformation stakeholder feedback loop: how do we learn from key stakeholders whether the change delivered what we promised?"
+        ]
+      },
+      {
+        id: "communications",
+        title: "Communications",
+        desc: "Design and sequence workforce transformation communications by audience and phase",
+        prompts: [
+          "Write a transformation communication strategy: what are our communication objectives, audiences, key messages, channels, and cadence for each phase?",
+          "Build a message architecture for our transformation: the anchor message covering why we are changing, supporting messages by audience, and the proof points that make each message credible.",
+          "Write the all-employee announcement for our transformation: clear, honest, and focused on what employees most need to know first.",
+          "Design the communication cadence for the transformation: what do we communicate at launch, at 30 days, at each major milestone, and at go-live?",
+          "Write the manager Q&A guide: the ten questions employees are most likely to ask their manager, with model answers for each.",
+          "Build a channel strategy: which messages go through email, town hall, team meeting, intranet, video, or one-on-one? Match the channel to message sensitivity and urgency.",
+          "Write the what's-in-it-for-me message for each major employee population: what does this transformation mean for them specifically, and why should they engage?",
+          "Design a two-way communication mechanism: how do employees share concerns, ask questions, and give feedback during the transformation, and how do we demonstrate we have heard them?",
+          "Write the crisis communication template for when something goes wrong in the transformation: how do we acknowledge it, explain it, and demonstrate corrective action?",
+          "Build a rumor management protocol: when misinformation spreads during a transformation, what is the process for identifying it, correcting it, and rebuilding trust?",
+          "Write the communication for a difficult transformation message — role eliminations, location closures, significant scope changes — that is direct, respectful, and clear on support available.",
+          "Design the leader communication toolkit: pre-written talking points, FAQ documents, and presentation templates that help leaders deliver consistent messages.",
+          "Write the six-month transformation update communication: what progress do we report, how do we acknowledge what is harder than expected, and how do we maintain motivation?",
+          "Build a communication measurement framework: how do we assess message reach, comprehension, and behavioral impact at each phase?",
+          "Write the change story for an external audience — customers, partners, investors: how do we frame our workforce transformation as a positive signal about the organization's future?",
+          "Design the communication wind-down for the end of the formal transformation program: how do we mark the transition from change program to new normal?",
+          "Identify the communication mistakes most common in large-scale transformations. Which are we most at risk of making, and how do we guard against them?",
+          "Write the communication debrief guide for post-transformation review: what questions do we ask about what worked and what we would do differently?"
+        ]
+      },
+      {
+        id: "measurement-framework",
+        title: "Measurement Framework",
+        desc: "Measure the ROI and impact of workforce, capability, and transformation investments",
+        prompts: [
+          "Build a workforce transformation measurement framework: define outcomes at three levels — activity, behavior change, business impact — and identify a metric and data source for each.",
+          "Write the business case for our transformation investment: what is the expected ROI, over what timeframe, and how do we isolate the workforce intervention's contribution?",
+          "Design the baseline measurement protocol: what do we measure before the transformation begins to enable meaningful before-and-after comparison?",
+          "Build a leading indicator dashboard for our transformation: what metrics tell us the transformation is on track six to twelve months before we see business results?",
+          "Write the attribution methodology for our workforce analytics program: how do we claim credit for outcomes that have multiple contributing causes?",
+          "Design a workforce ROI model for the CHRO: for each major people investment — reskilling, transformation, org redesign — what is the expected financial return and how is it calculated?",
+          "Build a maturity model for our workforce intelligence function: what does Level 1 through Level 5 look like across strategy, analytics, technology, talent, and governance dimensions?",
+          "Write the measurement framework for our reskilling program: completion rates, skill acquisition rates, time-to-productivity for reskilled employees, and reduction in external hiring.",
+          "Identify the workforce metrics most directly correlated with revenue growth in our business. Use this to build a business case for investing in those talent outcomes.",
+          "Design a workforce analytics value realization tracker: for each analytics use case in production, how do we track whether the intended decisions are being made differently?",
+          "Write the annual workforce intelligence report structure: what metrics, narratives, and recommendations should every annual people analytics report contain?",
+          "Build a measurement governance model: who owns which metrics, how are definitions managed, and how do we resolve disputes about measurement methodology?",
+          "Design an impact evaluation study for a specific people program using a quasi-experimental design. What is the comparison group, the outcome measure, and the analysis approach?",
+          "Write the methodology for calculating the cost of voluntary attrition: direct costs — recruiting, onboarding — indirect costs — productivity loss, knowledge transfer — and opportunity costs.",
+          "Identify the workforce metrics we are currently reporting that no one is using to make decisions. What should we stop measuring to create capacity for higher-value analytics?",
+          "Build a workforce strategy scorecard for the board: six to eight metrics that give board members a reliable view of the health and trajectory of the workforce.",
+          "Write the workforce analytics capability roadmap: from descriptive reporting today to predictive modeling in 18 months. What investments, in what sequence, get us there?",
+          "Design the workforce intelligence function's annual planning process: how do we identify the questions the business most needs answered, and how do we build the year's analytics agenda around those questions?"
+        ]
+      }
+    ]
+  }
+
+]; /* ← end of SECTIONS — do not remove this line */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BELOW THIS LINE: RENDERING & SEARCH LOGIC — edit with caution
+   ═══════════════════════════════════════════════════════════════════════ */
+
+// Flatten all prompts for search
+let allPrompts = [];
+SECTIONS.forEach(s => s.files.forEach(f => f.prompts.forEach((p, i) => {
+  allPrompts.push({ text: p, sectionId: s.id, fileId: f.id, idx: i });
+})));
+
+const totalCount = allPrompts.length;
+document.getElementById("total-display").textContent = totalCount + " prompts";
+
+// Build sidebar
+const nav = document.getElementById("sidebar-nav");
+SECTIONS.forEach(s => {
+  const label = document.createElement("div");
+  label.className = "nav-group-label";
+  label.textContent = s.title;
+  nav.appendChild(label);
+
+  s.files.forEach(f => {
+    const btn = document.createElement("button");
+    btn.className = "nav-item";
+    btn.dataset.fileId = f.id;
+    btn.innerHTML = `
+      <span class="nav-dot" style="background:${s.color}"></span>
+      ${f.title}
+      <span class="nav-badge">${f.prompts.length}</span>
+    `;
+    btn.addEventListener("click", () => {
+      const el = document.getElementById("file-" + f.id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    nav.appendChild(btn);
+  });
+});
+
+// Build content
+const content = document.getElementById("content");
+SECTIONS.forEach((s, si) => {
+  const sBlock = document.createElement("section");
+  sBlock.className = "section-block";
+  sBlock.id = "section-" + s.id;
+  sBlock.innerHTML = `
+    <div class="section-eyebrow" style="background:${s.colorBg};color:${s.color};">${s.title}</div>
+    <h2 class="section-title">${s.title}</h2>
+    <p class="section-tagline">${s.tagline}</p>
+  `;
+  s.files.forEach(f => {
+    const fBlock = document.createElement("div");
+    fBlock.className = "file-block";
+    fBlock.id = "file-" + f.id;
+    fBlock.innerHTML = `
+      <div class="file-header">
+        <span class="file-title">${f.title}</span>
+        <span class="file-count">${f.prompts.length} prompts</span>
+      </div>
+      <p class="file-desc">${f.desc}</p>
+      <div class="prompts-list" id="list-${f.id}"></div>
+    `;
+    const list = fBlock.querySelector("#list-" + f.id);
+    f.prompts.forEach((p, i) => {
+      const card = document.createElement("div");
+      card.className = "prompt-card";
+      card.dataset.prompt = p.toLowerCase();
+      card.innerHTML = `
+        <span class="prompt-num">${i + 1}</span>
+        <div class="prompt-text">${escHtml(p)}</div>
+        <button class="copy-btn" title="Copy prompt">COPY</button>
+      `;
+      card.querySelector(".copy-btn").addEventListener("click", e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(p).then(() => showToast());
+      });
+      list.appendChild(card);
+    });
+    sBlock.appendChild(fBlock);
+  });
+  content.appendChild(sBlock);
+});
+
+function escHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Search
+const searchInput = document.getElementById("search");
+const searchCount = document.getElementById("search-count");
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    clearSearch();
+    return;
+  }
+  let visible = 0;
+  content.querySelectorAll(".prompt-card").forEach(card => {
+    const text = card.dataset.prompt;
+    if (text.includes(q)) {
+      card.classList.remove("hidden");
+      const raw = card.querySelector(".prompt-text").textContent;
+      card.querySelector(".prompt-text").innerHTML = highlight(escHtml(raw), q);
+      visible++;
+    } else {
+      card.classList.add("hidden");
+    }
+  });
+  // show/hide file and section blocks
+  content.querySelectorAll(".file-block").forEach(fb => {
+    const anyVisible = fb.querySelectorAll(".prompt-card:not(.hidden)").length > 0;
+    fb.style.display = anyVisible ? "" : "none";
+  });
+  content.querySelectorAll(".section-block").forEach(sb => {
+    const anyVisible = sb.querySelectorAll(".file-block:not([style*='none'])").length > 0;
+    sb.style.display = anyVisible ? "" : "none";
+  });
+  searchCount.textContent = visible + " of " + totalCount;
+});
+
+function clearSearch() {
+  content.querySelectorAll(".prompt-card").forEach(card => {
+    card.classList.remove("hidden");
+    const raw = card.querySelector(".prompt-text").textContent;
+    card.querySelector(".prompt-text").innerHTML = escHtml(raw);
+  });
+  content.querySelectorAll(".file-block, .section-block").forEach(el => {
+    el.style.display = "";
+  });
+  searchCount.textContent = "";
+}
+
+function highlight(html, q) {
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return html.replace(new RegExp(escaped, "gi"), m => `<mark>${m}</mark>`);
+}
+
+// Active nav on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const fileId = e.target.id.replace("file-", "");
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      const active = document.querySelector(`.nav-item[data-file-id="${fileId}"]`);
+      if (active) active.classList.add("active");
+    }
+  });
+}, { rootMargin: "-20% 0px -70% 0px" });
+
+document.querySelectorAll(".file-block").forEach(el => observer.observe(el));
+
+// Toast
+let toastTimer;
+function showToast() {
+  const toast = document.getElementById("toast");
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+}
+</script>
+</body>
+</html>
