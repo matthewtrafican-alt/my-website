@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Competency & Training Design Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; min-height: 100vh; }
+
+/* ── Layout ── */
+.page { max-width: 1140px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #07101f 0%, #0c1830 60%, #07101f 100%);
+  border-bottom: 1px solid #1a2540;
+  padding: 52px 24px 44px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(59,130,246,.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 50%, rgba(139,92,246,.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(20,184,166,.04) 0%, transparent 50%);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.28);
+  color: #93c5fd; font-size: .7rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 999px; margin-bottom: 22px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 3.8vw, 3rem); font-weight: 900;
+  line-height: 1.1; color: #fff; max-width: 780px; margin: 0 auto 18px;
+}
+.hero h1 .accent-blue { color: #3b82f6; }
+.hero h1 .accent-green { color: #34d399; }
+.hero-sub {
+  font-size: .9rem; color: #94a3b8; max-width: 580px;
+  margin: 0 auto 28px; line-height: 1.65;
+}
+.pill-row {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  justify-content: center; margin-bottom: 34px;
+}
+.pill {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+  color: #cbd5e1; font-size: .68rem; font-weight: 600;
+  padding: 4px 11px; border-radius: 6px;
+}
+.hero-stats { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; }
+.hstat { text-align: center; }
+.hstat .num { font-size: 2.1rem; font-weight: 900; color: #fff; line-height: 1; }
+.hstat .num .c { color: #3b82f6; }
+.hstat .lbl { font-size: .62rem; color: #475569; text-transform: uppercase; letter-spacing: .09em; margin-top: 4px; }
+
+/* ── Section wrapper ── */
+.sec { margin-top: 52px; }
+.sec-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.sec-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; font-weight: 800; flex-shrink: 0;
+}
+.sec-label { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #475569; }
+.sec-name { font-size: 1.05rem; font-weight: 800; color: #f1f5f9; margin-top: 2px; }
+
+/* ── Card base ── */
+.card { background: #0b1221; border: 1px solid #182035; border-radius: 12px; padding: 20px; }
+.card-sm { background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 16px; }
+
+/* ── Grid helpers ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* ── Tags / badges ── */
+.tag {
+  display: inline-block; font-size: .62rem; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+
+/* ════════════════════════════════════════
+   SECTION 1 — TRIGGER
+════════════════════════════════════════ */
+.trigger-box h4 { font-size: .82rem; font-weight: 700; color: #e2e8f0; margin-bottom: 7px; }
+.trigger-box p { font-size: .72rem; color: #94a3b8; line-height: 1.55; }
+.trigger-icon { font-size: 1.6rem; margin-bottom: 10px; }
+
+/* ════════════════════════════════════════
+   SECTION 2 — COMPETENCY MODELING
+════════════════════════════════════════ */
+.comp-intro {
+  background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.15);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 14px;
+  font-size: .78rem; color: #94a3b8; line-height: 1.6;
+}
+.comp-intro strong { color: #93c5fd; }
+
+.method-card {
+  background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 15px;
+}
+.method-card .m-icon { font-size: 1.2rem; margin-bottom: 8px; }
+.method-card h5 { font-size: .76rem; font-weight: 700; margin-bottom: 5px; }
+.method-card p { font-size: .67rem; color: #64748b; line-height: 1.45; }
+.method-card .m-src { font-size: .6rem; color: #334155; margin-top: 7px; font-style: italic; }
+
+.proficiency-scale {
+  display: flex; gap: 0; border-radius: 8px; overflow: hidden;
+  border: 1px solid #182035; margin-top: 14px;
+}
+.prof-level {
+  flex: 1; padding: 10px 8px; text-align: center;
+}
+.prof-level .p-num { font-size: 1.1rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+.prof-level .p-name { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.prof-level .p-desc { font-size: .58rem; color: #64748b; margin-top: 3px; line-height: 1.3; }
+.prof-1 { background: rgba(239,68,68,.07); } .prof-1 .p-num { color: #f87171; }
+.prof-2 { background: rgba(249,115,22,.07); } .prof-2 .p-num { color: #fb923c; }
+.prof-3 { background: rgba(234,179,8,.07); } .prof-3 .p-num { color: #facc15; }
+.prof-4 { background: rgba(16,185,129,.07); } .prof-4 .p-num { color: #34d399; }
+.prof-5 { background: rgba(59,130,246,.07); } .prof-5 .p-num { color: #60a5fa; }
+
+/* ════════════════════════════════════════
+   SECTION 3 — SKILL GAP ANALYSIS
+════════════════════════════════════════ */
+.gap-diagram {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+  align-items: stretch; margin-bottom: 14px;
+}
+.gap-col h5 {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; margin-bottom: 10px;
+}
+.gap-col.required h5 { color: #3b82f6; }
+.gap-col.current h5 { color: #f97316; }
+.gap-center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.gap-arrow { font-size: 1.8rem; color: #ef4444; }
+.gap-label { font-size: .62rem; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: .08em; text-align: center; }
+.gap-bar-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid #0e1929;
+}
+.gap-bar-row:last-child { border-bottom: none; }
+.gap-bar-name { font-size: .67rem; color: #94a3b8; width: 110px; flex-shrink: 0; }
+.gap-bar-track { flex: 1; height: 6px; background: #0e1929; border-radius: 3px; }
+.gap-bar-fill { height: 6px; border-radius: 3px; }
+.gap-bar-val { font-size: .65rem; font-weight: 700; width: 20px; text-align: right; flex-shrink: 0; }
+
+.gap-priority {
+  background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 16px;
+}
+.gap-priority h5 { font-size: .75rem; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; }
+.priority-row {
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid #0e1929; font-size: .72rem;
+}
+.priority-row:last-child { border-bottom: none; }
+.pr-comp { color: #94a3b8; flex: 1; }
+.pr-gap { font-weight: 700; width: 40px; text-align: center; }
+.pr-crit { width: 60px; text-align: center; font-size: .63rem; }
+.pr-score { font-weight: 800; width: 50px; text-align: right; }
+.pri-high { color: #f87171; }
+.pri-med { color: #facc15; }
+.pri-low { color: #4ade80; }
+.gap-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.gap-level-card {
+  border-radius: 8px; padding: 13px; text-align: center;
+}
+.gap-level-card h6 { font-size: .72rem; font-weight: 700; margin-bottom: 5px; }
+.gap-level-card p { font-size: .63rem; color: #64748b; line-height: 1.4; }
+.gl-individual { background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.18); }
+.gl-individual h6 { color: #60a5fa; }
+.gl-team { background: rgba(139,92,246,.07); border: 1px solid rgba(139,92,246,.18); }
+.gl-team h6 { color: #a78bfa; }
+.gl-org { background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.18); }
+.gl-org h6 { color: #facc15; }
+
+/* ════════════════════════════════════════
+   SECTION 4 — ADDIE WORKFLOW
+════════════════════════════════════════ */
+.addie-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.addie-phase { border-radius: 10px; padding: 15px 12px; position: relative; }
+.addie-phase::after {
+  content: '›'; position: absolute; right: -10px; top: 40px;
+  color: #1e3058; font-size: 1.4rem; z-index: 2; font-weight: 900;
+}
+.addie-phase:last-child::after { display: none; }
+.ph-label { font-size: .58rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .65; margin-bottom: 3px; }
+.ph-name { font-size: .92rem; font-weight: 800; margin-bottom: 9px; }
+.ph-items { list-style: none; }
+.ph-items li {
+  font-size: .66rem; color: #cbd5e1; padding: 2.5px 0 2.5px 10px;
+  position: relative; line-height: 1.38;
+}
+.ph-items li::before { content: '·'; position: absolute; left: 2px; opacity: .5; }
+.ph-ai {
+  margin-top: 9px; background: rgba(0,0,0,.25); border-radius: 6px;
+  padding: 6px 8px; font-size: .6rem; color: #7dd3fc; line-height: 1.4;
+}
+.ph-ai::before { content: '🤖 '; }
+
+.ph-analyze { background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.22); }
+.ph-analyze .ph-label, .ph-analyze .ph-name { color: #fb923c; }
+.ph-design { background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.22); }
+.ph-design .ph-label, .ph-design .ph-name { color: #60a5fa; }
+.ph-develop { background: rgba(139,92,246,.08); border: 1px solid rgba(139,92,246,.22); }
+.ph-develop .ph-label, .ph-develop .ph-name { color: #a78bfa; }
+.ph-implement { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.22); }
+.ph-implement .ph-label, .ph-implement .ph-name { color: #34d399; }
+.ph-evaluate { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.22); }
+.ph-evaluate .ph-label, .ph-evaluate .ph-name { color: #f87171; }
+
+.know-callout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.know-box { border-radius: 8px; padding: 14px 16px; }
+.know-dec { background: rgba(14,165,233,.07); border: 1px solid rgba(14,165,233,.2); }
+.know-pro { background: rgba(168,85,247,.07); border: 1px solid rgba(168,85,247,.2); }
+.know-box h5 { font-size: .74rem; font-weight: 700; margin-bottom: 5px; }
+.know-dec h5 { color: #38bdf8; }
+.know-pro h5 { color: #c084fc; }
+.know-box p { font-size: .68rem; color: #94a3b8; line-height: 1.5; }
+.know-ex { font-size: .63rem; color: #475569; margin-top: 6px; font-style: italic; }
+
+/* ════════════════════════════════════════
+   SECTION 5 — ID MODELS
+════════════════════════════════════════ */
+.model-card { border-radius: 10px; padding: 16px; }
+.model-card .m-icon { font-size: 1.35rem; margin-bottom: 8px; }
+.model-card h4 { font-size: .78rem; font-weight: 800; margin-bottom: 6px; }
+.model-card p { font-size: .68rem; color: #94a3b8; line-height: 1.5; }
+.bloom-lvls { display: flex; gap: 3px; margin-top: 9px; flex-wrap: wrap; }
+.bl { font-size: .58rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+.bl1{background:rgba(239,68,68,.18);color:#f87171;}
+.bl2{background:rgba(249,115,22,.18);color:#fb923c;}
+.bl3{background:rgba(234,179,8,.18);color:#facc15;}
+.bl4{background:rgba(16,185,129,.18);color:#34d399;}
+.bl5{background:rgba(59,130,246,.18);color:#60a5fa;}
+.bl6{background:rgba(139,92,246,.18);color:#a78bfa;}
+
+.mc-addie{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);}
+.mc-addie h4{color:#60a5fa;}
+.mc-addie .tag{background:rgba(59,130,246,.15);color:#93c5fd;}
+.mc-blooms{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);}
+.mc-blooms h4{color:#fb923c;}
+.mc-blooms .tag{background:rgba(249,115,22,.15);color:#fdba74;}
+.mc-krath{background:rgba(236,72,153,.07);border:1px solid rgba(236,72,153,.2);}
+.mc-krath h4{color:#f472b6;}
+.mc-krath .tag{background:rgba(236,72,153,.15);color:#f9a8d4;}
+.mc-gagne{background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.2);}
+.mc-gagne h4{color:#c084fc;}
+.mc-gagne .tag{background:rgba(168,85,247,.15);color:#d8b4fe;}
+.mc-tna{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.2);}
+.mc-tna h4{color:#2dd4bf;}
+.mc-tna .tag{background:rgba(20,184,166,.15);color:#5eead4;}
+.mc-job{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);}
+.mc-job h4{color:#facc15;}
+.mc-job .tag{background:rgba(234,179,8,.15);color:#fde047;}
+
+/* ════════════════════════════════════════
+   SECTION 6 — OUTPUTS
+════════════════════════════════════════ */
+.out-card {
+  background: #0b1221; border: 1px solid #182035; border-radius: 10px;
+  padding: 16px 14px; text-align: center;
+}
+.out-card .o-icon { font-size: 1.7rem; margin-bottom: 9px; }
+.out-card h4 { font-size: .74rem; font-weight: 700; color: #e2e8f0; margin-bottom: 5px; }
+.out-card p { font-size: .63rem; color: #475569; line-height: 1.4; }
+
+/* ════════════════════════════════════════
+   SECTION 7 — TIME TRANSFORM
+════════════════════════════════════════ */
+.time-grid { display: grid; grid-template-columns: 1fr 48px 1fr; gap: 20px; align-items: center; }
+.tc h5 { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 12px; }
+.tc.old h5 { color: #475569; }
+.tc.new h5 { color: #34d399; }
+.t-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid #0d1826; font-size: .72rem;
+}
+.t-row:last-of-type { border-bottom: none; }
+.t-phase { color: #94a3b8; }
+.t-old { color: #475569; font-weight: 600; }
+.t-new { color: #34d399; font-weight: 700; }
+.t-total {
+  margin-top: 12px; padding: 12px; border-radius: 8px; text-align: center;
+}
+.t-total .tn { font-size: 1.55rem; font-weight: 900; line-height: 1; }
+.t-total .tl { font-size: .6rem; text-transform: uppercase; letter-spacing: .08em; color: #475569; margin-top: 3px; }
+.t-total.old { background: rgba(71,85,105,.08); border: 1px solid rgba(71,85,105,.2); }
+.t-total.old .tn { color: #475569; }
+.t-total.new { background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.25); }
+.t-total.new .tn { color: #34d399; }
+.t-arrow { font-size: 1.8rem; color: #3b82f6; text-align: center; }
+
+/* ════════════════════════════════════════
+   SECTION 8 — IMPACT
+════════════════════════════════════════ */
+.impact-card {
+  background: #0b1221; border: 1px solid #182035;
+  border-radius: 10px; padding: 20px; text-align: center;
+}
+.imp-num { font-size: 2.3rem; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+.imp-lbl { font-size: .73rem; font-weight: 600; color: #e2e8f0; margin-bottom: 5px; }
+.imp-desc { font-size: .63rem; color: #475569; line-height: 1.5; }
+
+/* ════════════════════════════════════════
+   AUDIENCE
+════════════════════════════════════════ */
+.aud-card {
+  background: #0b1221; border: 1px solid #182035; border-radius: 10px;
+  padding: 16px; display: flex; align-items: flex-start; gap: 12px;
+}
+.aud-icon { font-size: 1.4rem; flex-shrink: 0; }
+.aud-card h4 { font-size: .78rem; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+.aud-card p { font-size: .66rem; color: #475569; line-height: 1.4; }
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+.footer-cta {
+  margin-top: 52px;
+  background: linear-gradient(135deg, rgba(59,130,246,.07), rgba(139,92,246,.07));
+  border: 1px solid rgba(59,130,246,.18);
+  border-radius: 14px; padding: 32px; text-align: center;
+}
+.footer-cta p { font-size: .85rem; color: #94a3b8; line-height: 1.7; max-width: 640px; margin: 0 auto; }
+.footer-cta strong { color: #e2e8f0; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: linear-gradient(to right, transparent, #182035, transparent); margin: 44px 0; }
+
+/* ── Highlight box ── */
+.highlight-box {
+  background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.15);
+  border-radius: 8px; padding: 12px 16px; font-size: .72rem;
+  color: #94a3b8; line-height: 1.6; margin-top: 14px;
+}
+.highlight-box strong { color: #93c5fd; }
+
+/* ════════════════════════════════════════
+   SAM / MODEL FLEXIBILITY
+════════════════════════════════════════ */
+.model-compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;
+}
+.mc-frame {
+  border-radius: 10px; padding: 18px;
+}
+.mc-frame.addie-frame { background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2); }
+.mc-frame.sam-frame { background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.2); }
+.mc-frame h4 { font-size: .85rem; font-weight: 800; margin-bottom: 4px; }
+.mc-frame.addie-frame h4 { color: #60a5fa; }
+.mc-frame.sam-frame h4 { color: #facc15; }
+.mc-frame .mc-sub { font-size: .63rem; color: #475569; font-style: italic; margin-bottom: 10px; }
+.mc-frame p { font-size: .7rem; color: #94a3b8; line-height: 1.55; }
+.mc-best { margin-top: 10px; font-size: .67rem; font-weight: 600; }
+.mc-frame.addie-frame .mc-best { color: #93c5fd; }
+.mc-frame.sam-frame .mc-best { color: #fde047; }
+
+.sam-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid #182035; }
+.sam-phase { padding: 16px 14px; position: relative; }
+.sam-phase::after {
+  content: '›'; position: absolute; right: -8px; top: 50%;
+  transform: translateY(-50%); color: #1e3058; font-size: 1.4rem; font-weight: 900; z-index: 2;
+}
+.sam-phase:last-child::after { display: none; }
+.sp-label { font-size: .58rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .6; margin-bottom: 3px; }
+.sp-name { font-size: .9rem; font-weight: 800; margin-bottom: 8px; }
+.sp-items { list-style: none; }
+.sp-items li { font-size: .65rem; color: #cbd5e1; padding: 2px 0 2px 10px; position: relative; line-height: 1.35; }
+.sp-items li::before { content: '·'; position: absolute; left: 2px; opacity: .5; }
+.sp-prep { background: rgba(20,184,166,.08); border-right: 1px solid #182035; }
+.sp-prep .sp-label, .sp-prep .sp-name { color: #2dd4bf; }
+.sp-idesign { background: rgba(234,179,8,.07); border-right: 1px solid #182035; }
+.sp-idesign .sp-label, .sp-idesign .sp-name { color: #facc15; }
+.sp-idev { background: rgba(249,115,22,.07); }
+.sp-idev .sp-label, .sp-idev .sp-name { color: #fb923c; }
+
+.sam-versions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.sv-card { border-radius: 9px; padding: 14px; }
+.sv-1 { background: rgba(20,184,166,.07); border: 1px solid rgba(20,184,166,.18); }
+.sv-1 h5 { color: #2dd4bf; }
+.sv-2 { background: rgba(249,115,22,.07); border: 1px solid rgba(249,115,22,.18); }
+.sv-2 h5 { color: #fb923c; }
+.sv-card h5 { font-size: .78rem; font-weight: 800; margin-bottom: 6px; }
+.sv-card p { font-size: .68rem; color: #94a3b8; line-height: 1.5; }
+.sv-card .sv-use { font-size: .65rem; color: #475569; margin-top: 8px; font-style: italic; }
+
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+.compare-table th {
+  font-size: .63rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  padding: 8px 12px; text-align: left; background: #080f1d;
+}
+.compare-table th.col-addie { color: #60a5fa; }
+.compare-table th.col-sam { color: #facc15; }
+.compare-table th.col-dim { color: #475569; }
+.compare-table td { font-size: .7rem; padding: 9px 12px; border-bottom: 1px solid #0e1929; color: #94a3b8; }
+.compare-table td.dim { color: #64748b; font-weight: 600; }
+.compare-table td.av { color: #93c5fd; }
+.compare-table td.sv { color: #fde047; }
+.compare-table tr:last-child td { border-bottom: none; }
+
+.when-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+.when-card { border-radius: 9px; padding: 14px; }
+.wc-addie { background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.18); }
+.wc-addie h5 { color: #60a5fa; }
+.wc-sam { background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.18); }
+.wc-sam h5 { color: #facc15; }
+.wc-hybrid { background: rgba(16,185,129,.07); border: 1px solid rgba(16,185,129,.18); }
+.wc-hybrid h5 { color: #34d399; }
+.when-card h5 { font-size: .76rem; font-weight: 800; margin-bottom: 8px; }
+.when-card ul { list-style: none; }
+.when-card ul li { font-size: .67rem; color: #94a3b8; padding: 3px 0 3px 12px; position: relative; line-height: 1.4; }
+.when-card ul li::before { content: '✓'; position: absolute; left: 0; font-size: .6rem; }
+.wc-addie ul li::before { color: #60a5fa; }
+.wc-sam ul li::before { color: #facc15; }
+.wc-hybrid ul li::before { color: #34d399; }
+
+/* ── Interactive ── */
+.sec-hd { user-select: none; }
+.sec.collapsed > *:not(.sec-hd) { display: none !important; }
+.sec-chevron { margin-left: auto; font-size: 1rem; color: #334155; transition: transform .2s; flex-shrink: 0; }
+.sec-chevron.rotated { transform: rotate(-90deg); }
+
+/* Role selector */
+.role-selector { display: flex; align-items: center; gap: 10px; background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; flex-wrap: wrap; }
+.role-selector label { font-size: .72rem; font-weight: 600; color: #94a3b8; white-space: nowrap; }
+.role-select { flex: 1; min-width: 180px; background: #060a16; border: 1px solid #1e3058; border-radius: 6px; color: #e2e8f0; font-size: .75rem; padding: 6px 10px; font-family: 'Inter', sans-serif; }
+.role-select:focus { outline: none; border-color: #3b82f6; }
+.role-badge { font-size: .65rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.2); color: #93c5fd; white-space: nowrap; }
+
+/* Workflow toggle */
+.wf-toggle-bar { display: flex; gap: 5px; margin-bottom: 12px; background: #080f1d; border: 1px solid #182035; border-radius: 8px; padding: 4px; width: fit-content; }
+.wf-toggle-btn { padding: 5px 16px; border-radius: 5px; border: none; cursor: pointer; font-size: .72rem; font-weight: 700; font-family: 'Inter', sans-serif; transition: all .15s; }
+.wf-toggle-btn.active { background: #1d4ed8; color: #fff; }
+.wf-toggle-btn:not(.active) { background: transparent; color: #64748b; }
+.wf-toggle-btn:not(.active):hover { color: #94a3b8; }
+
+/* SAM flow */
+.sam-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sam-phase-card { border-radius: 10px; padding: 15px 12px; position: relative; }
+.sam-phase-card::after { content: '›'; position: absolute; right: -10px; top: 40px; color: #1e3058; font-size: 1.4rem; font-weight: 900; z-index: 2; }
+.sam-phase-card:last-child::after { display: none; }
+.sp-prep { background: rgba(20,184,166,.08); border: 1px solid rgba(20,184,166,.22); }
+.sp-prep .sph-label, .sp-prep .sph-name { color: #2dd4bf; }
+.sp-idesign { background: rgba(234,179,8,.08); border: 1px solid rgba(234,179,8,.22); }
+.sp-idesign .sph-label, .sp-idesign .sph-name { color: #facc15; }
+.sp-idev { background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.22); }
+.sp-idev .sph-label, .sp-idev .sph-name { color: #fb923c; }
+.sph-label { font-size: .58rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .65; margin-bottom: 3px; }
+.sph-name { font-size: .9rem; font-weight: 800; margin-bottom: 9px; }
+.sph-items { list-style: none; }
+.sph-items li { font-size: .66rem; color: #cbd5e1; padding: 2.5px 0 2.5px 10px; position: relative; line-height: 1.38; }
+.sph-items li::before { content: '·'; position: absolute; left: 2px; opacity: .5; }
+.sam-loop-note { margin-top: 9px; background: rgba(0,0,0,.25); border-radius: 6px; padding: 6px 8px; font-size: .6rem; color: #7dd3fc; line-height: 1.4; }
+.sam-loop-note::before { content: '🔄 '; }
+
+/* Gap calculator */
+.gap-calc-container { background: #0b1221; border: 1px solid #182035; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.gap-calc-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #0e1929; }
+.gap-calc-hdr h5 { font-size: .8rem; font-weight: 700; color: #e2e8f0; flex: 1; }
+.gap-col-hdr { display: grid; grid-template-columns: 180px 1fr 48px 108px 56px 26px; gap: 8px; font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #475569; padding-bottom: 8px; border-bottom: 1px solid #0e1929; }
+.gcalc-row { display: grid; grid-template-columns: 180px 1fr 48px 108px 56px 26px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid #080f1d; }
+.gcalc-row:last-child { border-bottom: none; }
+.gcr-name-input { background: transparent; border: none; color: #94a3b8; font-size: .72rem; font-family: 'Inter', sans-serif; width: 100%; padding: 2px 4px; border-radius: 3px; }
+.gcr-name-input:focus { outline: 1px solid #1e3058; background: #060a16; color: #e2e8f0; }
+.gcr-bars { display: flex; flex-direction: column; gap: 5px; }
+.gcr-bg { display: flex; align-items: center; gap: 5px; }
+.gcr-bl { font-size: .56rem; color: #475569; width: 42px; flex-shrink: 0; }
+.gcr-track { flex: 1; height: 4px; background: #0e1929; border-radius: 2px; }
+.gcr-fill { height: 4px; border-radius: 2px; transition: width .2s; }
+.gcr-req { background: #3b82f6; }
+.gcr-cur { background: #f97316; }
+.gcr-dots { display: flex; gap: 2px; }
+.pdot { width: 18px; height: 18px; border-radius: 3px; border: 1px solid #182035; background: #080f1d; color: #475569; font-size: .58rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .1s; font-family: 'Inter', sans-serif; padding: 0; }
+.pdot:hover { border-color: #334155; color: #94a3b8; }
+.pdot.ar { background: rgba(59,130,246,.2); border-color: #3b82f6; color: #60a5fa; }
+.pdot.ac { background: rgba(249,115,22,.2); border-color: #f97316; color: #fb923c; }
+.gcr-gap { font-size: .85rem; font-weight: 800; text-align: center; }
+.crit-sel { background: #060a16; border: 1px solid #1e3058; color: #94a3b8; font-size: .62rem; border-radius: 4px; padding: 3px 4px; font-family: 'Inter', sans-serif; width: 100%; }
+.crit-sel:focus { outline: none; }
+.gcr-pri { font-size: .85rem; font-weight: 800; text-align: center; }
+.gcr-del { background: transparent; border: 1px solid #182035; color: #475569; border-radius: 4px; width: 22px; height: 22px; cursor: pointer; font-size: .8rem; display: flex; align-items: center; justify-content: center; transition: all .1s; font-family: 'Inter', sans-serif; padding: 0; }
+.gcr-del:hover { border-color: #ef4444; color: #ef4444; }
+.add-btn { width: 100%; padding: 8px; margin-top: 10px; background: rgba(59,130,246,.05); border: 1px dashed rgba(59,130,246,.2); color: #60a5fa; border-radius: 6px; cursor: pointer; font-size: .72rem; font-weight: 600; font-family: 'Inter', sans-serif; transition: all .15s; }
+.add-btn:hover { background: rgba(59,130,246,.1); }
+
+/* Gap summary */
+.gap-summary-box { background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+.gss-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.gss { text-align: center; }
+.gss-num { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+.gss-lbl { font-size: .6rem; color: #475569; text-transform: uppercase; letter-spacing: .07em; margin-top: 3px; }
+.gsl-hdr { font-size: .65rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.gsl-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #080f1d; font-size: .72rem; }
+.gsl-row:last-child { border-bottom: none; }
+.gsl-rank { width: 18px; height: 18px; border-radius: 50%; background: #0e1929; color: #64748b; font-size: .6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gsl-name { color: #94a3b8; flex: 1; }
+.gsl-score { font-weight: 800; }
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .addie-flow { grid-template-columns: 1fr 1fr; }
+  .addie-phase::after { display: none; }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .time-grid { grid-template-columns: 1fr; }
+  .t-arrow { display: none; }
+  .gap-diagram { grid-template-columns: 1fr; }
+  .gap-center { flex-direction: row; justify-content: center; }
+}
+@media (max-width: 620px) {
+  .g2, .g3, .g4, .know-callout, .gap-levels, .addie-flow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-eyebrow">I/O Psychology &times; Instructional Design &times; Artificial Intelligence</div>
+  <h1>An <span class="accent-blue">AI-Powered</span> Competency<br>Development &amp; <span class="accent-green">Training Design</span> Workflow</h1>
+  <p class="hero-sub">From performance gap to LMS-ready training — grounded in competency science, I/O psychology frameworks, and 6 evidence-based ID models. Works for any career field, job discipline, or role.</p>
+  <div class="pill-row">
+    <span class="pill">ADDIE</span>
+    <span class="pill">SAM (Successive Approximation)</span>
+    <span class="pill">Bloom's Taxonomy</span>
+    <span class="pill">Krathwohl's Affective Domain</span>
+    <span class="pill">Gagné's Five Capabilities</span>
+    <span class="pill">Training Needs Analysis</span>
+    <span class="pill">Job Analysis &amp; KSAOs</span>
+    <span class="pill">Competency Modeling</span>
+    <span class="pill">Skill Gap Analysis</span>
+    <span class="pill">O*NET Framework</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="num"><span class="c">10</span></div><div class="lbl">Frameworks Applied</div></div>
+    <div class="hstat"><div class="num"><span class="c">5</span></div><div class="lbl">ADDIE Phases</div></div>
+    <div class="hstat"><div class="num"><span class="c">Any</span></div><div class="lbl">Career Field / Role</div></div>
+    <div class="hstat"><div class="num"><span class="c">75%</span></div><div class="lbl">Faster Design Cycle</div></div>
+    <div class="hstat"><div class="num"><span class="c">100%</span></div><div class="lbl">Bloom's-Aligned Objectives</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════
+     SECTION 1 — TRIGGER
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(249,115,22,.14);color:#fb923c;">1</div>
+    <div><div class="sec-label">Step One</div><div class="sec-name">TRIGGER — Identify the Performance or Competency Gap</div></div>
+  </div>
+  <div class="g2">
+    <div class="card-sm trigger-box">
+      <div class="trigger-icon">📉</div>
+      <h4>Performance Gap Signals</h4>
+      <p>Training begins where performance falls short of expected standards — or where a new role, regulation, or strategy introduces new competency requirements.</p>
+      <div class="tags">
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">Performance metrics below target</span>
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">New role or task introduced</span>
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">Regulatory or compliance change</span>
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">Manager or supervisor feedback</span>
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">Workforce transformation initiative</span>
+        <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;">Succession planning gap</span>
+      </div>
+    </div>
+    <div class="card-sm trigger-box">
+      <div class="trigger-icon">📂</div>
+      <h4>Upload Source Documents — Any Career Field</h4>
+      <p>The AI ingests job and performance data to begin a rigorous Job Analysis, KSAO mapping, and Training Needs Analysis — applicable to any occupation or industry.</p>
+      <div class="tags">
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">Job Descriptions / Position Profiles</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">SOPs &amp; Process Guides</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">Competency Frameworks</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">Performance Review Data</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">360-Degree Feedback Reports</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">O*NET Occupation Data</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">Business Goals &amp; KPIs</span>
+        <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">LMS / Assessment History</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 2 — COMPETENCY MODELING
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(234,179,8,.14);color:#facc15;">2</div>
+    <div><div class="sec-label">Step Two — I/O Psychology Foundation</div><div class="sec-name">COMPETENCY MODELING — Build the Job Standard for Any Role</div></div>
+  </div>
+
+  <!-- Role selector -->
+  <div class="role-selector">
+    <label>Select Job Role / Discipline:</label>
+    <select class="role-select" onchange="loadRole(this.value)" id="roleSelect">
+      <option value="default">— Custom / Generic Role —</option>
+      <option value="instructional_designer">Instructional Designer · L&amp;D</option>
+      <option value="data_analyst">Data Analyst · Analytics &amp; BI</option>
+      <option value="project_manager">Project Manager · PMO</option>
+      <option value="software_engineer">Software Engineer · Technology</option>
+      <option value="hr_business_partner">HR Business Partner · Human Resources</option>
+      <option value="healthcare_clinician">Healthcare Clinician · Clinical</option>
+      <option value="operations_manager">Operations Manager · Operations</option>
+      <option value="sales_professional">Sales Professional · Business Development</option>
+    </select>
+    <span class="role-badge" id="current-role-badge">Custom / Any Field</span>
+  </div>
+
+  <div class="comp-intro">
+    <strong>Competency models</strong> define the clusters of KSAOs (Knowledge, Skills, Abilities, Other characteristics) that distinguish superior from adequate performance in a given role. They serve as the anchor for every downstream decision: what to train, how to assess it, and how to evaluate transfer. This workflow builds or imports a competency model as the first analytical step — making the entire training design <strong>job-relevant and defensible</strong>.
+  </div>
+
+  <div class="g3" style="margin-bottom:14px;">
+    <div class="method-card">
+      <div class="m-icon">🔎</div>
+      <h5>O*NET Framework</h5>
+      <p>The U.S. Department of Labor's occupational database provides standardized KSAOs, work activities, and knowledge domains for 1,000+ occupations. AI extracts the relevant taxonomy for any job code instantly.</p>
+      <div class="m-src">Source: O*NET Content Model (Peterson et al., 1999)</div>
+    </div>
+    <div class="method-card">
+      <div class="m-icon">⚡</div>
+      <h5>Critical Incident Technique (CIT)</h5>
+      <p>SME-reported examples of highly effective and ineffective job behaviors. Identifies which KSAOs actually drive performance — not just what appears in the job description.</p>
+      <div class="m-src">Source: Flanagan (1954)</div>
+    </div>
+    <div class="method-card">
+      <div class="m-icon">📋</div>
+      <h5>Functional Job Analysis (FJA)</h5>
+      <p>Analyzes tasks by the degree to which they involve Data, People, and Things. Establishes task difficulty levels and the skills required at each level for any discipline.</p>
+      <div class="m-src">Source: Fine (1974)</div>
+    </div>
+    <div class="method-card">
+      <div class="m-icon">📊</div>
+      <h5>Position Analysis Questionnaire (PAQ)</h5>
+      <p>A structured worker-oriented job analysis tool that rates 187 job elements. Quantifies the cognitive, physical, and relational demands of any role for competency model weighting.</p>
+      <div class="m-src">Source: McCormick, Jeanneret &amp; Mecham (1972)</div>
+    </div>
+    <div class="method-card">
+      <div class="m-icon">👥</div>
+      <h5>SME Panel Analysis</h5>
+      <p>Subject Matter Experts rate task importance, frequency, and trainability — establishing content validity for the competency model and ensuring it reflects the real job, not the assumed job.</p>
+      <div class="m-src">Source: Content Validity approach (Lawshe, 1975)</div>
+    </div>
+    <div class="method-card">
+      <div class="m-icon">🎯</div>
+      <h5>KSAO Mapping</h5>
+      <p>Each task is linked to specific KSAOs: declarative or procedural Knowledge, observable Skills, underlying Abilities, and Other characteristics (e.g., personality, values, motivation).</p>
+      <div class="m-src">Source: Fleishman &amp; Quaintance (1984); Campion et al. (2011)</div>
+    </div>
+  </div>
+
+  <!-- Proficiency Scale -->
+  <div class="card-sm">
+    <div style="font-size:.72rem;font-weight:700;color:#94a3b8;margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;">Universal Competency Proficiency Scale — Applied Across All Roles &amp; Disciplines</div>
+    <div class="proficiency-scale">
+      <div class="prof-level prof-1">
+        <div class="p-num">1</div>
+        <div class="p-name">Novice</div>
+        <div class="p-desc">Aware of concept; requires direct supervision; no independent application</div>
+      </div>
+      <div class="prof-level prof-2">
+        <div class="p-num">2</div>
+        <div class="p-name">Developing</div>
+        <div class="p-desc">Basic understanding; applies with guidance; some errors in complex situations</div>
+      </div>
+      <div class="prof-level prof-3">
+        <div class="p-num">3</div>
+        <div class="p-name">Proficient</div>
+        <div class="p-desc">Independently applies; consistent performance in standard situations</div>
+      </div>
+      <div class="prof-level prof-4">
+        <div class="p-num">4</div>
+        <div class="p-name">Advanced</div>
+        <div class="p-desc">Handles complex/novel situations; coaches others; recognized expertise</div>
+      </div>
+      <div class="prof-level prof-5">
+        <div class="p-num">5</div>
+        <div class="p-name">Expert</div>
+        <div class="p-desc">Defines standards; develops frameworks; authoritative resource for the field</div>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top:12px;">
+      <strong>Person–Job Fit (Kristof-Brown, 2005):</strong> Proficiency requirements are set at the level needed for effective performance — not the highest possible level. Overtrained workers in low-complexity roles reduce engagement and increase turnover. The model calibrates required proficiency to actual job demands.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 3 — SKILL GAP ANALYSIS
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(239,68,68,.14);color:#f87171;">3</div>
+    <div><div class="sec-label">Step Three — I/O Psychology Analysis</div><div class="sec-name">SKILL GAP ANALYSIS — Measure Current vs. Required Proficiency</div></div>
+  </div>
+
+  <!-- Gap Calculator -->
+  <div class="gap-calc-container">
+    <div class="gap-calc-hdr">
+      <h5>Live Skill Gap Calculator — Priority Score = Gap Size × Criticality Weight</h5>
+      <span style="font-size:.63rem;color:#475569;">Select role above to populate · Click dots to set proficiency · Edit names inline</span>
+    </div>
+    <div class="gap-col-hdr">
+      <span>Competency</span><span>Required (blue) &nbsp;/&nbsp; Current (orange)</span><span style="text-align:center;">Gap</span><span>Criticality</span><span style="text-align:center;">Priority</span><span></span>
+    </div>
+    <div id="gap-calc-rows"></div>
+    <button class="add-btn" onclick="addComp()">+ Add Competency</button>
+  </div>
+
+  <!-- Gap Summary -->
+  <div class="gap-summary-box" id="gap-summary"></div>
+
+  <!-- Assessment Methods -->
+  <div class="card-sm" style="margin-bottom:14px;">
+    <div style="font-size:.74rem;font-weight:700;color:#e2e8f0;margin-bottom:10px;">Assessment Methods — I/O Psychology</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:.7rem;color:#94a3b8;padding:8px;background:#080f1d;border-radius:6px;line-height:1.45;"><strong style="color:#60a5fa;">Knowledge Tests</strong> — Criterion-referenced assessments measuring declarative knowledge at Bloom's Remember / Understand level</div>
+      <div style="font-size:.7rem;color:#94a3b8;padding:8px;background:#080f1d;border-radius:6px;line-height:1.45;"><strong style="color:#a78bfa;">Skill Simulations</strong> — Work sample tests and behavioral exercises measuring procedural knowledge at Bloom's Apply / Analyze</div>
+      <div style="font-size:.7rem;color:#94a3b8;padding:8px;background:#080f1d;border-radius:6px;line-height:1.45;"><strong style="color:#f472b6;">360° Feedback</strong> — Multi-rater assessment of behavioral competencies; captures affective / attitudinal gaps (Krathwohl domain)</div>
+      <div style="font-size:.7rem;color:#94a3b8;padding:8px;background:#080f1d;border-radius:6px;line-height:1.45;"><strong style="color:#34d399;">Assessment Centers</strong> — High-fidelity behavioral observation for complex leadership and managerial competencies</div>
+    </div>
+  </div>
+
+  <!-- Analysis levels -->
+  <div class="gap-levels">
+    <div class="gap-level-card gl-individual">
+      <h6>Individual Level</h6>
+      <p>Proficiency scores per person per competency — feeds individual development plans and targeted learning paths</p>
+    </div>
+    <div class="gap-level-card gl-team">
+      <h6>Team / Unit Level</h6>
+      <p>Aggregate gaps by team, department, or function — informs team training priorities and resource allocation</p>
+    </div>
+    <div class="gap-level-card gl-org">
+      <h6>Organizational Level</h6>
+      <p>Enterprise-wide competency heat map — drives strategic workforce planning and L&amp;D investment decisions</p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>Criterion-Referenced vs. Norm-Referenced Assessment:</strong> This workflow uses <strong>criterion-referenced measurement</strong> — proficiency is judged against the job standard, not relative to peers. A score of 3/5 on a competency rated "Required: 4" is a gap regardless of how it compares to the team average. This is the I/O psychology standard for defensible, legally compliant training needs identification.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 4 — ADDIE WORKFLOW
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(59,130,246,.14);color:#60a5fa;">4</div>
+    <div><div class="sec-label">Step Four — ADDIE + AI</div><div class="sec-name">WORKFLOW MAP — Gap-Driven ADDIE Design at Every Phase</div></div>
+  </div>
+
+  <!-- Model toggle -->
+  <div class="wf-toggle-bar">
+    <button class="wf-toggle-btn active" data-mode="addie" onclick="setWorkflowMode('addie')">ADDIE — Sequential</button>
+    <button class="wf-toggle-btn" data-mode="sam" onclick="setWorkflowMode('sam')">SAM — Iterative</button>
+  </div>
+
+  <!-- ADDIE view -->
+  <div id="addie-view">
+  <div class="addie-flow">
+    <div class="addie-phase ph-analyze">
+      <div class="ph-label">Phase 1</div>
+      <div class="ph-name">Analyze</div>
+      <ul class="ph-items">
+        <li>TNA: Org / Task / Person</li>
+        <li>Confirm training vs. non-training cause</li>
+        <li>Prioritized KSAO gap list in</li>
+        <li>Classify: Declarative vs. Procedural</li>
+        <li>Identify affective gaps (Krathwohl)</li>
+        <li>Define target audience profile</li>
+      </ul>
+      <div class="ph-ai">ChatGPT generates TNA + KSAO gap summary from competency model &amp; assessment data</div>
+    </div>
+
+    <div class="addie-phase ph-design">
+      <div class="ph-label">Phase 2</div>
+      <div class="ph-name">Design</div>
+      <ul class="ph-items">
+        <li>Write learning objectives (C·B·C)</li>
+        <li>Code each to Bloom's level</li>
+        <li>Classify by Gagné capability type</li>
+        <li>Add Krathwohl affective goals</li>
+        <li>Sequence &amp; scope content</li>
+        <li>Map assessment to objectives</li>
+      </ul>
+      <div class="ph-ai">ChatGPT drafts Bloom's-coded, Gagné-classified objectives with condition · behavior · criterion</div>
+    </div>
+
+    <div class="addie-phase ph-develop">
+      <div class="ph-label">Phase 3</div>
+      <div class="ph-name">Develop</div>
+      <ul class="ph-items">
+        <li>Declarative knowledge modules</li>
+        <li>Procedural step-by-step guides</li>
+        <li>Assessments per Bloom's level</li>
+        <li>Affective learning activities</li>
+        <li>Job aids &amp; performance support</li>
+        <li>Scenarios &amp; case studies</li>
+      </ul>
+      <div class="ph-ai">ChatGPT + Canva AI generate content, quizzes, scenarios, and job aids matched to gap priorities</div>
+    </div>
+
+    <div class="addie-phase ph-implement">
+      <div class="ph-label">Phase 4</div>
+      <div class="ph-name">Implement</div>
+      <ul class="ph-items">
+        <li>Format for LMS (SCORM/xAPI)</li>
+        <li>Facilitator &amp; learner guides</li>
+        <li>Pilot with target audience</li>
+        <li>Collect Level 1 feedback</li>
+        <li>Iterate before full launch</li>
+      </ul>
+      <div class="ph-ai">n8n automates LMS export; AI generates facilitator guide and learner guide from content</div>
+    </div>
+
+    <div class="addie-phase ph-evaluate">
+      <div class="ph-label">Phase 5</div>
+      <div class="ph-name">Evaluate</div>
+      <ul class="ph-items">
+        <li>L1: Reaction (satisfaction)</li>
+        <li>L2: Learning (Bloom's-matched)</li>
+        <li>L3: Behavior (KSAO transfer)</li>
+        <li>L4: Results (business impact)</li>
+        <li>Re-assess competency proficiency</li>
+        <li>Feed back into next TNA cycle</li>
+      </ul>
+      <div class="ph-ai">Excel AI analyzes evaluation data; proficiency re-scores close the competency development loop</div>
+    </div>
+  </div>
+  </div><!-- /addie-view -->
+
+  <!-- SAM view -->
+  <div id="sam-view" style="display:none;">
+  <div class="sam-flow">
+    <div class="sam-phase-card sp-prep">
+      <div class="sph-label">Phase 1</div>
+      <div class="sph-name">Preparation</div>
+      <ul class="sph-items">
+        <li>Background information gathering</li>
+        <li>Performance context &amp; KSAO data</li>
+        <li><strong style="color:#2dd4bf;">Savvy Start</strong> workshop with SMEs + stakeholders</li>
+        <li>Initial design ideas brainstormed collaboratively</li>
+        <li>TNA &amp; gap analysis inputs prepared</li>
+        <li>AI pre-populates KSAO gap map for Savvy Start</li>
+      </ul>
+      <div class="sam-loop-note">One-time phase — sets the foundation for iteration</div>
+    </div>
+    <div class="sam-phase-card sp-idesign">
+      <div class="sph-label">Phase 2 — Repeating</div>
+      <div class="sph-name">Iterative Design</div>
+      <ul class="sph-items">
+        <li>Rapid prototype built (rough, fast)</li>
+        <li>Stakeholder review &amp; feedback collected</li>
+        <li>Revise → Prototype 2 with Bloom's objectives coded</li>
+        <li>Review → Gagné capability classification confirmed</li>
+        <li>Krathwohl affective goals validated</li>
+        <li>Design Proof: approved blueprint for development</li>
+      </ul>
+      <div class="sam-loop-note">2–3 design cycles → produces Design Proof</div>
+    </div>
+    <div class="sam-phase-card sp-idev">
+      <div class="sph-label">Phase 3 — Repeating</div>
+      <div class="sph-name">Iterative Development</div>
+      <ul class="sph-items">
+        <li>Alpha build → stakeholder &amp; SME review</li>
+        <li>Revisions applied → Beta build</li>
+        <li>Learner pilot testing → usability feedback</li>
+        <li>Final revisions → Gold (production-ready)</li>
+        <li>LMS formatting &amp; SCORM/xAPI packaging</li>
+        <li>Evaluation framework finalized pre-launch</li>
+      </ul>
+      <div class="sam-loop-note">Alpha → Beta → Gold milestones</div>
+    </div>
+  </div>
+  <div class="highlight-box" style="margin-top:12px;">
+    <strong>Why SAM over ADDIE here?</strong> The iterative design cycle catches alignment problems early — before full content is built. The Savvy Start replaces weeks of individual stakeholder meetings. Bloom's, Gagné, and Krathwohl coding still applies within each design cycle. Choose SAM when the learning challenge is complex or the stakeholder landscape is unclear.
+  </div>
+  </div><!-- /sam-view -->
+
+  <!-- Knowledge Types -->
+  <div class="know-callout">
+    <div class="know-box know-dec">
+      <h5>Declarative Knowledge — "Knowing That"</h5>
+      <p>Facts, concepts, and principles that learners must understand. Maps to Gagné's <em>Verbal Information</em> capability. Assessed at Bloom's Remember &rarr; Understand levels. Sources of declarative content: O*NET knowledge domains, technical documentation, SOP theory sections.</p>
+      <div class="know-ex">e.g., "The learner will explain the three primary causes of [job-relevant failure mode]."</div>
+    </div>
+    <div class="know-box know-pro">
+      <h5>Procedural Knowledge — "Knowing How"</h5>
+      <p>Step-by-step skills, rules, and problem-solving strategies. Maps to Gagné's <em>Intellectual Skills</em>. Assessed at Bloom's Apply &rarr; Evaluate. Sources: task inventory, CIT incidents, work samples. Requires practice + feedback for acquisition.</p>
+      <div class="know-ex">e.g., "Given a [job scenario], the learner will execute [task] within [standard] without error."</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 5 — MODEL FLEXIBILITY
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(234,179,8,.14);color:#facc15;">5</div>
+    <div><div class="sec-label">Design Model Flexibility</div><div class="sec-name">ADDIE vs. SAM — Choose the Right Model for Every Project</div></div>
+  </div>
+
+  <div class="model-compare">
+    <div class="mc-frame addie-frame">
+      <h4>ADDIE — Systematic &amp; Sequential</h4>
+      <div class="mc-sub">Dick &amp; Carey (1978); Branson et al. (1975)</div>
+      <p>ADDIE is a linear, phase-gated model. Each phase must be substantially complete before the next begins. Strong for projects with well-defined requirements, stable job tasks, and high documentation needs — the gold standard for regulated industries and compliance training.</p>
+      <div class="mc-best">Best when: Requirements are clear ·  Scope is stable · Compliance documentation required · Smaller team · Budget is fixed</div>
+    </div>
+    <div class="mc-frame sam-frame">
+      <h4>SAM — Successive Approximation Model</h4>
+      <div class="mc-sub">Michael Allen, Allen Interactions (2012)</div>
+      <p>SAM is an agile, iterative alternative to ADDIE. It replaces linear phases with rapid design cycles — producing a rough prototype early, iterating on stakeholder feedback, and catching design problems before full development. Developed specifically to address ADDIE's "late failure discovery" risk.</p>
+      <div class="mc-best">Best when: Requirements are ambiguous · Stakeholder alignment is needed · High-stakes or innovative program · Complex skill development</div>
+    </div>
+  </div>
+
+  <!-- SAM phases -->
+  <div class="card-sm" style="margin-bottom:14px;">
+    <div style="font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">SAM Phases — Three Iterative Stages</div>
+    <div class="sam-phases">
+      <div class="sam-phase sp-prep">
+        <div class="sp-label">Phase 1</div>
+        <div class="sp-name">Preparation</div>
+        <ul class="sp-items">
+          <li>Background information gathering</li>
+          <li>Performance context review</li>
+          <li><strong style="color:#2dd4bf;">Savvy Start</strong> workshop</li>
+          <li>SME + designer + stakeholder co-design</li>
+          <li>Initial design ideas generated</li>
+          <li>TNA &amp; KSAO inputs (from Step 3)</li>
+        </ul>
+      </div>
+      <div class="sam-phase sp-idesign">
+        <div class="sp-label">Phase 2 — Iterative</div>
+        <div class="sp-name">Design</div>
+        <ul class="sp-items">
+          <li>Rapid prototype #1 built</li>
+          <li>Stakeholder review &amp; feedback</li>
+          <li>Revise → prototype #2</li>
+          <li>Review → design proof</li>
+          <li>Bloom's objectives coded each cycle</li>
+          <li>Gagné strategy confirmed per iteration</li>
+        </ul>
+      </div>
+      <div class="sam-phase sp-idev">
+        <div class="sp-label">Phase 3 — Iterative</div>
+        <div class="sp-name">Development</div>
+        <ul class="sp-items">
+          <li>Alpha build → stakeholder review</li>
+          <li>Beta build → user testing</li>
+          <li>Gold (final) → LMS deployment</li>
+          <li>Each cycle evaluated vs. objectives</li>
+          <li>Krathwohl affective goals checked</li>
+          <li>Evaluation framework finalized</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAM1 vs SAM2 -->
+  <div class="sam-versions">
+    <div class="sv-card sv-1">
+      <h5>SAM1 — Simplified (Smaller Projects)</h5>
+      <p>A lightweight 3-step repeating cycle: <strong style="color:#2dd4bf;">Evaluate → Design → Develop</strong>. Small teams, single modules, quick turnaround. Retains the iterative principle without the full SAM2 infrastructure. Ideal when you have SME access but limited time for a formal Savvy Start.</p>
+      <div class="sv-use">Use for: Single e-learning modules, performance support tools, short job aids, refresher courses</div>
+    </div>
+    <div class="sv-card sv-2">
+      <h5>SAM2 — Full Version (Complex Projects)</h5>
+      <p>The complete three-phase model with a formal Savvy Start kick-off, multiple design iterations, and structured Alpha → Beta → Gold milestones. Cross-functional team including designers, developers, and stakeholders. Produces a design proof before full development begins — significantly reducing late-stage rework.</p>
+      <div class="sv-use">Use for: Multi-module programs, leadership development, new technology training, high-visibility initiatives</div>
+    </div>
+  </div>
+
+  <!-- Comparison table -->
+  <div class="card-sm" style="margin-top:14px;">
+    <div style="font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">ADDIE vs. SAM — Side-by-Side</div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th class="col-dim">Dimension</th>
+          <th class="col-addie">ADDIE</th>
+          <th class="col-sam">SAM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dim">Process flow</td><td class="av">Linear, phase-gated</td><td class="sv">Iterative, cyclical</td></tr>
+        <tr><td class="dim">First prototype</td><td class="av">End of Development phase</td><td class="sv">End of first design cycle (early)</td></tr>
+        <tr><td class="dim">Risk management</td><td class="av">Late discovery — problems found at review</td><td class="sv">Early prototyping catches design flaws fast</td></tr>
+        <tr><td class="dim">Stakeholder involvement</td><td class="av">Front-loaded in Analysis</td><td class="sv">Continuous — Savvy Start + each iteration</td></tr>
+        <tr><td class="dim">Documentation weight</td><td class="av">Heavy upfront (design document)</td><td class="sv">Lighter, evolving with each iteration</td></tr>
+        <tr><td class="dim">Bloom's &amp; Gagné fit</td><td class="av">Natural — objectives set in Design phase</td><td class="sv">Applied within each iterative design cycle</td></tr>
+        <tr><td class="dim">Compliance / audit trail</td><td class="av">Excellent — clear phase approvals</td><td class="sv">Requires deliberate documentation discipline</td></tr>
+        <tr><td class="dim">Best project type</td><td class="av">Compliance, SOPs, stable skills</td><td class="sv">Complex skills, leadership, innovation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- When to use -->
+  <div class="when-grid">
+    <div class="when-card wc-addie">
+      <h5>Use ADDIE When…</h5>
+      <ul>
+        <li>Job tasks are well-defined and stable</li>
+        <li>Compliance or regulatory documentation required</li>
+        <li>Budget is fixed with no scope change expected</li>
+        <li>Smaller, well-scoped training program</li>
+        <li>Team has limited availability for iterative reviews</li>
+        <li>Content is primarily declarative knowledge</li>
+      </ul>
+    </div>
+    <div class="when-card wc-sam">
+      <h5>Use SAM When…</h5>
+      <ul>
+        <li>Requirements are ambiguous or likely to evolve</li>
+        <li>Stakeholder alignment is uncertain or contested</li>
+        <li>High-stakes program where design errors are costly</li>
+        <li>Complex skill development or behavior change required</li>
+        <li>Innovative or first-of-kind learning experience</li>
+        <li>Cross-functional team is available for Savvy Start</li>
+      </ul>
+    </div>
+    <div class="when-card wc-hybrid">
+      <h5>Hybrid Approach (Recommended)</h5>
+      <ul>
+        <li>Use ADDIE's Analysis phase: TNA + Job Analysis + KSAO mapping</li>
+        <li>Conduct Savvy Start after TNA — before design begins</li>
+        <li>Apply SAM's iterative Design + Development cycles</li>
+        <li>Maintain Bloom's + Gagné coding at every iteration</li>
+        <li>Use ADDIE's Evaluate phase for L1–L4 measurement</li>
+        <li>Best of both: rigor from ADDIE, agility from SAM</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:14px;">
+    <strong>The Savvy Start:</strong> SAM's signature kick-off technique. A focused, time-boxed workshop (typically half-day) bringing together instructional designers, SMEs, stakeholders, and sometimes learners to rapidly generate and react to design ideas before a single piece of content is developed. It replaces weeks of back-and-forth with a single aligned session — and it produces the raw material for the first rapid prototype.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 6 — ID MODELS
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(139,92,246,.14);color:#a78bfa;">6</div>
+    <div><div class="sec-label">The Evidence-Based Foundation</div><div class="sec-name">ID MODELS &amp; FRAMEWORKS — What Drives Every Design Decision</div></div>
+  </div>
+  <div class="g3">
+
+    <div class="model-card mc-addie">
+      <div class="m-icon">🔄</div>
+      <h4>ADDIE Framework</h4>
+      <p>The systematic 5-phase backbone. Ensures training is needs-driven, objectives-aligned, and outcomes-evaluated. Prevents "solution-first" design by requiring a defensible analysis phase before any content is created.</p>
+      <div class="tags">
+        <span class="tag mc-addie">Analyze</span><span class="tag mc-addie">Design</span>
+        <span class="tag mc-addie">Develop</span><span class="tag mc-addie">Implement</span>
+        <span class="tag mc-addie">Evaluate</span>
+      </div>
+    </div>
+
+    <div class="model-card mc-blooms">
+      <div class="m-icon">🧠</div>
+      <h4>Bloom's Taxonomy (Cognitive Domain)</h4>
+      <p>Guides objective writing and assessment design. Every learning objective is coded to a cognitive level — ensuring training challenges learners at the depth required by the job, not just surface recall.</p>
+      <div class="bloom-lvls">
+        <span class="bl bl1">Remember</span><span class="bl bl2">Understand</span>
+        <span class="bl bl3">Apply</span><span class="bl bl4">Analyze</span>
+        <span class="bl bl5">Evaluate</span><span class="bl bl6">Create</span>
+      </div>
+    </div>
+
+    <div class="model-card mc-krath">
+      <div class="m-icon">💡</div>
+      <h4>Krathwohl's Affective Domain</h4>
+      <p>Addresses attitude, motivation, and values learning — the dimension most often missing from training. Ensures programs develop not just the <em>ability</em> to apply a competency, but the <em>willingness</em> to apply it on the job.</p>
+      <div class="tags">
+        <span class="tag mc-krath">Receiving</span><span class="tag mc-krath">Responding</span>
+        <span class="tag mc-krath">Valuing</span><span class="tag mc-krath">Organization</span>
+        <span class="tag mc-krath">Characterizing</span>
+      </div>
+    </div>
+
+    <div class="model-card mc-gagne">
+      <div class="m-icon">⚡</div>
+      <h4>Gagné's Five Learned Capabilities</h4>
+      <p>Classifies what type of learning is needed so the instructional strategy matches the learning outcome. Declarative gaps need different instruction than procedural or attitudinal gaps — Gagné makes this distinction explicit and actionable.</p>
+      <div class="tags">
+        <span class="tag mc-gagne">Verbal Info (Declarative K)</span>
+        <span class="tag mc-gagne">Intellectual Skills (Procedural K)</span>
+        <span class="tag mc-gagne">Cognitive Strategies</span>
+        <span class="tag mc-gagne">Motor Skills</span>
+        <span class="tag mc-gagne">Attitudes</span>
+      </div>
+    </div>
+
+    <div class="model-card mc-tna">
+      <div class="m-icon">🔍</div>
+      <h4>Training Needs Analysis (TNA)</h4>
+      <p>The diagnostic step that confirms training is the right solution. Three levels ensure the gap is addressed at the right level: organizational (is training aligned to business strategy?), task (what must be performed?), and person (who has the gap?).</p>
+      <div class="tags">
+        <span class="tag mc-tna">Org Analysis</span><span class="tag mc-tna">Task Analysis</span>
+        <span class="tag mc-tna">Person Analysis</span><span class="tag mc-tna">Gap Confirmation</span>
+      </div>
+    </div>
+
+    <div class="model-card mc-job">
+      <div class="m-icon">📋</div>
+      <h4>Job Analysis &amp; KSAOs</h4>
+      <p>Decomposes the job into tasks and maps the KSAOs required: Knowledge (declarative/procedural), Skills (demonstrated proficiency), Abilities (underlying capacity), and Other characteristics (values, personality, motivation). The foundation of any competency model.</p>
+      <div class="tags">
+        <span class="tag mc-job">Knowledge (K)</span><span class="tag mc-job">Skills (S)</span>
+        <span class="tag mc-job">Abilities (A)</span><span class="tag mc-job">Other (O)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 7 — OUTPUTS
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(16,185,129,.14);color:#34d399;">7</div>
+    <div><div class="sec-label">What Gets Built</div><div class="sec-name">OUTPUTS GENERATED — For Any Role, Any Field</div></div>
+  </div>
+  <div class="g4">
+    <div class="out-card">
+      <div class="o-icon">🗺️</div>
+      <h4>Competency Model</h4>
+      <p>KSAO-mapped competencies with proficiency levels for any job role or discipline</p>
+      <span class="tag" style="background:rgba(234,179,8,.12);color:#facc15;margin-top:8px;">Job Analysis · KSAOs</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">📊</div>
+      <h4>Skill Gap Report</h4>
+      <p>Individual, team, and org-level gap scores with priority rankings by criticality</p>
+      <span class="tag" style="background:rgba(239,68,68,.12);color:#f87171;margin-top:8px;">Gap Analysis · TNA</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">📋</div>
+      <h4>TNA Summary</h4>
+      <p>Org, task, and person analysis confirming training need and recommended approach</p>
+      <span class="tag" style="background:rgba(20,184,166,.12);color:#2dd4bf;margin-top:8px;">TNA Framework</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">🎯</div>
+      <h4>Learning Objectives</h4>
+      <p>Bloom's-coded, Gagné-classified, KSAO-aligned objectives with C·B·C structure</p>
+      <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;margin-top:8px;">Bloom's · Gagné</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">📖</div>
+      <h4>Declarative Modules</h4>
+      <p>Concept, fact, and principle content mapped to Verbal Information capability</p>
+      <span class="tag" style="background:rgba(14,165,233,.12);color:#38bdf8;margin-top:8px;">Declarative K · Gagné</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">⚙️</div>
+      <h4>Procedural Guides</h4>
+      <p>Step-by-step procedures, job aids, and decision trees mapped to Intellectual Skills</p>
+      <span class="tag" style="background:rgba(168,85,247,.12);color:#c084fc;margin-top:8px;">Procedural K · Gagné</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">✅</div>
+      <h4>Bloom's Assessments</h4>
+      <p>MCQs, scenarios, and work samples matched to specific cognitive levels per objective</p>
+      <span class="tag" style="background:rgba(249,115,22,.12);color:#fb923c;margin-top:8px;">Bloom's · Criterion-Ref</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">💬</div>
+      <h4>Affective Activities</h4>
+      <p>Discussions, reflections, and role plays designed on Krathwohl's affective taxonomy</p>
+      <span class="tag" style="background:rgba(236,72,153,.12);color:#f472b6;margin-top:8px;">Krathwohl Domain</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">📈</div>
+      <h4>Evaluation Framework</h4>
+      <p>Levels 1–4 evaluation plan with KSAO re-assessment and competency gain metrics</p>
+      <span class="tag" style="background:rgba(239,68,68,.12);color:#f87171;margin-top:8px;">ADDIE Evaluate</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">🖥️</div>
+      <h4>LMS-Ready Package</h4>
+      <p>SCORM/xAPI formatted content with facilitator guide, learner guide, and trainer notes</p>
+      <span class="tag" style="background:rgba(16,185,129,.12);color:#34d399;margin-top:8px;">Implementation</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">🔁</div>
+      <h4>Development Plan</h4>
+      <p>Individual learning paths mapped to priority gaps with sequenced milestones</p>
+      <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;margin-top:8px;">Competency Model</span>
+    </div>
+    <div class="out-card">
+      <div class="o-icon">🗂️</div>
+      <h4>Design Document</h4>
+      <p>Full ADDIE design spec: objectives, sequence, strategies, assessments, and rationale</p>
+      <span class="tag" style="background:rgba(139,92,246,.12);color:#a78bfa;margin-top:8px;">ADDIE Design</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 8 — TIME TRANSFORMATION
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(234,179,8,.14);color:#facc15;">8</div>
+    <div><div class="sec-label">The Time Difference</div><div class="sec-name">TRANSFORMATION — Traditional vs. AI-Assisted ID Process</div></div>
+  </div>
+  <div class="card">
+    <div class="time-grid">
+      <div class="tc old">
+        <h5>Traditional Process</h5>
+        <div class="t-row"><span class="t-phase">Job Analysis &amp; Competency Modeling</span><span class="t-old">3–4 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Skill Gap Analysis &amp; Assessment</span><span class="t-old">2–3 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Training Needs Analysis (TNA)</span><span class="t-old">1–2 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Design (Objectives + Framework)</span><span class="t-old">1–2 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Development (Content + Assessments)</span><span class="t-old">4–8 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Implementation (Format + LMS)</span><span class="t-old">1–2 weeks</span></div>
+        <div class="t-row"><span class="t-phase">Evaluation Framework Build</span><span class="t-old">1 week</span></div>
+        <div class="t-total old"><div class="tn">13–22 weeks</div><div class="tl">Full design cycle</div></div>
+      </div>
+      <div class="t-arrow">→</div>
+      <div class="tc new">
+        <h5>AI-Assisted Process</h5>
+        <div class="t-row"><span class="t-phase">Job Analysis &amp; Competency Modeling</span><span class="t-new">4–8 hours</span></div>
+        <div class="t-row"><span class="t-phase">Skill Gap Analysis &amp; Assessment</span><span class="t-new">2–4 hours</span></div>
+        <div class="t-row"><span class="t-phase">Training Needs Analysis (TNA)</span><span class="t-new">1–2 hours</span></div>
+        <div class="t-row"><span class="t-phase">Design (Objectives + Framework)</span><span class="t-new">1–2 hours</span></div>
+        <div class="t-row"><span class="t-phase">Development (Content + Assessments)</span><span class="t-new">1–3 days</span></div>
+        <div class="t-row"><span class="t-phase">Implementation (Format + LMS)</span><span class="t-new">2–4 hours</span></div>
+        <div class="t-row"><span class="t-phase">Evaluation Framework Build</span><span class="t-new">1–2 hours</span></div>
+        <div class="t-total new"><div class="tn">3–7 days</div><div class="tl">Full design cycle</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 9 — IMPACT
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(239,68,68,.14);color:#f87171;">9</div>
+    <div><div class="sec-label">The Results</div><div class="sec-name">THE IMPACT — Quality AND Speed AND Evidence</div></div>
+  </div>
+  <div class="g3">
+    <div class="impact-card"><div class="imp-num" style="color:#fb923c;">80%</div><div class="imp-lbl">Faster Full Design Cycle</div><div class="imp-desc">From 13–22 weeks to 3–7 days without sacrificing ID model fidelity or KSAO rigor</div></div>
+    <div class="impact-card"><div class="imp-num" style="color:#60a5fa;">100%</div><div class="imp-lbl">Bloom's-Aligned Objectives</div><div class="imp-desc">Every objective coded to a specific cognitive level and matched to Gagné capability type</div></div>
+    <div class="impact-card"><div class="imp-num" style="color:#a78bfa;">3×</div><div class="imp-lbl">More KSAO Coverage</div><div class="imp-desc">AI surfaces knowledge, skill, ability, and "other" gaps humans routinely miss in manual task analysis</div></div>
+    <div class="impact-card"><div class="imp-num" style="color:#34d399;">↑60%</div><div class="imp-lbl">Job Transfer (Level 3)</div><div class="imp-desc">Procedural &amp; affective design increases on-the-job application — not just test scores</div></div>
+    <div class="impact-card"><div class="imp-num" style="color:#f472b6;">Any</div><div class="imp-lbl">Career Field or Discipline</div><div class="imp-desc">O*NET integration + universal KSAO taxonomy makes the workflow applicable to any occupation</div></div>
+    <div class="impact-card"><div class="imp-num" style="color:#facc15;">↓80%</div><div class="imp-lbl">Revision Cycles</div><div class="imp-desc">Evidence-based design from day one means fewer stakeholder revision rounds and less rework</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     WHO SHOULD USE
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(14,165,233,.14);color:#38bdf8;">10</div>
+    <div><div class="sec-label">The Audience</div><div class="sec-name">WHO SHOULD USE THIS WORKFLOW</div></div>
+  </div>
+  <div class="g3">
+    <div class="aud-card"><div class="aud-icon">🎓</div><div><h4>Instructional Designers</h4><p>Use as a complete, model-enforced design system. AI handles the drafting; you provide ID expertise and quality control.</p></div></div>
+    <div class="aud-card"><div class="aud-icon">🔬</div><div><h4>I/O Psychologists</h4><p>Apply rigorous job analysis and competency modeling methods at scale — without sacrificing validity for speed.</p></div></div>
+    <div class="aud-card"><div class="aud-icon">📚</div><div><h4>L&amp;D Professionals</h4><p>Scale output without sacrificing model fidelity. Deliver more programs with the same team size and higher quality.</p></div></div>
+    <div class="aud-card"><div class="aud-icon">👔</div><div><h4>Training Managers</h4><p>Standardize how your team applies ID models — consistent quality and methodology across all programs and designers.</p></div></div>
+    <div class="aud-card"><div class="aud-icon">🏢</div><div><h4>OD Practitioners</h4><p>Bridge performance consulting and training design with a structured, defensible, research-backed process.</p></div></div>
+    <div class="aud-card"><div class="aud-icon">🤝</div><div><h4>HR Business Partners</h4><p>Translate business strategy into competency requirements, then communicate the design rationale to stakeholders.</p></div></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-cta">
+  <p><strong>AI doesn't replace the science of learning design.</strong> It amplifies it. The frameworks — ADDIE, SAM, Bloom's, Gagné, Krathwohl, TNA, competency science — are the intelligence. AI is the accelerant that makes it possible to apply all of them, rigorously, for every training need, in every career field, at speed. Choose ADDIE for stability. Choose SAM for agility. Use both when the project demands it. <strong>The future of L&amp;D is intelligent, model-driven workflows. Not just courses.</strong></p>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// ── Job Role Data ────────────────────────────────────────────────────────────
+const JOB_ROLES = {
+  default: {
+    title: 'Custom / Any Field',
+    competencies: [
+      { name: 'Analytical Thinking',   required: 4, current: 2, criticality: 'high' },
+      { name: 'Technical Proficiency', required: 5, current: 3, criticality: 'critical' },
+      { name: 'Communication',         required: 3, current: 2, criticality: 'medium' },
+      { name: 'Collaboration',         required: 4, current: 3, criticality: 'high' },
+      { name: 'Problem Solving',       required: 5, current: 2, criticality: 'critical' },
+    ]
+  },
+  instructional_designer: {
+    title: 'Instructional Designer · L&D',
+    competencies: [
+      { name: 'ADDIE / ID Methodology',       required: 5, current: 2, criticality: 'critical' },
+      { name: "Bloom's Taxonomy Application", required: 4, current: 2, criticality: 'high' },
+      { name: 'Training Needs Analysis',      required: 5, current: 3, criticality: 'critical' },
+      { name: 'LMS / eLearning Authoring',    required: 4, current: 2, criticality: 'high' },
+      { name: 'Assessment Design',            required: 4, current: 3, criticality: 'high' },
+      { name: 'Stakeholder Communication',    required: 3, current: 2, criticality: 'medium' },
+    ]
+  },
+  data_analyst: {
+    title: 'Data Analyst · Analytics & BI',
+    competencies: [
+      { name: 'SQL & Data Querying',   required: 5, current: 2, criticality: 'critical' },
+      { name: 'Data Visualization',   required: 4, current: 3, criticality: 'high' },
+      { name: 'Statistical Analysis', required: 4, current: 2, criticality: 'high' },
+      { name: 'Python / R',           required: 3, current: 1, criticality: 'high' },
+      { name: 'Data Storytelling',    required: 4, current: 2, criticality: 'high' },
+      { name: 'Business Acumen',      required: 3, current: 3, criticality: 'medium' },
+    ]
+  },
+  project_manager: {
+    title: 'Project Manager · PMO',
+    competencies: [
+      { name: 'Project Planning & Scheduling', required: 5, current: 3, criticality: 'critical' },
+      { name: 'Risk Management',              required: 4, current: 2, criticality: 'high' },
+      { name: 'Stakeholder Management',       required: 5, current: 3, criticality: 'critical' },
+      { name: 'Budget Management',            required: 4, current: 2, criticality: 'high' },
+      { name: 'Team Leadership',              required: 4, current: 3, criticality: 'high' },
+      { name: 'Change Management',            required: 3, current: 2, criticality: 'medium' },
+    ]
+  },
+  software_engineer: {
+    title: 'Software Engineer · Technology',
+    competencies: [
+      { name: 'Software Development',    required: 5, current: 3, criticality: 'critical' },
+      { name: 'System Design',           required: 4, current: 2, criticality: 'high' },
+      { name: 'Code Review & Quality',   required: 4, current: 3, criticality: 'high' },
+      { name: 'Agile / Scrum',           required: 3, current: 2, criticality: 'medium' },
+      { name: 'Technical Documentation', required: 3, current: 2, criticality: 'medium' },
+      { name: 'Problem Solving',         required: 5, current: 3, criticality: 'critical' },
+    ]
+  },
+  hr_business_partner: {
+    title: 'HR Business Partner · Human Resources',
+    competencies: [
+      { name: 'Workforce Planning',           required: 4, current: 2, criticality: 'high' },
+      { name: 'Employee Relations',           required: 5, current: 3, criticality: 'critical' },
+      { name: 'Organizational Development',   required: 4, current: 2, criticality: 'high' },
+      { name: 'Data-Driven Decision Making',  required: 3, current: 1, criticality: 'high' },
+      { name: 'Business Acumen',              required: 4, current: 2, criticality: 'high' },
+      { name: 'Change Management',            required: 4, current: 3, criticality: 'high' },
+    ]
+  },
+  healthcare_clinician: {
+    title: 'Healthcare Clinician · Clinical',
+    competencies: [
+      { name: 'Clinical Knowledge & Skills',    required: 5, current: 3, criticality: 'critical' },
+      { name: 'Patient Communication',          required: 5, current: 4, criticality: 'critical' },
+      { name: 'Documentation & Compliance',     required: 5, current: 3, criticality: 'critical' },
+      { name: 'Evidence-Based Practice',        required: 4, current: 2, criticality: 'high' },
+      { name: 'Team Collaboration',             required: 4, current: 3, criticality: 'high' },
+      { name: 'Critical Thinking',              required: 5, current: 3, criticality: 'critical' },
+    ]
+  },
+  operations_manager: {
+    title: 'Operations Manager · Operations',
+    competencies: [
+      { name: 'Process Improvement',    required: 5, current: 3, criticality: 'critical' },
+      { name: 'Team Leadership',        required: 4, current: 3, criticality: 'high' },
+      { name: 'Resource Management',    required: 4, current: 2, criticality: 'high' },
+      { name: 'Performance Metrics',    required: 4, current: 2, criticality: 'high' },
+      { name: 'Supply Chain Mgmt',      required: 3, current: 2, criticality: 'medium' },
+      { name: 'Risk & Compliance',      required: 4, current: 3, criticality: 'high' },
+    ]
+  },
+  sales_professional: {
+    title: 'Sales Professional · Business Development',
+    competencies: [
+      { name: 'Customer Relationship Mgmt',   required: 5, current: 3, criticality: 'critical' },
+      { name: 'Negotiation & Closing',        required: 5, current: 2, criticality: 'critical' },
+      { name: 'Product Knowledge',            required: 4, current: 2, criticality: 'high' },
+      { name: 'Pipeline Management',          required: 4, current: 3, criticality: 'high' },
+      { name: 'Communication & Persuasion',   required: 5, current: 3, criticality: 'critical' },
+      { name: 'CRM Tools Proficiency',        required: 3, current: 2, criticality: 'medium' },
+    ]
+  },
+};
+
+// ── State ───────────────────────────────────────────────────────────────────
+let gapData = JSON.parse(JSON.stringify(JOB_ROLES.default.competencies));
+
+// Criticality weights (Gap × Weight = Priority Score)
+const W = { critical: 5, high: 3, medium: 2, low: 1 };
+
+// ── Gap Calculator ──────────────────────────────────────────────────────────
+function gapFor(c) { return c.current - c.required; }
+function priorityFor(c) { return Math.abs(Math.min(0, gapFor(c))) * W[c.criticality]; }
+
+function gapColor(g) {
+  if (g >= 0) return '#4ade80';
+  if (g >= -1) return '#facc15';
+  return '#f87171';
+}
+function priColor(p) {
+  if (p >= 10) return '#f87171';
+  if (p >= 5) return '#facc15';
+  if (p > 0) return '#94a3b8';
+  return '#4ade80';
+}
+
+function renderGapCalc() {
+  const container = document.getElementById('gap-calc-rows');
+  if (!container) return;
+
+  container.innerHTML = gapData.map((c, i) => {
+    const g = gapFor(c);
+    const p = priorityFor(c);
+    const rPct = (c.required / 5) * 100;
+    const cPct = (c.current / 5) * 100;
+
+    const reqDots = [1,2,3,4,5].map(n =>
+      `<button class="pdot${c.required===n?' ar':''}" onclick="setComp(${i},'required',${n})">${n}</button>`
+    ).join('');
+    const curDots = [1,2,3,4,5].map(n =>
+      `<button class="pdot${c.current===n?' ac':''}" onclick="setComp(${i},'current',${n})">${n}</button>`
+    ).join('');
+    const critOpts = ['critical','high','medium','low'].map(v =>
+      `<option value="${v}"${c.criticality===v?' selected':''}>${v[0].toUpperCase()+v.slice(1)}</option>`
+    ).join('');
+
+    return `<div class="gcalc-row">
+      <div><input class="gcr-name-input" value="${c.name}" oninput="setComp(${i},'name',this.value)"></div>
+      <div class="gcr-bars">
+        <div class="gcr-bg">
+          <span class="gcr-bl">Required</span>
+          <div class="gcr-track"><div class="gcr-fill gcr-req" style="width:${rPct}%"></div></div>
+          <div class="gcr-dots">${reqDots}</div>
+        </div>
+        <div class="gcr-bg">
+          <span class="gcr-bl">Current</span>
+          <div class="gcr-track"><div class="gcr-fill gcr-cur" style="width:${cPct}%"></div></div>
+          <div class="gcr-dots">${curDots}</div>
+        </div>
+      </div>
+      <div class="gcr-gap" style="color:${gapColor(g)}">${g > 0 ? '+' : ''}${g}</div>
+      <select class="crit-sel" onchange="setComp(${i},'criticality',this.value)">${critOpts}</select>
+      <div class="gcr-pri" style="color:${priColor(p)}">${p}</div>
+      <button class="gcr-del" onclick="delComp(${i})">×</button>
+    </div>`;
+  }).join('');
+
+  renderGapSummary();
+}
+
+function renderGapSummary() {
+  const el = document.getElementById('gap-summary');
+  if (!el) return;
+
+  const gaps = gapData
+    .map((c, i) => ({ ...c, i, g: gapFor(c), p: priorityFor(c) }))
+    .filter(c => c.g < 0)
+    .sort((a, b) => b.p - a.p);
+
+  const highPri = gaps.filter(c => c.p >= 10).length;
+  const totalPts = gaps.reduce((s, c) => s + Math.abs(c.g), 0);
+
+  el.innerHTML = `
+    <div class="gss-row">
+      <div class="gss"><div class="gss-num" style="color:#f87171">${highPri}</div><div class="gss-lbl">High Priority</div></div>
+      <div class="gss"><div class="gss-num" style="color:#facc15">${gaps.length}</div><div class="gss-lbl">Gaps Found</div></div>
+      <div class="gss"><div class="gss-num" style="color:#94a3b8">${totalPts}</div><div class="gss-lbl">Total Gap Points</div></div>
+    </div>
+    ${gaps.length > 0
+      ? `<div class="gsl-hdr">Training Priority Queue</div>` +
+        gaps.slice(0,6).map((c, rank) =>
+          `<div class="gsl-row">
+            <span class="gsl-rank">${rank+1}</span>
+            <span class="gsl-name">${c.name}</span>
+            <span class="gsl-score" style="color:${priColor(c.p)}">${c.p}</span>
+          </div>`
+        ).join('')
+      : `<div style="font-size:.72rem;color:#4ade80;text-align:center;padding:10px;">No gaps — all competencies meet the required standard.</div>`
+    }`;
+}
+
+function setComp(i, field, val) {
+  if (field === 'required' || field === 'current') val = +val;
+  gapData[i][field] = val;
+  renderGapCalc();
+}
+
+function delComp(i) {
+  gapData.splice(i, 1);
+  renderGapCalc();
+}
+
+function addComp() {
+  gapData.push({ name: 'New Competency', required: 3, current: 1, criticality: 'medium' });
+  renderGapCalc();
+}
+
+// ── Role Selector ───────────────────────────────────────────────────────────
+function loadRole(key) {
+  const role = JOB_ROLES[key];
+  if (!role) return;
+  gapData = JSON.parse(JSON.stringify(role.competencies));
+  renderGapCalc();
+  const badge = document.getElementById('current-role-badge');
+  if (badge) badge.textContent = role.title;
+}
+
+// ── Workflow Toggle ─────────────────────────────────────────────────────────
+function setWorkflowMode(mode) {
+  document.getElementById('addie-view').style.display = mode === 'addie' ? '' : 'none';
+  document.getElementById('sam-view').style.display   = mode === 'sam'   ? '' : 'none';
+  document.querySelectorAll('.wf-toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+}
+
+// ── Section Collapsibility ──────────────────────────────────────────────────
+function initCollapsible() {
+  document.querySelectorAll('.sec').forEach(sec => {
+    const hd = sec.querySelector('.sec-hd');
+    if (!hd) return;
+
+    const chev = document.createElement('span');
+    chev.className = 'sec-chevron';
+    chev.textContent = '⌄';
+    hd.appendChild(chev);
+    hd.style.cursor = 'pointer';
+
+    hd.addEventListener('click', () => {
+      const collapsed = sec.classList.toggle('collapsed');
+      chev.classList.toggle('rotated', collapsed);
+    });
+  });
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initCollapsible();
+  renderGapCalc();
+});
+</script>
+
+</body>
+</html>
