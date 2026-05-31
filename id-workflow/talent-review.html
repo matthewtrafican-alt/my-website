@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Talent Review — HR Function Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#060a16;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── Top bar ── */
+.top-bar{background:#0b1221;border-bottom:1px solid #182035;padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.back{font-size:.7rem;color:#64748b;text-decoration:none;}
+.back:hover{color:#94a3b8;}
+.top-bar h1{font-size:.9rem;font-weight:800;color:#e2e8f0;flex:1;}
+.tb-badge{font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:4px;}
+.tbb-sensitive{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171;}
+.tbb-matrix{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#a78bfa;}
+.export-btn{font-size:.68rem;font-weight:700;padding:5px 12px;border-radius:6px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#60a5fa;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.export-btn:hover{background:rgba(59,130,246,.18);}
+
+/* ── Tab bar ── */
+.tab-bar{display:flex;gap:2px;padding:0 20px;background:#0b1221;border-bottom:1px solid #182035;}
+.tab{padding:10px 16px;font-size:.72rem;font-weight:700;cursor:pointer;color:#475569;border-bottom:2px solid transparent;transition:all .15s;font-family:'Inter',sans-serif;background:none;border-top:none;border-left:none;border-right:none;}
+.tab:hover{color:#94a3b8;}
+.tab.at{color:#60a5fa;border-bottom-color:#60a5fa;}
+.tab .tab-count{font-size:.58rem;background:#182035;padding:1px 5px;border-radius:10px;margin-left:4px;color:#475569;}
+.tab.at .tab-count{background:rgba(59,130,246,.2);color:#60a5fa;}
+
+/* ── Layout ── */
+.main{display:flex;flex:1;overflow:hidden;height:calc(100vh - 89px);}
+.sidebar{width:220px;background:#080f1d;border-right:1px solid #182035;overflow-y:auto;flex-shrink:0;padding:12px 0;}
+.content{flex:1;overflow-y:auto;padding:16px 20px;}
+
+/* ── Sidebar ── */
+.sb-hdr{padding:6px 14px 4px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#334155;}
+.sb-item{padding:6px 14px;font-size:.68rem;cursor:pointer;color:#64748b;display:flex;align-items:center;gap:8px;border-radius:4px;margin:1px 6px;transition:all .1s;}
+.sb-item:hover{background:#0f1929;color:#94a3b8;}
+.sb-item.sel{background:rgba(59,130,246,.1);color:#60a5fa;}
+.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-item .sb-count{margin-left:auto;font-size:.6rem;color:#334155;}
+.sb-divider{height:1px;background:#0e1929;margin:8px 12px;}
+.sb-view-toggle{padding:8px 14px;display:flex;gap:4px;}
+.sb-vt-btn{flex:1;font-size:.6rem;font-weight:700;padding:4px;border-radius:4px;border:1px solid #182035;background:#080f1d;color:#475569;cursor:pointer;font-family:'Inter',sans-serif;text-align:center;transition:all .12s;}
+.sb-vt-btn.on{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.2);color:#60a5fa;}
+
+/* ── Review Calendar ── */
+.cal-section{margin-bottom:20px;}
+.cal-section-hdr{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cal-section-hdr::after{content:'';flex:1;height:1px;background:#182035;}
+.review-card{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:start;}
+.rc-days{text-align:center;}
+.rc-days .d-num{font-size:1.8rem;font-weight:900;line-height:1;}
+.rc-days .d-lbl{font-size:.6rem;color:#475569;text-transform:uppercase;letter-spacing:.07em;}
+.rc-body h4{font-size:.8rem;font-weight:700;color:#e2e8f0;margin-bottom:4px;}
+.rc-type-badge{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:3px;margin-bottom:6px;}
+.rc-meta{font-size:.67rem;color:#64748b;margin-bottom:8px;line-height:1.45;}
+.rc-employees{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.rc-emp{font-size:.6rem;padding:2px 7px;border-radius:3px;background:#080f1d;border:1px solid #0e1929;color:#94a3b8;}
+.rc-prep{border-top:1px solid #0e1929;padding-top:8px;margin-top:4px;}
+.rc-prep-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:4px;}
+.rc-prep-item{font-size:.65rem;color:#94a3b8;padding:2px 0 2px 10px;position:relative;line-height:1.4;}
+.rc-prep-item::before{content:'→';position:absolute;left:0;color:#334155;font-size:.58rem;}
+.rc-readiness{text-align:center;min-width:70px;}
+.rc-pct{font-size:1.4rem;font-weight:900;line-height:1;margin-bottom:2px;}
+.rc-pct-lbl{font-size:.58rem;color:#475569;text-transform:uppercase;letter-spacing:.06em;}
+.rc-prog{width:60px;height:5px;background:#0e1929;border-radius:2px;margin:4px auto 0;}
+.rc-prog-fill{height:5px;border-radius:2px;transition:width .3s;}
+
+.urgent{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.03);}
+.warn{border-color:rgba(234,179,8,.2);background:rgba(234,179,8,.02);}
+.plan{border-color:rgba(52,211,153,.15);}
+.rt-exec{background:rgba(139,92,246,.15);color:#a78bfa;}
+.rt-senior{background:rgba(59,130,246,.15);color:#60a5fa;}
+.rt-direct{background:rgba(52,211,153,.12);color:#34d399;}
+.rt-client{background:rgba(249,115,22,.12);color:#fb923c;}
+.rt-rotation{background:rgba(234,179,8,.12);color:#facc15;}
+
+/* ── Talent Cards ── */
+.org-group{margin-bottom:20px;}
+.og-hdr{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:8px 12px;border-radius:6px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.og-hdr .og-count{font-size:.65rem;font-weight:600;margin-left:auto;}
+.talent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.tc{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:14px;position:relative;cursor:pointer;transition:all .12s;}
+.tc:hover{border-color:#334155;}
+.tc.selected{border-color:#3b82f6;background:#0d1928;}
+.tc-flag{position:absolute;top:10px;right:10px;font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:3px;}
+.flag-mis{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.flag-ldp{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
+.flag-rot{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2);}
+.tc-name{font-size:.82rem;font-weight:700;color:#e2e8f0;margin-bottom:2px;padding-right:60px;}
+.tc-role{font-size:.65rem;color:#64748b;margin-bottom:8px;}
+.tc-matrix{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;}
+.tc-line{font-size:.6rem;color:#475569;display:flex;align-items:center;gap:4px;}
+.tc-line .line-type{width:14px;height:14px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;flex-shrink:0;}
+.line-direct{background:rgba(52,211,153,.15);color:#34d399;}
+.line-dotted{background:rgba(71,85,105,.15);color:#64748b;border:1px dashed #334155;}
+.tc-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
+.tc-metric{background:#080f1d;border-radius:5px;padding:6px 8px;}
+.tc-metric-lbl{font-size:.55rem;color:#334155;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;}
+.tc-metric-val{font-size:.75rem;font-weight:700;}
+.tc-arc-bar{height:4px;background:#0e1929;border-radius:2px;margin-bottom:8px;}
+.tc-arc-fill{height:4px;border-radius:2px;transition:width .3s;}
+.tc-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.pr-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:999px;}
+.pr-ready{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2);}
+.pr-dev{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2);}
+.pr-not{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.track-badge{font-size:.58rem;padding:2px 6px;border-radius:3px;}
+.track-ic{background:rgba(59,130,246,.1);color:#60a5fa;}
+.track-lead{background:rgba(249,115,22,.1);color:#fb923c;}
+.status-dot{width:7px;height:7px;border-radius:50%;margin-left:auto;}
+.sd-ahead{background:#34d399;}
+.sd-on{background:#facc15;}
+.sd-behind{background:#f87171;}
+.sd-stalled{background:#64748b;}
+
+/* ── Detail panel ── */
+.detail-panel{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:16px;margin-bottom:14px;}
+.dp-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #0e1929;}
+.dp-name{font-size:.95rem;font-weight:800;color:#e2e8f0;flex:1;}
+.dp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.dp-field{background:#080f1d;border-radius:6px;padding:10px;}
+.dp-field-lbl{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:4px;}
+.dp-field-val{font-size:.72rem;color:#94a3b8;}
+.dp-section{margin-bottom:10px;}
+.dp-section-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:6px;}
+.mis-alert{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;font-size:.7rem;color:#fca5a5;line-height:1.5;margin-bottom:10px;}
+.mis-alert strong{color:#f87171;}
+
+/* ── Briefs ── */
+.brief-selector{display:flex;gap:6px;margin-bottom:14px;}
+.brief-btn{font-size:.68rem;font-weight:700;padding:6px 14px;border-radius:6px;border:1px solid #182035;background:#0b1221;color:#64748b;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.brief-btn:hover{color:#94a3b8;}
+.brief-btn.on{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25);color:#60a5fa;}
+.brief-card{background:#0b1221;border:1px solid #182035;border-radius:10px;overflow:hidden;}
+.brief-header{padding:14px 16px;background:#080f1d;border-bottom:1px solid #0e1929;display:flex;align-items:center;gap:10px;}
+.brief-header h4{font-size:.82rem;font-weight:700;color:#e2e8f0;flex:1;}
+.brief-stamp{font-size:.62rem;color:#334155;}
+.brief-body{padding:16px;}
+.brief-row{display:grid;grid-template-columns:140px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid #0e1929;font-size:.7rem;}
+.brief-row:last-child{border-bottom:none;}
+.brief-lbl{color:#475569;font-weight:600;}
+.brief-val{color:#94a3b8;line-height:1.5;}
+.brief-section-hdr{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#334155;margin:12px 0 6px;}
+.client-entry{background:#080f1d;border:1px solid #0e1929;border-radius:8px;padding:12px;margin-top:10px;}
+.client-entry-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.entry-source-toggle{display:flex;gap:4px;}
+.est-btn{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:4px;border:1px solid #182035;background:#060a16;color:#475569;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.est-btn.on{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.2);color:#fb923c;}
+.client-textarea{width:100%;background:#060a16;border:1px solid #182035;color:#94a3b8;font-size:.7rem;padding:8px 10px;border-radius:5px;font-family:'Inter',sans-serif;resize:vertical;min-height:70px;margin-top:6px;}
+.client-textarea:focus{outline:none;border-color:#3b82f6;}
+.save-brief-btn{font-size:.65rem;font-weight:700;padding:4px 12px;border-radius:5px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;cursor:pointer;font-family:'Inter',sans-serif;margin-top:6px;transition:all .12s;}
+.save-brief-btn:hover{background:rgba(59,130,246,.18);}
+
+/* ── Priority Actions ── */
+.action-horizon{margin-bottom:20px;}
+.ah-lbl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ah-lbl::after{content:'';flex:1;height:1px;background:#182035;}
+.action-card{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:14px;margin-bottom:8px;display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;}
+.ac-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;flex-shrink:0;}
+.ac-body h5{font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:4px;}
+.ac-who{font-size:.65rem;margin-bottom:4px;}
+.ac-why{font-size:.65rem;color:#64748b;line-height:1.45;}
+.ac-impact{font-size:.65rem;font-weight:600;margin-top:5px;}
+.ac-assumption{font-size:.6rem;color:#334155;font-style:italic;margin-top:4px;}
+.ac-meta{text-align:right;min-width:80px;}
+.ac-when{font-size:.65rem;font-weight:700;white-space:nowrap;}
+.ac-review-tag{font-size:.58rem;color:#475569;margin-top:3px;}
+
+/* ── Filters ── */
+.filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.f-btn{font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:5px;border:1px solid #182035;background:#0b1221;color:#64748b;cursor:pointer;font-family:'Inter',sans-serif;transition:all .1s;}
+.f-btn:hover{color:#94a3b8;}
+.f-btn.on{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.2);color:#60a5fa;}
+
+/* ── KPI row ── */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
+.kpi{background:#0b1221;border:1px solid #182035;border-radius:8px;padding:10px;text-align:center;}
+.kpi-n{font-size:1.4rem;font-weight:900;line-height:1;margin-bottom:3px;}
+.kpi-l{font-size:.58rem;color:#475569;text-transform:uppercase;letter-spacing:.07em;}
+
+/* ── Export tab ── */
+.export-section{background:#0b1221;border:1px solid #182035;border-radius:10px;padding:16px;margin-bottom:12px;}
+.export-section h5{font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:8px;}
+.export-section p{font-size:.7rem;color:#64748b;line-height:1.5;margin-bottom:10px;}
+.export-action-btn{font-size:.7rem;font-weight:700;padding:7px 16px;border-radius:6px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;margin-right:6px;}
+.export-action-btn:hover{background:rgba(59,130,246,.18);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#182035;border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="training-plan.html" class="back">← Training Plan</a>
+  <a href="index.html" class="back" style="margin-left:4px">← Workflow</a>
+  <h1>Talent Review — HR Function Dashboard</h1>
+  <span class="tb-badge tbb-sensitive">Talent Pool: External System</span>
+  <span class="tb-badge tbb-matrix">Matrix Org Enabled</span>
+  <button class="export-btn" onclick="exportData()">Export for BOBJ ↓</button>
+</div>
+
+<div class="tab-bar">
+  <button class="tab at" onclick="setTab('calendar')">Review Calendar <span class="tab-count" id="cnt-cal">8</span></button>
+  <button class="tab" onclick="setTab('review')">Talent Review <span class="tab-count" id="cnt-rev">18</span></button>
+  <button class="tab" onclick="setTab('briefs')">Standing Briefs</button>
+  <button class="tab" onclick="setTab('actions')">Priority Actions <span class="tab-count" id="cnt-act">5</span></button>
+  <button class="tab" onclick="setTab('export')">Export / Integrate</button>
+</div>
+
+<div class="main">
+  <nav class="sidebar" id="sidebar"></nav>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// SYNTHETIC EMPLOYEE DATA — 18 employees, matrix org
+// ════════════════════════════════════════════════════════════════
+const EMPS = [
+  // HRBP — Finance (direct: HR Director J. Williams, dotted: CFO M. Chen)
+  { id:'f1', name:'Sarah Chen',     role:'HRBP', bu:'Finance',   org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'M. Chen',title:'CFO',type:'business'}],
+    track:'leadership', phase:'practitioner', days:312, pathway:'initial',
+    target:'Senior HRBP', ldp:null, pr:'ready', status:'ahead', cert:68, vel:2.8,
+    mis:null, lastReview:{date:'2025-09-15',level:'direct',outcome:'On track for promotion H1 2026'},
+    nextReview:{days:30,type:'rotation'} },
+
+  { id:'f2', name:'David Brooks',   role:'HRBP', bu:'Finance',   org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'M. Chen',title:'CFO',type:'business'}],
+    track:'ic', phase:'foundation', days:106, pathway:'initial',
+    target:'HR Specialist — Analytics', ldp:null, pr:'not-yet', status:'behind', cert:14, vel:1.1,
+    mis:{type:'velocity',desc:'Client (CFO) notes HRBP is slow to respond to ad hoc data requests — suggests insufficient analytics Foundation. Development velocity 40% below plan.'},
+    lastReview:{date:'2025-10-20',level:'direct',outcome:'60-day checkpoint: below expected certification pace'},
+    nextReview:{days:18,type:'client'} },
+
+  { id:'f3', name:'Carlos Rivera',  role:'HRBP', bu:'Finance',   org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'M. Chen',title:'CFO',type:'business'}],
+    track:'leadership', phase:'expert', days:589, pathway:'initial',
+    target:'HR Director', ldp:null, pr:'ready', status:'ahead', cert:94, vel:3.1,
+    mis:null, lastReview:{date:'2025-08-01',level:'senior',outcome:'Ready for Director-level responsibilities; promotion gate scheduled'},
+    nextReview:{days:24,type:'promotion'} },
+
+  // HRBP — Technology (direct: HR Director K. Adams, dotted: CTO R. Patel)
+  { id:'t1', name:'Marcus Johnson', role:'HRBP', bu:'Technology', org:'hrbp',
+    direct:{name:'K. Adams',title:'HR Director'},
+    dotted:[{name:'R. Patel',title:'CTO',type:'business'}],
+    track:'leadership', phase:'practitioner', days:247, pathway:'initial',
+    target:'Senior HRBP', ldp:null, pr:'developing', status:'on', cert:51, vel:2.3,
+    mis:null, lastReview:{date:'2025-09-28',level:'direct',outcome:'Good progress; needs more complex situation exposure'},
+    nextReview:{days:45,type:'senior'} },
+
+  { id:'t2', name:'James Okafor',   role:'HRBP', bu:'Technology', org:'hrbp',
+    direct:{name:'K. Adams',title:'HR Director'},
+    dotted:[{name:'R. Patel',title:'CTO',type:'business'}],
+    track:'ic', phase:'foundation', days:48, pathway:'initial',
+    target:'HR Analyst — People Analytics', ldp:null, pr:'not-yet', status:'on', cert:8, vel:1.8,
+    mis:null, lastReview:{date:'2025-11-01',level:'direct',outcome:'Day 30 checkpoint passed; building orientation'},
+    nextReview:{days:12,type:'direct'} },
+
+  { id:'t3', name:'Priya Nair',     role:'HRBP', bu:'Technology', org:'hrbp',
+    direct:{name:'K. Adams',title:'HR Director'},
+    dotted:[{name:'R. Patel',title:'CTO',type:'business'},{name:'S. Park',title:'Head of Analytics',type:'functional'}],
+    track:'leadership', phase:'practitioner', days:398, pathway:'lateral',
+    target:'Senior HRBP', ldp:null, pr:'developing', status:'ahead', cert:74, vel:3.4,
+    mis:null, lastReview:{date:'2025-09-10',level:'direct',outcome:'Lateral hire performing ahead of adjusted baseline'},
+    nextReview:{days:45,type:'senior'} },
+
+  // HRBP — Operations (direct: HR Director J. Williams, dotted: COO L. Torres)
+  { id:'o1', name:'Emma Walsh',     role:'HRBP', bu:'Operations', org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'L. Torres',title:'COO',type:'business'}],
+    track:'ic', phase:'expert', days:721, pathway:'initial',
+    target:'Principal HR Consultant', ldp:'HR Excellence Program Cohort 3', pr:'ready', status:'ahead', cert:96, vel:3.0,
+    mis:null, lastReview:{date:'2025-07-15',level:'executive',outcome:'Expert-level demonstration confirmed; LDP on track'},
+    nextReview:{days:75,type:'executive'} },
+
+  { id:'o2', name:'Tom Bradley',    role:'HRBP', bu:'Operations', org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'L. Torres',title:'COO',type:'business'}],
+    track:'leadership', phase:'foundation', days:89, pathway:'initial',
+    target:'Senior HRBP', ldp:null, pr:'not-yet', status:'on', cert:19, vel:2.0,
+    mis:null, lastReview:{date:'2025-10-25',level:'direct',outcome:'Day 60 checkpoint: on track, good stakeholder start'},
+    nextReview:{days:28,type:'direct'} },
+
+  { id:'o3', name:'Aisha Ibrahim',  role:'HRBP', bu:'Operations', org:'hrbp',
+    direct:{name:'J. Williams',title:'HR Director'},
+    dotted:[{name:'L. Torres',title:'COO',type:'business'}],
+    track:'ic', phase:'practitioner', days:445, pathway:'initial',
+    target:'HR Consultant — OD', ldp:null, pr:'developing', status:'on', cert:77, vel:2.5,
+    mis:null, lastReview:{date:'2025-08-20',level:'direct',outcome:'Consistent Practitioner performance; IC track confirmed'},
+    nextReview:{days:60,type:'annual'} },
+
+  // COE — Analytics (direct: Head of Analytics S. Park, dotted: HRBPs they support)
+  { id:'a1', name:'Lisa Martinez',  role:'COE Analyst', bu:'Analytics', org:'coe',
+    direct:{name:'S. Park',title:'Head of Analytics'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'},{name:'K. Adams',title:'HR Director',type:'functional'}],
+    track:'ic', phase:'expert', days:892, pathway:'initial',
+    target:'Principal People Analytics Consultant', ldp:'HR Excellence Program Cohort 1', pr:'ready', status:'ahead', cert:98, vel:2.9,
+    mis:null, lastReview:{date:'2025-06-01',level:'senior',outcome:'Master-level behaviors emerging; setting analytics standards for function'},
+    nextReview:{days:75,type:'executive'} },
+
+  { id:'a2', name:'Kevin Zhao',     role:'COE Analyst', bu:'Analytics', org:'coe',
+    direct:{name:'S. Park',title:'Head of Analytics'},
+    dotted:[{name:'K. Adams',title:'HR Director',type:'functional'}],
+    track:'ic', phase:'practitioner', days:334, pathway:'initial',
+    target:'Senior People Analytics Consultant', ldp:'Analytics Leadership Track', pr:'developing', status:'ahead', cert:72, vel:3.2,
+    mis:null, lastReview:{date:'2025-09-05',level:'direct',outcome:'Strong practitioner performance; LDP accelerating data storytelling'},
+    nextReview:{days:60,type:'annual'} },
+
+  { id:'a3', name:'Rachel Kim',     role:'COE Analyst', bu:'Analytics', org:'coe',
+    direct:{name:'S. Park',title:'Head of Analytics'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'}],
+    track:'ic', phase:'foundation', days:156, pathway:'lateral',
+    target:'People Analytics Consultant', ldp:null, pr:'not-yet', status:'ahead', cert:38, vel:2.9,
+    mis:null, lastReview:{date:'2025-10-10',level:'direct',outcome:'Lateral entry credit applied; ahead of adjusted 8-month baseline'},
+    nextReview:{days:60,type:'annual'} },
+
+  // COE — Talent (direct: Head of Talent B. Johnson, dotted: Business leaders)
+  { id:'ta1', name:'Michael Torres', role:'COE Specialist', bu:'Talent', org:'coe',
+    direct:{name:'B. Johnson',title:'Head of Talent'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'},{name:'M. Chen',title:'CFO',type:'business'}],
+    track:'leadership', phase:'practitioner', days:521, pathway:'initial',
+    target:'Talent Management Manager', ldp:null, pr:'developing', status:'on', cert:81, vel:2.2,
+    mis:null, lastReview:{date:'2025-08-12',level:'direct',outcome:'Approaching Expert on Talent competencies; leadership behaviors emerging'},
+    nextReview:{days:60,type:'annual'} },
+
+  { id:'ta2', name:'Diana Lee',     role:'COE Specialist', bu:'Talent', org:'coe',
+    direct:{name:'B. Johnson',title:'Head of Talent'},
+    dotted:[{name:'L. Torres',title:'COO',type:'business'}],
+    track:'ic', phase:'foundation', days:234, pathway:'initial',
+    target:'Talent Consultant', ldp:null, pr:'not-yet', status:'behind', cert:31, vel:1.4,
+    mis:{type:'results',desc:'Client (COO) reports Talent COE support is not meeting expectations for Operations hiring cycle. Results evidence shows 3 missed SLAs in Q3. Direct leader rates development as on track — misalignment between development view and client results view.'},
+    lastReview:{date:'2025-09-30',level:'direct',outcome:'Foundation tasks on track; client relationship management needs focus'},
+    nextReview:{days:18,type:'client'} },
+
+  // Shared Services (direct: HR Ops Lead C. Rodriguez, dotted: Multiple BUs)
+  { id:'s1', name:'Javier Morales', role:'Shared Services', bu:'Tier 1', org:'shared',
+    direct:{name:'C. Rodriguez',title:'HR Ops Lead'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'}],
+    track:'ic', phase:'foundation', days:78, pathway:'initial',
+    target:'HR Specialist', ldp:null, pr:'not-yet', status:'on', cert:15, vel:2.1,
+    mis:null, lastReview:{date:'2025-10-28',level:'direct',outcome:'Day 60 checkpoint passed; orientation complete'},
+    nextReview:{days:28,type:'direct'} },
+
+  { id:'s2', name:'Nina Patel',     role:'Shared Services', bu:'Tier 2', org:'shared',
+    direct:{name:'C. Rodriguez',title:'HR Ops Lead'},
+    dotted:[{name:'K. Adams',title:'HR Director',type:'functional'}],
+    track:'leadership', phase:'practitioner', days:412, pathway:'initial',
+    target:'HR Operations Manager', ldp:null, pr:'developing', status:'on', cert:75, vel:2.4,
+    mis:null, lastReview:{date:'2025-09-22',level:'direct',outcome:'Solid Practitioner development; leadership behaviors beginning to show'},
+    nextReview:{days:60,type:'annual'} },
+
+  { id:'s3', name:'Chris Owens',    role:'Shared Services', bu:'Tier 1', org:'shared',
+    direct:{name:'C. Rodriguez',title:'HR Ops Lead'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'}],
+    track:'ic', phase:'foundation', days:267, pathway:'initial',
+    target:'HR Specialist', ldp:null, pr:'not-yet', status:'stalled', cert:22, vel:0.8,
+    mis:{type:'velocity',desc:'No OJT certifications logged in 45 days. Velocity dropped from 2.1 to 0.8 tasks/month. Trainer sign-offs have not been requested since September. Risk: will miss annual Foundation gate.'},
+    lastReview:{date:'2025-09-15',level:'direct',outcome:'Concerns noted about pace; follow-up scheduled'},
+    nextReview:{days:12,type:'direct'} },
+
+  { id:'s4', name:'Sophia Grant',   role:'Shared Services', bu:'Tier 2', org:'shared',
+    direct:{name:'C. Rodriguez',title:'HR Ops Lead'},
+    dotted:[{name:'J. Williams',title:'HR Director',type:'functional'},{name:'L. Torres',title:'COO',type:'business'}],
+    track:'leadership', phase:'practitioner', days:687, pathway:'lateral',
+    target:'HR Operations Director', ldp:null, pr:'developing', status:'ahead', cert:88, vel:2.6,
+    mis:null, lastReview:{date:'2025-07-30',level:'senior',outcome:'Expert-tier behaviors beginning in Operations competencies'},
+    nextReview:{days:75,type:'executive'} },
+];
+
+// ════════════════════════════════════════════════════════════════
+// REVIEW CALENDAR DATA
+// ════════════════════════════════════════════════════════════════
+const REVIEWS_CAL = [
+  { id:'r1', days:12, type:'client', urgent:true,
+    title:'Client Review Request — CFO (Finance)',
+    meta:'CFO M. Chen has requested a development and effectiveness review of Finance HRBP support ahead of Q1 planning.',
+    employees:['David Brooks','Sarah Chen'],
+    readiness:45,
+    prep:['Client brief for David Brooks is 45% complete — results section missing','Sarah Chen standing brief is ready','Confirm CFO review format (30-min briefing vs. written summary)'] },
+
+  { id:'r2', days:12, type:'direct', urgent:true,
+    title:'Day 60 Check-In — James Okafor (Technology)',
+    meta:'60-day checkpoint for James Okafor. Evidence: 8% Foundation certified vs. 35% expected at this stage.',
+    employees:['James Okafor'],
+    readiness:60,
+    prep:['Schedule OJT task review with trainer M. Torres','Confirm Trainer has availability this week','Prepare Day 60 checkpoint card for review meeting'] },
+
+  { id:'r3', days:18, type:'rotation', urgent:true,
+    title:'18-Month Rotation Gate — Sarah Chen (Finance HRBP)',
+    meta:'Rotation vs. retain decision required. Sarah Chen at Day 312 — on the Leadership track, promotion-ready, ahead of plan.',
+    employees:['Sarah Chen'],
+    readiness:80,
+    prep:['Rotation decision: retain for Senior HRBP promotion path or rotate to COE?','Successor identification for Finance HRBP if rotating','Promotion brief to be prepared if retaining'] },
+
+  { id:'r4', days:18, type:'client', urgent:true,
+    title:'Client Review Request — COO (Operations)',
+    meta:'COO L. Torres requested effectiveness review of Talent COE support for Operations. Diana Lee misalignment flagged.',
+    employees:['Diana Lee','Michael Torres'],
+    readiness:35,
+    prep:['Diana Lee client brief needs results section — 3 missed SLAs documented','Prepare misalignment summary for HR Director before client meeting','Schedule internal alignment conversation: B. Johnson + J. Williams before client meeting'] },
+
+  { id:'r5', days:24, type:'rotation', warn:true,
+    title:'Annual Promotion Gate — Carlos Rivera',
+    meta:'Carlos Rivera at Day 589, Expert phase, Director-level readiness confirmed at last senior review. Evidence portfolio review required.',
+    employees:['Carlos Rivera'],
+    readiness:88,
+    prep:['Finalize evidence portfolio: results documentation for Q3 WFP cycle','Senior leader review input from J. Williams due before gate','Confirm leveling guideline alignment for HR Director promotion'] },
+
+  { id:'r6', days:45, type:'senior', warn:true,
+    title:'Non-Executive Leadership Review — Technology HRBP Cluster',
+    meta:'HR VP semi-annual review of Technology HRBP group. Marcus Johnson and Priya Nair on agenda.',
+    employees:['Marcus Johnson','Priya Nair'],
+    readiness:62,
+    prep:['Leader brief for Marcus Johnson — complex situation exposure evidence needed','Priya Nair lateral entry arc update — confirm 18-month adjusted baseline','Prepare function-level capability summary for VP review'] },
+
+  { id:'r7', days:75, type:'executive', plan:true,
+    title:'Executive Talent Review — Q4 Semi-Annual',
+    meta:'CHRO semi-annual review of HR function development. Focus: promotion pipeline, critical role coverage, LDP progress.',
+    employees:['Emma Walsh','Lisa Martinez','Carlos Rivera','Sophia Grant'],
+    readiness:71,
+    prep:['Emma Walsh Expert certification brief due','Lisa Martinez Master-tier evidence portfolio','Prepare promotion pipeline summary: 3 promotion-ready individuals','LDP progress report: Cohorts 1 and 3 status'] },
+
+  { id:'r8', days:90, type:'senior', plan:true,
+    title:'Annual Promotion Gates — Analytics COE',
+    meta:'Annual review for Analytics COE team. Kevin Zhao approaching Expert transition.',
+    employees:['Kevin Zhao','Rachel Kim','Lisa Martinez'],
+    readiness:58,
+    prep:['Kevin Zhao: Expert-tier evidence tasks to be started this quarter','Rachel Kim: 6-month lateral adjusted baseline review','Lisa Martinez: Master-tier promotion brief — evidence portfolio review'] },
+];
+
+// ════════════════════════════════════════════════════════════════
+// PRIORITY ACTIONS
+// ════════════════════════════════════════════════════════════════
+const ACTIONS = [
+  { rank:1, what:'Resolve David Brooks stall before CFO client review in 12 days',
+    who:'K. Adams (HR Director) + M. Torres (Trainer)', when:'This week',
+    why:'CFO has flagged analytics responsiveness gaps. David\'s certification velocity is 40% below plan. If not addressed before client review, the HRBP effectiveness conversation will be unsupported by development evidence.',
+    impact:'+18% Foundation certification expected in 30 days if trainer sessions resume',
+    assumption:'Trainer M. Torres has availability this week. If not, identify substitute.',
+    review:'r1 — CFO Client Review (Day 12)', color:'#f87171' },
+
+  { rank:2, what:'Schedule Diana Lee misalignment resolution: B. Johnson + J. Williams alignment before COO meeting',
+    who:'J. Williams (HR Director) + B. Johnson (Head of Talent)', when:'Next 5 days',
+    why:'Direct leader and business client assessments are divergent. COO review is in 18 days. Going into that review with unresolved misalignment risks the HRBP-COO relationship and Diana Lee\'s development trajectory.',
+    impact:'Prevents escalation; provides aligned narrative for COO review',
+    assumption:'Both leaders available this week. If schedule constrained, a written brief alignment works.',
+    review:'r4 — COO Client Review (Day 18)', color:'#f87171' },
+
+  { rank:3, what:'Prepare Sarah Chen rotation decision: rotate to COE or retain for Senior HRBP promotion',
+    who:'J. Williams (HR Director) decision, Sarah Chen input', when:'Within 10 days',
+    why:'18-month gate is in 18 days. Sarah is promotion-ready and ahead of plan. Delay in the rotation/retain decision delays her next development phase and leaves Finance HRBP succession unresolved.',
+    impact:'Clears succession pipeline; enables either promotion path or breadth rotation',
+    assumption:'Successor candidate available if rotating. Finance business impact assessed.',
+    review:'r3 — Rotation Gate (Day 18)', color:'#facc15' },
+
+  { rank:4, what:'Clear Chris Owens stall: 45 days with no certification activity',
+    who:'C. Rodriguez (HR Ops Lead)', when:'This week',
+    why:'Velocity at 0.8 tasks/month vs. plan of 2.0. At current pace Chris will miss the annual Foundation gate. Root cause unknown — may be workload, trainer unavailability, or motivation.',
+    impact:'If addressed now, Foundation completion possible by annual gate. If delayed 30 more days, gate will be missed.',
+    assumption:'Root cause is external (workload/trainer). If motivational, different intervention required.',
+    review:'r2 — Direct Review (Day 12)', color:'#facc15' },
+
+  { rank:5, what:'Complete evidence portfolios for Q4 executive review: Emma Walsh + Lisa Martinez',
+    who:'J. Williams + S. Park (Evidence owners)', when:'Next 30 days',
+    why:'Executive review in 75 days. Both are promotion-ready but evidence portfolios have gaps in the results section. Executive-level reviews require completed portfolios — last-minute assembly reduces quality of the calibration conversation.',
+    impact:'Positions both individuals for promotion decisions at executive review',
+    assumption:'Results documentation for Q3 is available. If Q3 data not yet final, use Q2 results with Q3 interim.',
+    review:'r7 — Executive Review (Day 75)', color:'#34d399' },
+];
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let activeTab = 'calendar';
+let orgView = 'element'; // 'element' or 'direct' or 'dotted'
+let filters = { org:'all', track:'all', pr:'all', status:'all' };
+let selectedEmpId = null;
+let briefType = 'leader';
+let clientBriefs = JSON.parse(localStorage.getItem('tr_client_briefs')||'{}');
+
+function saveClientBriefs(){ try{localStorage.setItem('tr_client_briefs',JSON.stringify(clientBriefs));}catch{} }
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const ORG_CONFIG = {
+  hrbp:  { label:'HR Business Partners', color:'#60a5fa', bg:'rgba(59,130,246,.08)' },
+  coe:   { label:'Centers of Excellence', color:'#a78bfa', bg:'rgba(139,92,246,.08)' },
+  shared:{ label:'Shared Services',       color:'#34d399', bg:'rgba(16,185,129,.08)' },
+};
+const PHASE_COLOR = { foundation:'#fb923c', practitioner:'#facc15', expert:'#60a5fa', master:'#a78bfa' };
+const STATUS_LABEL = { ahead:'Ahead of Plan', on:'On Track', behind:'Behind Plan', stalled:'Stalled' };
+
+function daysSince(days){ return days + ' days'; }
+function phaseLabel(p){ return p.charAt(0).toUpperCase()+p.slice(1); }
+
+function misCount(){ return EMPS.filter(e=>e.mis).length; }
+function rotCount(){ return EMPS.filter(e=>e.days>=500&&e.days<=550 || e.days>=170&&e.days<=200).length; }
+
+// ════════════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════════════
+function setTab(t){
+  activeTab=t;
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('at',['calendar','review','briefs','actions','export'][i]===t);
+  });
+  renderSidebar(); renderContent();
+}
+
+// ════════════════════════════════════════════════════════════════
+// SIDEBAR
+// ════════════════════════════════════════════════════════════════
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(activeTab==='calendar'||activeTab==='export'){sb.innerHTML='';return;}
+
+  const groups = Object.entries(ORG_CONFIG);
+  sb.innerHTML = `
+    <div class="sb-hdr">View by</div>
+    <div class="sb-view-toggle">
+      <button class="sb-vt-btn ${orgView==='element'?'on':''}" onclick="orgView='element';renderSidebar();renderContent()">Org Element</button>
+      <button class="sb-vt-btn ${orgView==='direct'?'on':''}" onclick="orgView='direct';renderSidebar();renderContent()">Direct Line</button>
+      <button class="sb-vt-btn ${orgView==='dotted'?'on':''}" onclick="orgView='dotted';renderSidebar();renderContent()">Matrix Line</button>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-hdr">Org Element</div>
+    ${groups.map(([k,v])=>{
+      const n = EMPS.filter(e=>e.org===k).length;
+      return `<div class="sb-item ${filters.org===k?'sel':''}" onclick="setFilter('org','${k}')">
+        <span class="sb-dot" style="background:${v.color}"></span>${v.label}<span class="sb-count">${n}</span>
+      </div>`;
+    }).join('')}
+    <div class="sb-item ${filters.org==='all'?'sel':''}" onclick="setFilter('org','all')">
+      <span class="sb-dot" style="background:#475569"></span>All Elements<span class="sb-count">${EMPS.length}</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-hdr">Flags</div>
+    <div class="sb-item" onclick="setFilter('mis','yes')" style="color:#f87171">
+      ⚡ Misalignment Flags<span class="sb-count">${misCount()}</span>
+    </div>
+    <div class="sb-item" onclick="setFilter('pr','ready')" style="color:#34d399">
+      ✓ Promotion Ready<span class="sb-count">${EMPS.filter(e=>e.pr==='ready').length}</span>
+    </div>
+    <div class="sb-item" onclick="setFilter('status','stalled')" style="color:#64748b">
+      ⏸ Stalled<span class="sb-count">${EMPS.filter(e=>e.status==='stalled').length}</span>
+    </div>
+  `;
+}
+
+function setFilter(k,v){
+  if(k==='mis') filters.pr='all', filters.status='all';
+  filters[k]=v;
+  renderSidebar(); renderContent();
+}
+
+// ════════════════════════════════════════════════════════════════
+// REVIEW CALENDAR
+// ════════════════════════════════════════════════════════════════
+function renderCalendar(){
+  const now   = REVIEWS_CAL.filter(r=>r.days<=30);
+  const near  = REVIEWS_CAL.filter(r=>r.days>30&&r.days<=60);
+  const plan  = REVIEWS_CAL.filter(r=>r.days>60);
+
+  function cardHTML(r){
+    const dc = r.days<=14?'#f87171':r.days<=30?'#fb923c':r.days<=60?'#facc15':'#34d399';
+    const cardCls = r.days<=14?'urgent':r.days<=60?'warn':'plan';
+    return `
+    <div class="review-card ${cardCls}">
+      <div class="rc-days">
+        <div class="rc-days .d-num" style="font-size:1.8rem;font-weight:900;line-height:1;color:${dc}">${r.days}</div>
+        <div class="rc-days .d-lbl" style="font-size:.6rem;color:#475569;text-transform:uppercase;letter-spacing:.07em">days away</div>
+      </div>
+      <div class="rc-body">
+        <div><span class="rc-type-badge rt-${r.type}">${r.type.charAt(0).toUpperCase()+r.type.slice(1)} Review</span></div>
+        <h4>${r.title}</h4>
+        <div class="rc-meta">${r.meta}</div>
+        <div class="rc-employees">${r.employees.map(e=>`<span class="rc-emp">${e}</span>`).join('')}</div>
+        <div class="rc-prep">
+          <div class="rc-prep-lbl">Preparation needed</div>
+          ${r.prep.map(p=>`<div class="rc-prep-item">${p}</div>`).join('')}
+        </div>
+      </div>
+      <div class="rc-readiness">
+        <div class="rc-pct" style="color:${r.readiness>=70?'#34d399':r.readiness>=40?'#facc15':'#f87171'}">${r.readiness}%</div>
+        <div class="rc-pct-lbl">Ready</div>
+        <div class="rc-prog"><div class="rc-prog-fill" style="width:${r.readiness}%;background:${r.readiness>=70?'#34d399':r.readiness>=40?'#facc15':'#f87171'}"></div></div>
+      </div>
+    </div>`;
+  }
+
+  return `
+    <div class="cal-section">
+      <div class="cal-section-hdr"><span style="color:#f87171">⚡ Immediate (0–30 days)</span></div>
+      ${now.map(cardHTML).join('')}
+    </div>
+    <div class="cal-section">
+      <div class="cal-section-hdr"><span style="color:#facc15">◎ Near-Term (30–60 days)</span></div>
+      ${near.map(cardHTML).join('')}
+    </div>
+    <div class="cal-section">
+      <div class="cal-section-hdr"><span style="color:#34d399">○ Planned (60–90 days)</span></div>
+      ${plan.map(cardHTML).join('')}
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// TALENT REVIEW
+// ════════════════════════════════════════════════════════════════
+function renderReview(){
+  let emps = [...EMPS];
+  if(filters.org!=='all') emps=emps.filter(e=>e.org===filters.org);
+  if(filters.pr==='ready') emps=emps.filter(e=>e.pr==='ready');
+  if(filters.pr==='mis') emps=emps.filter(e=>e.mis);
+  if(filters.status==='stalled') emps=emps.filter(e=>e.status==='stalled');
+
+  // KPI row
+  const kpis = [
+    {n:emps.length, l:'In View', c:'#60a5fa'},
+    {n:emps.filter(e=>e.pr==='ready').length, l:'Promotion Ready', c:'#34d399'},
+    {n:emps.filter(e=>e.status==='ahead').length, l:'Ahead of Plan', c:'#facc15'},
+    {n:emps.filter(e=>e.status==='behind'||e.status==='stalled').length, l:'At Risk', c:'#f87171'},
+    {n:emps.filter(e=>e.mis).length, l:'Misalignment Flags', c:'#a78bfa'},
+    {n:emps.filter(e=>e.ldp).length, l:'LDP Enrolled', c:'#fb923c'},
+  ];
+
+  // Group by org element
+  const groups = Object.entries(ORG_CONFIG).map(([k,v])=>{
+    const ge = emps.filter(e=>e.org===k);
+    if(!ge.length) return '';
+    return `
+      <div class="org-group">
+        <div class="og-hdr" style="background:${v.bg};color:${v.color}">${v.label}<span class="og-count">${ge.length} employees</span></div>
+        <div class="talent-grid">${ge.map(empCard).join('')}</div>
+      </div>`;
+  }).join('');
+
+  const detail = selectedEmpId ? renderDetail(EMPS.find(e=>e.id===selectedEmpId)) : '';
+
+  return `
+    <div class="kpi-row">${kpis.map(k=>`<div class="kpi"><div class="kpi-n" style="color:${k.c}">${k.n}</div><div class="kpi-l">${k.l}</div></div>`).join('')}</div>
+    ${detail}
+    ${groups}`;
+}
+
+function empCard(e){
+  const oc = ORG_CONFIG[e.org].color;
+  const pc = PHASE_COLOR[e.phase];
+  const arcPct = {foundation:Math.min(e.cert,100),practitioner:Math.min(100,(e.days-365)/365*100+50),expert:85,master:95}[e.phase]||e.cert;
+  const flags = (e.mis?'<span class="tc-flag flag-mis">⚡ Misalignment</span>':'')
+    + (e.ldp?'<span class="tc-flag flag-ldp" style="top:32px">LDP</span>':'')
+    + (e.days>=300&&e.days<=360?'<span class="tc-flag flag-rot" style="top:'+(e.mis?54:(e.ldp?54:10))+'px">Rotation ↑</span>':'');
+
+  return `
+    <div class="tc ${selectedEmpId===e.id?'selected':''}" onclick="selectEmp('${e.id}')">
+      ${flags}
+      <div class="tc-name">${e.name}</div>
+      <div class="tc-role" style="color:${oc}">${e.role} — ${e.bu}</div>
+      <div class="tc-matrix">
+        <div class="tc-line"><span class="line-type line-direct">—</span>${e.direct.name} · ${e.direct.title}</div>
+        ${e.dotted.map(d=>`<div class="tc-line"><span class="line-type line-dotted">⋯</span>${d.name} · ${d.title}</div>`).join('')}
+      </div>
+      <div class="tc-arc-bar"><div class="tc-arc-fill" style="width:${e.cert}%;background:${pc}"></div></div>
+      <div class="tc-metrics">
+        <div class="tc-metric"><div class="tc-metric-lbl">Phase</div><div class="tc-metric-val" style="color:${pc}">${phaseLabel(e.phase)}</div></div>
+        <div class="tc-metric"><div class="tc-metric-lbl">Days in Role</div><div class="tc-metric-val">${e.days}</div></div>
+        <div class="tc-metric"><div class="tc-metric-lbl">Foundation %</div><div class="tc-metric-val" style="color:${pc}">${e.cert}%</div></div>
+        <div class="tc-metric"><div class="tc-metric-lbl">Velocity</div><div class="tc-metric-val" style="color:#64748b">${e.vel}/mo</div></div>
+      </div>
+      <div class="tc-footer">
+        <span class="pr-badge pr-${e.pr}">${e.pr==='ready'?'Promotion Ready':e.pr==='developing'?'Developing':'Not Yet'}</span>
+        <span class="track-badge track-${e.track}">${e.track.toUpperCase()}</span>
+        <span class="status-dot sd-${e.status}" title="${STATUS_LABEL[e.status]}"></span>
+      </div>
+    </div>`;
+}
+
+function selectEmp(id){ selectedEmpId = selectedEmpId===id?null:id; renderContent(); }
+
+function renderDetail(e){
+  if(!e) return '';
+  const pc = PHASE_COLOR[e.phase];
+  const mis = e.mis ? `<div class="mis-alert"><strong>⚡ Misalignment Flag (${e.mis.type})</strong><br>${e.mis.desc}</div>` : '';
+  return `
+    <div class="detail-panel">
+      <div class="dp-hdr">
+        <div class="dp-name">${e.name}</div>
+        <span class="pr-badge pr-${e.pr}">${e.pr==='ready'?'Promotion Ready':e.pr==='developing'?'Developing':'Not Yet'}</span>
+        <span class="track-badge track-${e.track} " style="font-size:.65rem;padding:3px 8px">${e.track==='ic'?'Individual Contributor':'Leadership'} Track</span>
+        <span style="font-size:.65rem;color:${pc};font-weight:700">${phaseLabel(e.phase)} Phase · Day ${e.days}</span>
+      </div>
+      ${mis}
+      <div class="dp-grid">
+        <div class="dp-field"><div class="dp-field-lbl">Target Role</div><div class="dp-field-val">${e.target}</div></div>
+        <div class="dp-field"><div class="dp-field-lbl">Pathway</div><div class="dp-field-val">${e.pathway==='initial'?'Initial Entry':'Lateral / Cross-Functional'}</div></div>
+        <div class="dp-field"><div class="dp-field-lbl">Foundation Cert.</div><div class="dp-field-val" style="color:${pc}">${e.cert}% · ${e.vel} tasks/mo</div></div>
+        <div class="dp-field"><div class="dp-field-lbl">LDP</div><div class="dp-field-val">${e.ldp||'Not enrolled'}</div></div>
+        <div class="dp-field"><div class="dp-field-lbl">Direct Line</div><div class="dp-field-val">${e.direct.name} · ${e.direct.title}</div></div>
+        ${e.dotted.map(d=>`<div class="dp-field"><div class="dp-field-lbl">Dotted Line (${d.type})</div><div class="dp-field-val">${d.name} · ${d.title}</div></div>`).join('')}
+        <div class="dp-field"><div class="dp-field-lbl">Last Review</div><div class="dp-field-val">${e.lastReview.date} · ${e.lastReview.level}</div></div>
+        <div class="dp-field"><div class="dp-field-lbl">Last Outcome</div><div class="dp-field-val">${e.lastReview.outcome}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="save-brief-btn" onclick="briefType='individual';setTab('briefs')">View Individual Brief</button>
+        <button class="save-brief-btn" onclick="briefType='leader';setTab('briefs')">View Leader Brief</button>
+        <button class="save-brief-btn" onclick="briefType='client';setTab('briefs')" style="color:#fb923c;border-color:rgba(249,115,22,.2)">View Client Brief</button>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// STANDING BRIEFS
+// ════════════════════════════════════════════════════════════════
+function renderBriefs(){
+  const today = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const e = selectedEmpId ? EMPS.find(x=>x.id===selectedEmpId) : EMPS[0];
+
+  return `
+    <div class="filter-row">
+      <label style="font-size:.7rem;color:#64748b">Employee:</label>
+      <select class="export-action-btn" style="cursor:pointer" onchange="selectedEmpId=this.value;renderContent()">
+        ${EMPS.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${x.name} · ${x.role} · ${x.bu}</option>`).join('')}
+      </select>
+    </div>
+    <div class="brief-selector">
+      ${['individual','leader','client'].map(t=>`<button class="brief-btn ${briefType===t?'on':''}" onclick="briefType='${t}';renderContent()">${t.charAt(0).toUpperCase()+t.slice(1)} Brief</button>`).join('')}
+    </div>
+    ${briefType==='individual' ? renderIndividualBrief(e,today) : briefType==='leader' ? renderLeaderBrief(e,today) : renderClientBrief(e,today)}
+  `;
+}
+
+function renderIndividualBrief(e,today){
+  const pc=PHASE_COLOR[e.phase];
+  return `<div class="brief-card">
+    <div class="brief-header"><h4>Individual Development Brief — ${e.name}</h4><span class="brief-stamp">Generated ${today} · Self-view</span></div>
+    <div class="brief-body">
+      <div class="brief-section-hdr">Where I Am</div>
+      ${[['Role',`${e.role} — ${e.bu}`],['Track',e.track==='ic'?'Individual Contributor':'Leadership'],['Phase',phaseLabel(e.phase)+' · Day '+e.days],['Target Role',e.target],['Foundation Progress',e.cert+'% certified · '+e.vel+' tasks/month'],['Plan vs. Actual',(e.cert>e.days/365*100?'▲ Ahead':'▼ Behind')+' plan by '+Math.abs(Math.round(e.cert-e.days/365*100))+'%']].map(([l,v])=>`<div class="brief-row"><span class="brief-lbl">${l}</span><span class="brief-val">${v}</span></div>`).join('')}
+      <div class="brief-section-hdr">My Development Priorities This Quarter</div>
+      ${[['Primary focus','Complete remaining Foundation Core tasks in People Analytics and Advisory competencies'],['Secondary focus','Begin requesting Practitioner-tier stretch assignments from direct leader'],['Evidence to collect','Document 2 results examples for annual promotion gate brief'],['Upcoming gate',e.nextReview.type+' review in '+e.nextReview.days+' days — prepare evidence portfolio']].map(([l,v])=>`<div class="brief-row"><span class="brief-lbl">${l}</span><span class="brief-val">${v}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderLeaderBrief(e,today){
+  const pc=PHASE_COLOR[e.phase];
+  const misNote = e.mis ? `<div class="brief-section-hdr" style="color:#f87171">⚡ Misalignment — Action Required</div><div class="brief-row"><span class="brief-lbl">Flag</span><span class="brief-val" style="color:#fca5a5">${e.mis.desc.substring(0,150)}…</span></div>` : '';
+  return `<div class="brief-card">
+    <div class="brief-header"><h4>Leader Development Brief — ${e.name}</h4><span class="brief-stamp">Generated ${today} · Leader view · Confidential</span></div>
+    <div class="brief-body">
+      <div class="brief-section-hdr">Development Status</div>
+      ${[['Phase & Position',phaseLabel(e.phase)+' · Day '+e.days+' of 365 (Foundation target)'],['Promotion Readiness',e.pr==='ready'?'Ready — evidence portfolio complete':e.pr==='developing'?'Developing — '+Math.round((1-e.cert/80)*12)+' months estimated':'Not yet — significant gaps remain'],['Current Velocity',e.vel+' tasks/month (plan: 2.5/month)'],['Status',STATUS_LABEL[e.status]],['Track',e.track==='ic'?'Individual Contributor':'Leadership'],['Target Role',e.target],['Direct Line',e.direct.name+' · '+e.direct.title]].map(([l,v])=>`<div class="brief-row"><span class="brief-lbl">${l}</span><span class="brief-val">${v}</span></div>`).join('')}
+      ${misNote}
+      <div class="brief-section-hdr">Leader Actions Required</div>
+      ${[['This week',e.status==='stalled'?'Re-establish OJT contact — no activity in 45 days':'Review OJT task progress; clear any trainer/certifier bottlenecks'],['This quarter','Create 1–2 stretch situations appropriate to '+phaseLabel(e.phase)+' development needs'],['At next review','Prepare '+e.nextReview.type+' review evidence — due in '+e.nextReview.days+' days']].map(([l,v])=>`<div class="brief-row"><span class="brief-lbl">${l}</span><span class="brief-val">${v}</span></div>`).join('')}
+      <div class="brief-section-hdr">Last Review Outcome</div>
+      <div class="brief-row"><span class="brief-lbl">${e.lastReview.date}</span><span class="brief-val">${e.lastReview.outcome}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderClientBrief(e,today){
+  const stored = clientBriefs[e.id] || { text:'', source:'hr', date:'' };
+  return `<div class="brief-card">
+    <div class="brief-header">
+      <h4>Client Brief — ${e.name} · ${e.role}, ${e.bu}</h4>
+      <span class="brief-stamp">Generated ${today} · Business partner view</span>
+    </div>
+    <div class="brief-body">
+      <div class="brief-section-hdr">Capability Summary for ${e.bu} Leadership</div>
+      ${[['Current Level',phaseLabel(e.phase)+' — '+{foundation:'building core task proficiency',practitioner:'independent across routine situations',expert:'handles complex situations; organizational impact',master:'setting standards; developing others'}[e.phase]],['Most Relevant Competencies','Business Acumen ('+phaseLabel(e.phase)+'), Advisory & Consulting ('+phaseLabel(e.phase)+'), People Analytics ('+(e.phase==='foundation'?'Foundation':phaseLabel(e.phase))+')'],['Development Trajectory',STATUS_LABEL[e.status]+' — projected '+phaseLabel(e.phase==='foundation'?'practitioner':e.phase==='practitioner'?'expert':'master')+' proficiency in approx. '+(e.phase==='foundation'?Math.round((365-e.days)/30)+' months':e.phase==='practitioner'?Math.round((730-e.days)/30)+' months':'6–12 months')],['Next Target Role',e.target]].map(([l,v])=>`<div class="brief-row"><span class="brief-lbl">${l}</span><span class="brief-val">${v}</span></div>`).join('')}
+
+      <div class="client-entry">
+        <div class="client-entry-hdr">
+          <span style="font-size:.68rem;font-weight:700;color:#94a3b8;">Client Perspective Input</span>
+          <div class="entry-source-toggle" style="margin-left:auto">
+            <button class="est-btn ${stored.source==='hr'?'on':''}" onclick="setSource('${e.id}','hr')">HR-entered</button>
+            <button class="est-btn ${stored.source==='client'?'on':''}" onclick="setSource('${e.id}','client')">Client-submitted</button>
+          </div>
+        </div>
+        <div style="font-size:.62rem;color:#334155;margin-bottom:6px">Business leader assessment of HR support effectiveness, results quality, and capability fit for business unit needs</div>
+        <textarea class="client-textarea" id="ct_${e.id}" placeholder="Enter client perspective on HR support effectiveness, specific results observations, and development priorities from the business unit's view...">${stored.text}</textarea>
+        ${stored.date?`<div style="font-size:.6rem;color:#334155;margin-top:4px">Last updated: ${stored.date} (${stored.source==='client'?'client-submitted':'HR-entered'})</div>`:''}
+        <button class="save-brief-btn" onclick="saveClientBrief('${e.id}')">Save Client Perspective</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function setSource(id, src){
+  if(!clientBriefs[id]) clientBriefs[id]={text:'',source:'hr',date:''};
+  clientBriefs[id].source=src;
+  saveClientBriefs();
+  renderContent();
+}
+
+function saveClientBrief(id){
+  const el=document.getElementById('ct_'+id);
+  if(!el) return;
+  if(!clientBriefs[id]) clientBriefs[id]={text:'',source:'hr',date:''};
+  clientBriefs[id].text=el.value;
+  clientBriefs[id].date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  saveClientBriefs();
+  renderContent();
+}
+
+// ════════════════════════════════════════════════════════════════
+// PRIORITY ACTIONS
+// ════════════════════════════════════════════════════════════════
+function renderActions(){
+  const now = ACTIONS.filter(a=>a.color==='#f87171');
+  const near = ACTIONS.filter(a=>a.color==='#facc15');
+  const plan = ACTIONS.filter(a=>a.color==='#34d399');
+
+  function ac(a){
+    return `<div class="action-card" style="border-left:3px solid ${a.color}">
+      <div class="ac-rank" style="background:${a.color}20;color:${a.color}">${a.rank}</div>
+      <div class="ac-body">
+        <h5>${a.what}</h5>
+        <div class="ac-who" style="color:#60a5fa">Owner: ${a.who}</div>
+        <div class="ac-why">${a.why}</div>
+        <div class="ac-impact" style="color:${a.color}">Impact: ${a.impact}</div>
+        <div class="ac-assumption">Assumption: ${a.assumption}</div>
+      </div>
+      <div class="ac-meta">
+        <div class="ac-when" style="color:${a.color}">${a.when}</div>
+        <div class="ac-review-tag">Prepares for:<br>${a.review}</div>
+      </div>
+    </div>`;
+  }
+
+  return `
+    <div class="action-horizon">
+      <div class="ah-lbl"><span style="color:#f87171">⚡ Immediate — Act This Week</span></div>
+      ${now.map(ac).join('')}
+    </div>
+    <div class="action-horizon">
+      <div class="ah-lbl"><span style="color:#facc15">◎ Near-Term — This Month</span></div>
+      ${near.map(ac).join('')}
+    </div>
+    <div class="action-horizon">
+      <div class="ah-lbl"><span style="color:#34d399">○ Planned — Next 90 Days</span></div>
+      ${plan.map(ac).join('')}
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════════
+function renderExport(){
+  return `
+    <div class="export-section">
+      <h5>JSON Export — Full Development Schema</h5>
+      <p>Exports all employee development data, arc positions, certification records, matrix relationships, and review states. Designed for BOBJ universe consumption as a supplementary data source alongside HCM master data.</p>
+      <button class="export-action-btn" onclick="exportJSON()">Export JSON (Full Schema)</button>
+      <button class="export-action-btn" onclick="exportCSV()">Export CSV (Talent Review Summary)</button>
+    </div>
+    <div class="export-section">
+      <h5>BOBJ Integration Architecture</h5>
+      <p>This tool is the system of record for development data. HCM (SuccessFactors / Workday / SAP) is the system of record for employee master data. BOBJ consumes both.<br><br>
+      <strong style="color:#60a5fa">Refresh cycle:</strong> Drop a new employee CSV from HCM to refresh the org layer. Development records update in real time as certifications are logged. The JSON export can be scheduled as a flat file that the BOBJ universe queries as an additional table — no direct database connection required.</p>
+      <button class="export-action-btn" onclick="showSchema()">View JSON Schema</button>
+    </div>
+    <div id="schema-output" style="margin-top:10px"></div>`;
+}
+
+function exportData(){
+  exportJSON();
+}
+
+function exportJSON(){
+  const data = { generated: new Date().toISOString(), employees: EMPS, reviews: REVIEWS_CAL, actions: ACTIONS, clientBriefs };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='talent-review-export.json'; a.click();
+}
+
+function exportCSV(){
+  const hdr = ['Name','Org Element','Role','BU','Track','Phase','Days','Pathway','Foundation%','Velocity','Status','PromotionReadiness','TargetRole','LDP','DirectLine','DottedLine','MisalignmentFlag','LastReview','NextReview'];
+  const rows = EMPS.map(e => [
+    e.name, e.org, e.role, e.bu, e.track, e.phase, e.days, e.pathway,
+    e.cert, e.vel, e.status, e.pr, e.target, e.ldp||'',
+    e.direct.name+' ('+e.direct.title+')',
+    e.dotted.map(d=>d.name+' ('+d.title+')').join('; '),
+    e.mis ? e.mis.type : '',
+    e.lastReview.date+': '+e.lastReview.outcome,
+    e.nextReview.type+' in '+e.nextReview.days+'d'
+  ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
+  const blob = new Blob([[hdr.join(','),...rows].join('\n')],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='talent-review-summary.csv'; a.click();
+}
+
+function showSchema(){
+  const el = document.getElementById('schema-output');
+  if(!el) return;
+  const schema = { employee_id:'string', name:'string', org_element:'hrbp|coe|shared', role:'string', business_unit:'string', track:'ic|leadership', arc_phase:'foundation|practitioner|expert|master', days_in_role:'integer', pathway:'initial|lateral', foundation_pct:'integer', velocity_tasks_per_month:'float', plan_vs_actual_variance:'float', status:'ahead|on|behind|stalled', promotion_readiness:'ready|developing|not-yet', target_role:'string', ldp_program:'string|null', direct_line:{ name:'string', title:'string' }, dotted_line:[{name:'string',title:'string',type:'business|functional'}], misalignment_flag:{type:'string',desc:'string'}, last_review:{date:'ISO8601',level:'string',outcome:'string'}, next_review:{days:'integer',type:'string'}, client_brief:{text:'string',source:'hr|client',date:'ISO8601'} };
+  el.innerHTML = `<div class="export-section"><h5>JSON Schema for BOBJ Universe</h5><pre style="font-size:.62rem;color:#94a3b8;overflow-x:auto;line-height:1.5">${JSON.stringify(schema,null,2)}</pre></div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// MAIN RENDER
+// ════════════════════════════════════════════════════════════════
+function renderContent(){
+  const el = document.getElementById('content');
+  if(activeTab==='calendar') el.innerHTML = renderCalendar();
+  else if(activeTab==='review') el.innerHTML = renderReview();
+  else if(activeTab==='briefs') el.innerHTML = renderBriefs();
+  else if(activeTab==='actions') el.innerHTML = renderActions();
+  else el.innerHTML = renderExport();
+}
+
+renderSidebar();
+renderContent();
+</script>
+</body>
+</html>
