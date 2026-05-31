@@ -1071,6 +1071,39 @@ bullet('5. HR VP + CPO: prioritise which of the five prompt library domains to d
 bullet('6. All v2.0 next steps remain open unless explicitly resolved. See Section 13.')
 
 # ══════════════════════════════════════════════════════════════════════════════
+# ARCHITECTURE DIAGRAM (embedded from generate_diagram.py output)
+# ══════════════════════════════════════════════════════════════════════════════
+import os
+diag_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         'platform-demo', 'assets', 'architecture.png')
+if os.path.exists(diag_path):
+    heading('20. Platform Architecture Diagram', 1)
+    body(
+        'The following diagram shows the nine-layer platform architecture as defined in '
+        'WIP-SRNA-001 v3.0. Layers L5 (Strategic Intelligence) and L6 (Cascade Engine) '
+        'are new additions not present in H2R-SRNA-001. Layer content has been updated '
+        'in v3.0 to reflect enterprise scale, the Functional / Program dual view, '
+        'temporal dimensions, resource allocation matrix, and the integrated prompt library.'
+    )
+    doc.add_picture(diag_path, width=Cm(16))
+    last_para = doc.paragraphs[-1]
+    last_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap = doc.add_paragraph(
+        'Figure 20.1: WIP-SRNA-001 v3.0 Layered Architecture — Nine-layer enterprise stack '
+        '(L0–L8), top-to-bottom data flow, 50K FTE scale. '
+        'L5 and L6 are new in this version.'
+    )
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    for run in cap.runs:
+        run.font.size = Pt(8)
+        run.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+        run.italic = True
+    doc.add_paragraph()
+else:
+    heading('20. Platform Architecture Diagram', 1)
+    body('Run generate_diagram.py to generate the architecture diagram, then regenerate this document.')
+
+# ══════════════════════════════════════════════════════════════════════════════
 # SAVE
 # ══════════════════════════════════════════════════════════════════════════════
 output_path = r'C:\Users\traft\Desktop\WIP-SRNA-001-v3.0.docx'

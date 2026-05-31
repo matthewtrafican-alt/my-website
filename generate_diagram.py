@@ -32,12 +32,12 @@ LAYER_COLORS = {
 LAYERS = [
     {
         'id': 'L0', 'name': 'Source\nSystems', 'style': 'sap',
-        'boxes': ['SAP\nSuccessFactors', 'SAP HCM\n/ ECC', 'SAP\nPayroll', 'ITSM\n(ServiceNow)', 'O*NET · NICE\nINCOSE · R&M BoK'],
+        'boxes': ['SAP\nSuccessFactors', 'SAP HCM\n/ ECC + Payroll', 'SAP PS\n(Programme Mgmt)', 'O*NET · NICE\nINCOSE · R&M BoK', 'Engagement\nSurvey Platform'],
         'new': False,
     },
     {
         'id': 'L1', 'name': 'Ingestion\nLayer', 'style': 'ingestion',
-        'boxes': ['CSV Export\n(Phase 1)', 'SAP OData API\n(Phase 2)', 'Google Drive\nMCP', 'Azure Data Factory\n/ AWS Glue', 'Framework\nParsers (Python)'],
+        'boxes': ['Flat Files / JSON\n(Phase 1 — 274 sample)', 'SAP OData API\n(Phase 2)', 'Programme Registry\n& Allocation Data', 'Azure Data Factory\n/ AWS Glue', 'Framework\nParsers (Python)'],
         'new': False,
     },
     {
@@ -47,32 +47,32 @@ LAYERS = [
     },
     {
         'id': 'L3', 'name': 'Semantic &\nOntology', 'style': 'semantic',
-        'boxes': ['Semantic Layer\n(dbt / Cube.dev)', 'HR + Framework\nOntology (OWL)', 'Process\nOntology (OWL)', 'Knowledge Graph\n(Neo4j)', 'ChromaDB\nVector Store'],
+        'boxes': ['Semantic Layer\n(dbt / Cube.dev)', 'HR + Framework\nOntology (OWL)', 'Function × Programme\nOntology', 'Knowledge Graph\n(Neo4j)', 'ChromaDB\nVector Store'],
         'new': False,
     },
     {
         'id': 'L4', 'name': 'AI &\nAnalytics', 'style': 'analytics',
-        'boxes': ['PM4Py\nProcess Mining', 'ML Models\n(RF + GBT)', 'SHAP\nExplainability', 'Claude API\nAI Agent', 'Competency Model\nGenerator'],
+        'boxes': ['PM4Py\nProcess Mining', 'ML Models + Temporal\nAnalytics Engine', 'SHAP\nExplainability', 'Claude API\nAI Agent + RAG', 'Resource Allocation\nEngine'],
         'new': False,
     },
     {
         'id': 'L5', 'name': 'Strategic\nIntelligence', 'style': 'strategic',
-        'boxes': ['Strategic WFP\nEngine', 'Capability Gap\nCalculator', 'Scenario\nModeller', 'UGESP\nDoc Engine', 'Talent\nMarketplace'],
+        'boxes': ['Functional View\n(12 Functions)', 'Program View\n(3 Portfolios · 9 Progs)', 'Four Temporal\nDimensions Engine', 'ROAD Action\nPlan Engine', 'Prompt Library\n(280 Diagnostics)'],
         'new': True,
     },
     {
         'id': 'L6', 'name': 'Cascade\nEngine', 'style': 'cascade',
-        'boxes': ['Top-Down\nPropagation', 'Bottom-Up\nFeedback', 'Cascade Break\nDetection', 'Plan\nSynchronisation', 'Cross-Horizon\nReporting'],
+        'boxes': ['Function × Programme\nAllocation Matrix', 'Phase Experience\nGap Analysis', 'Cascade Break\nDetection', '"Ahead of Ready"\nLead Time Engine', 'Cross-Horizon\nReporting'],
         'new': True,
     },
     {
         'id': 'L7', 'name': 'Visualisation\n& UX', 'style': 'viz',
-        'boxes': ['React Dashboard\n(Operational KPIs)', 'Process Maps\n(BPMN)', 'WFP & Competency\nDashboards', 'Tableau\n(Strategic)', 'AI Agent\nChat UI'],
+        'boxes': ['AI Workspace\n+ Prompt Library UI', 'Functional / Program\nDual-View Dashboard', 'Temporal View\n& Allocation Matrix', 'Tableau\n(Strategic)', 'ROAD Health\nHeatmap'],
         'new': False,
     },
     {
         'id': 'L8', 'name': 'Actions &\nAlerts', 'style': 'actions',
-        'boxes': ['Email\nAlerts', 'Teams\nWebhook', 'Compliance\nSentinel', 'Scheduled\nReports', 'Workflow\nTriggers'],
+        'boxes': ['Return on Impact\nAction Plans', 'Teams\nWebhook', 'Compliance\nSentinel', 'Scheduled\nReports', 'Workflow\nTriggers'],
         'new': False,
     },
 ]
@@ -87,10 +87,10 @@ fig.patch.set_facecolor('#F8F9FA')
 
 # ── Title ────────────────────────────────────────────────────────────────────
 ax.text(FIG_W / 2, FIG_H - 0.4,
-        'Workforce Intelligence Platform — Layered Architecture',
+        'Workforce Intelligence Platform — Layered Architecture v3.0',
         ha='center', va='top', fontsize=14, fontweight='bold', color='#1F3864')
 ax.text(FIG_W / 2, FIG_H - 0.85,
-        'WIP-SRNA-001 v1.0   ·   Extends H2R-SRNA-001 v1.0   ·   Layers L5 & L6 are new',
+        'WIP-SRNA-001 v3.0   ·   50K FTE Enterprise Scale   ·   12 Functions · 9 Programmes · 3 Portfolios   ·   L5 & L6 are new',
         ha='center', va='top', fontsize=8, color='#666666', style='italic')
 
 # ── Layout constants ─────────────────────────────────────────────────────────
@@ -220,8 +220,9 @@ for k, (label, color) in enumerate(legend_items):
             ha='left', va='center', fontsize=6.5, color='#333333')
 
 ax.text(FIG_W / 2, 0.35,
-        'Figure 8.1: Layered Architecture — Nine-layer platform stack, top-to-bottom data flow\n'
-        '★ Layers L5 (Strategic Intelligence) and L6 (Cascade Engine) are new in WIP-SRNA-001',
+        'Figure 8.1: Layered Architecture v3.0 — Nine-layer enterprise stack · top-to-bottom data flow · 50K FTE scale\n'
+        '★ L5 (Strategic Intelligence): Functional/Program dual view, temporal dimensions, ROAD action engine, prompt library\n'
+        '★ L6 (Cascade Engine): Function × Programme allocation matrix, phase experience gap, Ahead of Ready lead time',
         ha='center', va='center', fontsize=7.5, color='#444444', style='italic')
 
 plt.tight_layout(pad=0.3)
