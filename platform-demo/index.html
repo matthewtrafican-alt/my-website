@@ -790,7 +790,8 @@ function generateActions(){
       owner:'Business Partner — HR BP',fn:'',prog:''});
   }
 
-  ACTIONS_LIST.sort((a,b)=>{'Critical':0,'High':1,'Medium':2}[a.priority]-{'Critical':0,'High':1,'Medium':2}[b.priority]||0);
+  const _po={'Critical':0,'High':1,'Medium':2};
+  ACTIONS_LIST.sort((a,b)=>(_po[a.priority]||0)-(_po[b.priority]||0));
 }
 
 function renderActions(filter='all'){
@@ -986,7 +987,7 @@ const DEPT_MAP={
   'it':['FN-IT'],'digital':['FN-IT'],
   'engineering':['FN-SE','FN-RM','FN-SW','FN-CS','FN-MS','FN-ST'],
 };
-const PROG_MAP={
+const PROG_MAP_STATIC={
   'typhoon':['PRG-001'],'fcas':['PRG-002'],'future combat':['PRG-002'],
   'e-scan':['PRG-003'],'eurofighter':['PRG-003'],
   'adcc':['PRG-004'],'air defence':['PRG-004'],
@@ -994,9 +995,13 @@ const PROG_MAP={
   'cms':['PRG-007'],'cyber mission':['PRG-007'],
   'eap':['PRG-008'],'electronic attack':['PRG-008'],
   'isr':['PRG-009'],
-  'air systems':PROGS.filter(p=>p.portfolio_id==='PORT-AIR').map(p=>p.id),
-  'ground defence':PROGS.filter(p=>p.portfolio_id==='PORT-GND').map(p=>p.id),
 };
+function getPROG_MAP(){
+  return {...PROG_MAP_STATIC,
+    'air systems':PROGS.filter(p=>p.portfolio_id==='PORT-AIR').map(p=>p.id),
+    'ground defence':PROGS.filter(p=>p.portfolio_id==='PORT-GND').map(p=>p.id),
+  };
+}
 
 function detectScope(q){
   const lower=q.toLowerCase();
@@ -1019,7 +1024,7 @@ function detectScope(q){
       return {emps,label:fns.map(f=>f.name).join(' & '),progs:PROGS,fns};
     }
   }
-  for(const[kw,pIds] of Object.entries(PROG_MAP)){
+  for(const[kw,pIds] of Object.entries(getPROG_MAP())){
     if(lower.includes(kw)&&pIds.length){
       const progs=PROGS.filter(p=>pIds.includes(p.id));
       const emps=EMPS.filter(e=>pIds.some(id=>e.programs?.includes(id)));
