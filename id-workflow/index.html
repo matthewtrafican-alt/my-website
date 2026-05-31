@@ -548,6 +548,120 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
 .tna-flag { font-size: .67rem; color: #94a3b8; padding: 7px 10px; background: #080f1d; border-radius: 6px; margin-bottom: 6px; line-height: 1.45; border-left: 2px solid #ef4444; }
 .tna-flag:last-child { margin-bottom: 0; }
 
+/* ── Phase Gates ── */
+.gates-wrap { margin-top: 16px; }
+.gates-ref { font-size: .6rem; color: #334155; font-style: italic; margin-bottom: 8px; }
+.gates-tabs { display: flex; gap: 3px; flex-wrap: wrap; margin-bottom: 0; }
+.gtab { padding: 5px 13px; border-radius: 7px 7px 0 0; font-size: .68rem; font-weight: 700; cursor: pointer; border: 1px solid #182035; border-bottom: none; background: #080f1d; color: #475569; font-family: 'Inter', sans-serif; transition: all .12s; }
+.gtab:hover { color: #94a3b8; }
+.gtab.ga { background: #0b1221; color: #e2e8f0; }
+.gtab.done { color: #34d399; }
+.gate-body { background: #0b1221; border: 1px solid #182035; border-radius: 0 10px 10px 10px; padding: 18px; }
+.gate-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.gc-lbl { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.gc-enter .gc-lbl { color: #60a5fa; }
+.gc-exit .gc-lbl { color: #34d399; }
+.ck { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid #080f1d; font-size: .69rem; color: #94a3b8; line-height: 1.45; cursor: pointer; user-select: none; }
+.ck:last-child { border-bottom: none; }
+.ck input[type=checkbox] { margin-top: 1px; flex-shrink: 0; accent-color: #3b82f6; cursor: pointer; width: 13px; height: 13px; }
+.ck.ticked { color: #334155; text-decoration: line-through; }
+.gate-foot { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #0e1929; }
+.gfbar { flex: 1; height: 4px; background: #0e1929; border-radius: 2px; }
+.gfill { height: 4px; border-radius: 2px; background: linear-gradient(to right, #3b82f6, #34d399); transition: width .3s; }
+.gflbl { font-size: .62rem; color: #475569; white-space: nowrap; }
+.gsbadge { font-size: .58rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.gsb-lock { background: rgba(71,85,105,.12); color: #475569; border: 1px solid #182035; }
+.gsb-prog { background: rgba(234,179,8,.1); color: #facc15; border: 1px solid rgba(234,179,8,.2); }
+.gsb-done { background: rgba(52,211,153,.1); color: #34d399; border: 1px solid rgba(52,211,153,.2); }
+
+/* ── Synthesis Panel ── */
+.syn-intro { font-size: .72rem; color: #94a3b8; padding: 14px; background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.12); border-radius: 8px; margin-bottom: 14px; line-height: 1.6; }
+.syn-tabs { display: flex; gap: 3px; flex-wrap: wrap; }
+.stab { padding: 5px 13px; border-radius: 7px 7px 0 0; font-size: .68rem; font-weight: 700; cursor: pointer; border: 1px solid #182035; border-bottom: none; background: #080f1d; color: #475569; font-family: 'Inter', sans-serif; white-space: nowrap; transition: all .12s; }
+.stab:hover { color: #94a3b8; }
+.stab.sa { background: #0b1221; color: #e2e8f0; }
+.syn-body { background: #0b1221; border: 1px solid #182035; border-radius: 0 10px 10px 10px; padding: 20px; }
+.syn-section-lbl { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #334155; margin-bottom: 8px; }
+.tna-3col { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+.tna-box { border-radius: 8px; padding: 14px; }
+.tna-box h5 { font-size: .74rem; font-weight: 700; margin-bottom: 7px; }
+.tna-box p { font-size: .67rem; color: #94a3b8; line-height: 1.5; }
+.tna-b1 { background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.18); } .tna-b1 h5 { color: #60a5fa; }
+.tna-b2 { background: rgba(139,92,246,.07); border: 1px solid rgba(139,92,246,.18); } .tna-b2 h5 { color: #a78bfa; }
+.tna-b3 { background: rgba(239,68,68,.07);  border: 1px solid rgba(239,68,68,.18);  } .tna-b3 h5 { color: #f87171; }
+.tna-tbl { width: 100%; border-collapse: collapse; }
+.tna-tbl th { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #334155; padding: 0 8px 8px; text-align: left; }
+.tna-tbl td { font-size: .68rem; padding: 6px 8px; border-bottom: 1px solid #080f1d; color: #94a3b8; }
+.tna-tbl tr:last-child td { border-bottom: none; }
+.tna-rec-box { background: rgba(16,185,129,.07); border: 1px solid rgba(16,185,129,.18); border-radius: 8px; padding: 12px 14px; margin-top: 12px; font-size: .69rem; color: #94a3b8; line-height: 1.55; }
+.tna-rec-box strong { color: #34d399; }
+.obj-item { padding: 12px; background: #080f1d; border-radius: 8px; margin-bottom: 8px; }
+.obj-item:last-child { margin-bottom: 0; }
+.obj-id-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.obj-id { font-size: .62rem; font-weight: 800; }
+.obj-text { font-size: .71rem; color: #e2e8f0; line-height: 1.55; margin-bottom: 8px; font-style: italic; }
+.mod-block { border-radius: 10px; margin-bottom: 10px; overflow: hidden; border: 1px solid #182035; }
+.mod-hdr { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.mod-hdr h5 { font-size: .8rem; font-weight: 700; flex: 1; }
+.mod-meta { font-size: .62rem; color: #475569; }
+.mod-body { padding: 0 16px 14px; }
+.unit-hdr-row { display: grid; grid-template-columns: 1fr 55px 85px 75px 1fr; gap: 6px; font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #334155; padding-bottom: 6px; border-bottom: 1px solid #0e1929; }
+.unit-row { display: grid; grid-template-columns: 1fr 55px 85px 75px 1fr; gap: 6px; align-items: center; padding: 6px 0; border-bottom: 1px solid #080f1d; font-size: .67rem; }
+.unit-row:last-child { border-bottom: none; }
+.unit-name { color: #94a3b8; }
+.unit-hrs { color: #475569; text-align: center; }
+.el-box { border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.el-box:last-child { margin-bottom: 0; }
+.el-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.el-n { font-size: 1.3rem; font-weight: 900; line-height: 1; }
+.el-title { font-size: .78rem; font-weight: 700; color: #e2e8f0; }
+.el-timing { font-size: .6rem; color: #475569; margin-left: auto; }
+.el-row { font-size: .68rem; color: #94a3b8; margin-bottom: 4px; line-height: 1.45; }
+.el-target { font-size: .68rem; font-weight: 600; color: #facc15; }
+.el-metrics { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.el-m { font-size: .6rem; background: #080f1d; border: 1px solid #182035; color: #475569; padding: 2px 7px; border-radius: 4px; }
+.el1{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);} .el1 .el-n{color:#60a5fa;}
+.el2{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.18);} .el2 .el-n{color:#a78bfa;}
+.el3{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);}  .el3 .el-n{color:#34d399;}
+.el4{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);}  .el4 .el-n{color:#fb923c;}
+
+/* ── Ontology ── */
+.onto-domain { border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.onto-dom-hdr { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.onto-dom-hdr h4 { font-size: .82rem; font-weight: 800; flex: 1; }
+.onto-dom-chevron { font-size: .9rem; color: #475569; transition: transform .2s; }
+.onto-dom-chevron.open { transform: rotate(90deg); }
+.onto-dom-body { padding: 0 16px 14px; display: none; }
+.onto-dom-body.open { display: block; }
+.onto-comp { margin-bottom: 8px; background: #080f1d; border-radius: 8px; overflow: hidden; border: 1px solid #0e1929; }
+.onto-comp-hdr { padding: 8px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.onto-comp-name { font-size: .72rem; font-weight: 700; color: #e2e8f0; flex: 1; }
+.onto-comp-chev { font-size: .8rem; color: #334155; transition: transform .2s; }
+.onto-comp-chev.open { transform: rotate(90deg); }
+.onto-comp-body { padding: 0 12px 10px; display: none; }
+.onto-comp-body.open { display: block; }
+.onto-sub { margin-bottom: 8px; }
+.onto-sub-name { font-size: .68rem; font-weight: 600; color: #64748b; margin-bottom: 4px; padding-left: 8px; border-left: 2px solid #1e3058; }
+.onto-ksao-chips { display: flex; flex-wrap: wrap; gap: 4px; padding-left: 12px; }
+.ok { font-size: .59rem; padding: 2px 7px; border-radius: 3px; }
+.ok-K{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60a5fa;}
+.ok-S{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:#34d399;}
+.ok-A{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.ok-O{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2);color:#f472b6;}
+
+/* ── Tools Inventory ── */
+.tools-inv-wrap { background: #0b1221; border: 1px solid #182035; border-radius: 10px; padding: 16px; margin-top: 14px; }
+.tools-inv-wrap h5 { font-size: .78rem; font-weight: 700; color: #e2e8f0; margin-bottom: 3px; }
+.tools-inv-wrap .tsub { font-size: .65rem; color: #475569; margin-bottom: 12px; }
+.tool-cat { margin-bottom: 12px; }
+.tool-cat-lbl { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: #334155; margin-bottom: 6px; }
+.tool-chips-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tchip { font-size: .67rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; background: #080f1d; border: 1px solid #182035; color: #475569; transition: all .12s; font-family: 'Inter', sans-serif; }
+.tchip:hover { border-color: #334155; color: #94a3b8; }
+.tchip.sel { background: rgba(59,130,246,.1); border-color: rgba(59,130,246,.25); color: #93c5fd; }
+.tool-ksao-out { margin-top: 10px; padding: 10px 12px; background: #080f1d; border-radius: 6px; font-size: .68rem; color: #94a3b8; line-height: 1.55; border: 1px solid #0e1929; }
+.tool-ksao-out strong { color: #60a5fa; display: block; margin-bottom: 5px; }
+
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .addie-flow { grid-template-columns: 1fr 1fr; }
@@ -633,6 +747,14 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
         <span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa;">LMS / Assessment History</span>
       </div>
     </div>
+  </div>
+
+  <!-- Tools Inventory -->
+  <div class="tools-inv-wrap">
+    <h5>Employee Tools Inventory</h5>
+    <p class="tsub">Select the tools this employee currently uses — surfaces tech-specific KSAOs and informs competency gap scoring</p>
+    <div id="tools-content"></div>
+    <div id="tools-ksao-out" style="display:none;" class="tool-ksao-out"></div>
   </div>
 </div>
 
@@ -936,6 +1058,13 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
     <strong>Why SAM over ADDIE here?</strong> The iterative design cycle catches alignment problems early — before full content is built. The Savvy Start replaces weeks of individual stakeholder meetings. Bloom's, Gagné, and Krathwohl coding still applies within each design cycle. Choose SAM when the learning challenge is complex or the stakeholder landscape is unclear.
   </div>
   </div><!-- /sam-view -->
+
+  <!-- Phase Gates -->
+  <div class="gates-wrap" id="gates-wrap">
+    <div class="gates-ref">Phase entrance &amp; exit criteria aligned to DAFH 36-2675 — Information for Designers of Instructional Systems</div>
+    <div class="gates-tabs" id="gates-tabs"></div>
+    <div class="gate-body" id="gate-body"></div>
+  </div>
 
   <!-- Knowledge Types -->
   <div class="know-callout">
@@ -1260,14 +1389,31 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
       <span class="tag" style="background:rgba(139,92,246,.12);color:#a78bfa;margin-top:8px;">ADDIE Design</span>
     </div>
   </div>
+
+  <!-- Synthesis Panel — populated by JS when role is selected -->
+  <div id="synthesis-panel" style="margin-top:16px;"></div>
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 8 — TIME TRANSFORMATION
+     SECTION 8 — HR COMPETENCY ONTOLOGY
 ══════════════════════════════════════ -->
 <div class="sec">
   <div class="sec-hd">
-    <div class="sec-num" style="background:rgba(234,179,8,.14);color:#facc15;">8</div>
+    <div class="sec-num" style="background:rgba(20,184,166,.14);color:#2dd4bf;">8</div>
+    <div><div class="sec-label">Competency Architecture</div><div class="sec-name">HR PROFESSIONAL COMPETENCY ONTOLOGY — Domain → Competency → Sub-competency → KSAO</div></div>
+  </div>
+  <div class="highlight-box" style="margin-bottom:14px;">
+    <strong>What is a competency ontology?</strong> A structured, hierarchical taxonomy that maps how knowledge, skills, abilities, and other characteristics (KSAOs) relate to each other and to job performance. This ontology for HR Business Partners serves as the architecture for the competency model — defining what gets assessed in the gap analysis, what gets targeted in learning objectives, and what gets measured in evaluation.
+  </div>
+  <div id="onto-container"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 9 — TIME TRANSFORMATION
+══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:rgba(234,179,8,.14);color:#facc15;">9</div>
     <div><div class="sec-label">The Time Difference</div><div class="sec-name">TRANSFORMATION — Traditional vs. AI-Assisted ID Process</div></div>
   </div>
   <div class="card">
@@ -1304,7 +1450,7 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
 ══════════════════════════════════════ -->
 <div class="sec">
   <div class="sec-hd">
-    <div class="sec-num" style="background:rgba(239,68,68,.14);color:#f87171;">9</div>
+    <div class="sec-num" style="background:rgba(239,68,68,.14);color:#f87171;">10</div>
     <div><div class="sec-label">The Results</div><div class="sec-name">THE IMPACT — Quality AND Speed AND Evidence</div></div>
   </div>
   <div class="g3">
@@ -1322,7 +1468,7 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
 ══════════════════════════════════════ -->
 <div class="sec">
   <div class="sec-hd">
-    <div class="sec-num" style="background:rgba(14,165,233,.14);color:#38bdf8;">10</div>
+    <div class="sec-num" style="background:rgba(14,165,233,.14);color:#38bdf8;">11</div>
     <div><div class="sec-label">The Audience</div><div class="sec-name">WHO SHOULD USE THIS WORKFLOW</div></div>
   </div>
   <div class="g3">
@@ -1556,6 +1702,587 @@ function delComp(i) {
 function addComp() {
   gapData.push({ name: 'New Competency', required: 3, current: 1, criticality: 'medium' });
   renderGapCalc();
+}
+
+// ── Phase Gate Data (DAFH 36-2675 aligned) ──────────────────────────────────
+const GATES = {
+  addie: [
+    {
+      id:'analyze', label:'Analyze', color:'#fb923c',
+      enter:[
+        'Performance gap or learning need formally identified and documented',
+        'Sponsoring commander/manager has approved analysis phase initiation',
+        'Budget and timeline for analysis phase confirmed',
+        'Target population defined: job role, grade/level, and unit/function',
+        'Access to SMEs, supervisors, and performance data arranged',
+        'ISD team assigned; roles and responsibilities documented (Ch 2.3, DAFH 36-2675)',
+      ],
+      exit:[
+        'Educational analysis complete: job tasks identified and validated with SMEs (Ch 3.2)',
+        'Learning analysis complete: task frequency, importance, and trainability rated (Ch 3.3)',
+        'Resource analysis complete: existing materials inventoried, gaps noted (Ch 3.4)',
+        'Target audience analysis complete: current KSAOs and prerequisites documented (Ch 3.5)',
+        'Training vs. non-training causes confirmed — training is the correct intervention',
+        'Prioritized KSAO gap list produced and ranked by criticality',
+        'ISD Management Plan / Project Management Plan updated (Ch 3.6)',
+        'Stakeholder sign-off obtained on analysis findings before proceeding',
+      ]
+    },
+    {
+      id:'design', label:'Design', color:'#60a5fa',
+      enter:[
+        'Analysis phase exit criteria 100% complete with stakeholder sign-off',
+        'SME(s) identified and committed for design phase review',
+        'LMS / delivery platform confirmed and accessible',
+        'Design timeline and review schedule approved by sponsor',
+      ],
+      exit:[
+        'All terminal and enabling learning objectives written (Condition · Behavior · Criterion) (Ch 4.2)',
+        'Each objective coded to Bloom\'s Taxonomy cognitive level (Ch 4.3)',
+        'Each objective classified by Gagné capability type',
+        'Affective learning goals identified and coded to Krathwohl domain',
+        'Proficiency codes assigned per objective (Attachment 5, DAFH 36-2675)',
+        'Tests / assessments developed and directly linked to objectives (Ch 4.5)',
+        'Existing materials reviewed for reuse before creating new content (Ch 4.6)',
+        'Instructional strategy designed per objective and learning type (Ch 4.7)',
+        'Appropriate media selected and justified (Ch 4.8)',
+        'Lesson plan framework developed (Ch 4.9)',
+        'Implementation plan drafted (Ch 4.10)',
+        'Design phase evaluation criteria met (Ch 4.12)',
+        'Design document reviewed and approved by stakeholder before development begins',
+      ]
+    },
+    {
+      id:'develop', label:'Develop', color:'#a78bfa',
+      enter:[
+        'Design document has formal stakeholder approval',
+        'SME availability confirmed for content review cycles',
+        'Development tools, templates, and style guide obtained',
+        'Development schedule with SME review milestones confirmed',
+      ],
+      exit:[
+        'All declarative knowledge modules developed and SME-reviewed (Ch 5.2)',
+        'All procedural knowledge guides, job aids, and performance support developed',
+        'All assessments built and criterion-referenced to learning objectives',
+        'Affective learning activities designed to Krathwohl level targets',
+        'Facilitator guide developed (if ILT or blended delivery)',
+        'Learner guide and student materials finalized',
+        'Instruction validated against objectives — content accuracy verified (Ch 5.3)',
+        'Development phase evaluation criteria met (Ch 5.4)',
+        'Accessibility review completed',
+        'Final instructional materials packaged and ready for pilot (Ch 5.5)',
+      ]
+    },
+    {
+      id:'implement', label:'Implement', color:'#34d399',
+      enter:[
+        'All development exit criteria met and materials finalized',
+        'LMS / platform configured; enrollment and access tested',
+        'Pilot group identified and scheduled',
+        'Facilitator briefing / train-the-trainer completed (if applicable)',
+      ],
+      exit:[
+        'Pilot delivery completed with representative target audience sample (Ch 6.2)',
+        'Level 1 reaction data collected from pilot group (min. 80% response rate)',
+        'Technical and instructional issues identified and documented',
+        'Revisions applied based on pilot feedback before full launch',
+        'Full launch schedule confirmed and learner communications sent',
+        'Records of training delivery documented per AF Instruction 33 (DAFH 36-2675)',
+      ]
+    },
+    {
+      id:'evaluate', label:'Evaluate', color:'#f87171',
+      enter:[
+        'Full implementation complete',
+        'Level 1 and Level 2 evaluation instruments deployed',
+        'Level 3 behavioral observation checkpoints scheduled (30/60/90 days)',
+        'Level 4 business metrics baseline established pre-training',
+      ],
+      exit:[
+        'Level 1 (Reaction): data collected, analyzed, and reported (Ch 7.2)',
+        'Level 2 (Learning): pre/post assessment scores documented and compared',
+        'Level 3 (Behavior): on-the-job transfer assessed at 90-day checkpoint',
+        'Level 4 (Results): business impact measured against established baseline',
+        'Internal evaluation complete: course objectives vs. student achievement (Ch 7.3)',
+        'External evaluation complete: job performance improvement confirmed',
+        'KSAO proficiency re-assessment completed — gap closure measured',
+        'Evaluation report produced, distributed, and filed',
+        'Recommendations for course revision documented and routed (AF Form 847)',
+      ]
+    },
+  ],
+  sam: [
+    {
+      id:'prep', label:'Preparation', color:'#2dd4bf',
+      enter:[
+        'Performance gap confirmed through initial data review',
+        'Key stakeholders, SMEs, and designers identified and committed to Savvy Start',
+        'Background materials (job descriptions, performance data, existing content) gathered',
+        'Savvy Start session scheduled (minimum 4 hours recommended)',
+        'TNA inputs and KSAO gap data pre-populated for Savvy Start discussion',
+      ],
+      exit:[
+        'Savvy Start workshop completed with SMEs, designers, and stakeholders',
+        'Initial design ideas documented from Savvy Start brainstorm',
+        'TNA inputs confirmed and agreed by all parties',
+        'Project scope, schedule, and iteration cadence agreed',
+        'Team roles and communication plan established',
+      ]
+    },
+    {
+      id:'idesign', label:'Iterative Design', color:'#facc15',
+      enter:[
+        'Preparation phase exit criteria fully met',
+        'Rapid prototyping tools available (slides, paper, or authoring tool)',
+        'Reviewer schedule confirmed for each design cycle',
+        'Bloom\'s and Gagné coding criteria agreed',
+      ],
+      exit:[
+        'Minimum two rapid prototype cycles completed with documented stakeholder feedback',
+        'All learning objectives written, Bloom\'s-coded, and Gagné-classified on Design Proof',
+        'Krathwohl affective goals validated on Design Proof',
+        'Assessment strategy confirmed and linked to each objective',
+        'Design Proof reviewed and formally approved by stakeholder before development begins',
+      ]
+    },
+    {
+      id:'idev', label:'Iterative Development', color:'#fb923c',
+      enter:[
+        'Design Proof has formal stakeholder approval',
+        'Development resources and tools confirmed',
+        'Alpha review schedule set with stakeholders and SMEs',
+        'Evaluation framework drafted (Levels 1–4)',
+      ],
+      exit:[
+        'Alpha build completed and reviewed; feedback documented and incorporated',
+        'Beta build user-tested with sample of target learners; usability issues resolved',
+        'Gold (final) build approved by stakeholder',
+        'LMS / SCORM / xAPI package tested and ready',
+        'Evaluation framework finalized and pre-training baseline metrics captured',
+        'Facilitator and learner materials finalized',
+      ]
+    },
+  ]
+};
+
+let activeGatePhase = 'analyze';
+let gateCheckState = {}; // key: phaseId+idx, value: bool
+
+function initGates() {
+  const mode = document.getElementById('addie-view').style.display === 'none' ? 'sam' : 'addie';
+  renderGateTabs(mode);
+  renderGateBody(mode, mode === 'addie' ? GATES.addie[0].id : GATES.sam[0].id);
+}
+
+function renderGateTabs(mode) {
+  const phases = GATES[mode];
+  const tabs = document.getElementById('gates-tabs');
+  if (!tabs) return;
+  tabs.innerHTML = phases.map(p => {
+    const allChecks = [...(p.enter||[]),...(p.exit||[])].map((_,i)=>gateCheckState[p.id+'_'+i]||false);
+    const done = allChecks.length > 0 && allChecks.every(Boolean);
+    return `<button class="gtab${activeGatePhase===p.id?' ga':''}${done?' done':''}"
+      style="${activeGatePhase===p.id?'border-color:'+p.color+';color:'+p.color:''}"
+      onclick="setGatePhase('${mode}','${p.id}')">${p.label}</button>`;
+  }).join('');
+}
+
+function renderGateBody(mode, phaseId) {
+  activeGatePhase = phaseId;
+  const phase = GATES[mode].find(p => p.id === phaseId);
+  const el = document.getElementById('gate-body');
+  if (!el || !phase) return;
+
+  const enterItems = (phase.enter||[]).map((item,i) => {
+    const key = phaseId+'_e'+i;
+    const checked = !!gateCheckState[key];
+    return `<label class="ck${checked?' ticked':''}">
+      <input type="checkbox" ${checked?'checked':''} onchange="toggleGate('${key}',this.checked,'${mode}','${phaseId}')">
+      ${item}
+    </label>`;
+  }).join('');
+
+  const exitItems = (phase.exit||[]).map((item,i) => {
+    const key = phaseId+'_x'+i;
+    const checked = !!gateCheckState[key];
+    return `<label class="ck${checked?' ticked':''}">
+      <input type="checkbox" ${checked?'checked':''} onchange="toggleGate('${key}',this.checked,'${mode}','${phaseId}')">
+      ${item}
+    </label>`;
+  }).join('');
+
+  const allKeys = [...(phase.enter||[]).map((_,i)=>phaseId+'_e'+i), ...(phase.exit||[]).map((_,i)=>phaseId+'_x'+i)];
+  const checked = allKeys.filter(k=>gateCheckState[k]).length;
+  const total = allKeys.length;
+  const pct = total > 0 ? Math.round(checked/total*100) : 0;
+  const status = pct === 100 ? 'done' : pct > 0 ? 'prog' : 'lock';
+  const statusLabel = pct === 100 ? 'Gate Complete' : pct > 0 ? 'In Progress' : 'Not Started';
+  const badgeClass = status === 'done' ? 'gsb-done' : status === 'prog' ? 'gsb-prog' : 'gsb-lock';
+
+  el.innerHTML = `
+    <div class="gate-cols">
+      <div class="gc-enter"><div class="gc-lbl">Entrance Criteria — Must be true before starting</div>${enterItems}</div>
+      <div class="gc-exit"><div class="gc-lbl">Exit Criteria — Must be complete before advancing</div>${exitItems}</div>
+    </div>
+    <div class="gate-foot">
+      <div class="gfbar"><div class="gfill" style="width:${pct}%"></div></div>
+      <div class="gflbl">${checked}/${total} criteria met</div>
+      <span class="gsbadge ${badgeClass}">${statusLabel}</span>
+    </div>`;
+
+  renderGateTabs(mode);
+}
+
+function toggleGate(key, val, mode, phaseId) {
+  gateCheckState[key] = val;
+  renderGateBody(mode, phaseId);
+}
+
+function setGatePhase(mode, phaseId) {
+  renderGateBody(mode, phaseId);
+}
+
+// ── Synthesis Data (HR Business Partner) ─────────────────────────────────────
+const SYNTHESIS = {
+  hr_business_partner: {
+    tna: {
+      org: { context:'Apex Financial Services — 340 HR Business Partners across 12 business units', finding:'C-suite mandate: HRBPs must transition from transactional HR to consultative advisory roles. People analytics capability required by Q3 per Strategic Priority #2.', alignment:'Training investment directly supports Strategic Priority #2: Build Data-Driven HR Capability' },
+      tasks: [
+        { cluster:'Workforce Planning',       imp:4.8, freq:3.2, trainable:4.1, critical:true },
+        { cluster:'People Analytics',         imp:4.9, freq:3.8, trainable:4.3, critical:true },
+        { cluster:'OD Consultation',          imp:4.6, freq:3.1, trainable:3.9, critical:true },
+        { cluster:'Employee Relations',       imp:4.5, freq:4.7, trainable:3.2, critical:false },
+        { cluster:'Change Management',        imp:4.3, freq:2.9, trainable:3.8, critical:false },
+        { cluster:'Talent Acquisition Support',imp:3.8,freq:3.5, trainable:3.5, critical:false },
+      ],
+      person: { n:24, method:'360° multi-rater + knowledge assessment + manager ratings', date:'Jun 2025',
+        gaps:[
+          { ksao:'People Analytics',    req:3, avg:1.6, pct:71 },
+          { ksao:'Workforce Planning',  req:4, avg:2.3, pct:63 },
+          { ksao:'OD Consultation',     req:4, avg:2.8, pct:54 },
+          { ksao:'Change Management',   req:4, avg:2.9, pct:42 },
+          { ksao:'Business Acumen',     req:4, avg:3.1, pct:38 },
+        ]
+      },
+      rec:'3-module blended curriculum, 36 contact hours. Priority intervention: People Analytics (highest criticality, highest trainability). Non-training intervention recommended for Employee Relations (adequate current proficiency — coaching, not training).'
+    },
+    objectives: [
+      { id:'LO1', mod:1, text:'Given an HRIS workforce dashboard, the learner will interpret key workforce metrics to identify at least three statistically significant trends without supervisor assistance.', bloom:'Analyze', gagne:'Cognitive Strategies', ktype:'Procedural', color:'#34d399' },
+      { id:'LO2', mod:1, text:'The learner will construct a data visualization that communicates one workforce insight to a non-technical business leader within a 10-minute presentation.', bloom:'Create', gagne:'Intellectual Skills', ktype:'Procedural', color:'#a78bfa' },
+      { id:'LO3', mod:2, text:'The learner will explain the three-level workforce planning methodology (demand analysis, supply analysis, gap identification) and the data source required at each level.', bloom:'Understand', gagne:'Verbal Information', ktype:'Declarative', color:'#fb923c' },
+      { id:'LO4', mod:2, text:'Given a business unit growth scenario, the learner will produce a 12-month workforce plan that addresses demand/supply imbalance with at least two sourcing strategy options.', bloom:'Create', gagne:'Intellectual Skills', ktype:'Procedural', color:'#a78bfa' },
+      { id:'LO5', mod:3, text:'The learner will evaluate a proposed organizational change initiative against five OD diagnostic criteria and recommend modifications to improve the readiness assessment score.', bloom:'Evaluate', gagne:'Intellectual Skills', ktype:'Procedural', color:'#60a5fa' },
+      { id:'LO6', mod:3, text:'In a stakeholder consultation role-play, the learner will demonstrate active listening, diagnostic questioning, and advisory recommendation techniques without breaking character.', bloom:'Apply', gagne:'Attitudes', ktype:'Affective', color:'#f472b6' },
+    ],
+    curriculum: {
+      title:'Strategic HR Business Partnering Program', total:36,
+      modules:[
+        { id:'M1', title:'People Analytics for HRBPs', hours:12, delivery:'Blended (eLearning + Virtual Workshop)',
+          color:'#60a5fa',
+          units:[
+            { title:'Data Literacy Foundations',          hours:3,  type:'Declarative', bloom:'Understand',          method:'eLearning module + readings' },
+            { title:'HRIS Navigation & Reporting',         hours:4,  type:'Procedural',  bloom:'Apply',              method:'Workday sandbox simulation' },
+            { title:'Workforce Metrics & KPIs',            hours:3,  type:'Procedural',  bloom:'Analyze',            method:'Case study + dashboard exercise' },
+            { title:'Data Storytelling for Business',      hours:2,  type:'Affective',   bloom:'Apply',              method:'Presentation workshop' },
+          ]
+        },
+        { id:'M2', title:'Strategic Workforce Planning', hours:14, delivery:'Instructor-Led (Virtual)',
+          color:'#a78bfa',
+          units:[
+            { title:'WFP Methodology & Frameworks',        hours:3,  type:'Declarative', bloom:'Understand',          method:'Lecture + SHRM framework readings' },
+            { title:'Demand & Supply Analysis',            hours:4,  type:'Procedural',  bloom:'Apply',              method:'Structured exercise with real BU data' },
+            { title:'Scenario Planning & Gap Analysis',    hours:4,  type:'Procedural',  bloom:'Analyze → Evaluate', method:'Team simulation' },
+            { title:'Building the WFP Business Case',      hours:3,  type:'Affective',   bloom:'Create',             method:'Individual project + peer review' },
+          ]
+        },
+        { id:'M3', title:'OD Consultation & Change Advisory', hours:10, delivery:'Workshop (In-Person)',
+          color:'#f472b6',
+          units:[
+            { title:'OD Models & Diagnostic Frameworks',   hours:3,  type:'Declarative', bloom:'Understand → Apply', method:'Instruction + model application exercise' },
+            { title:'Stakeholder Analysis & Influence',    hours:3,  type:'Affective',   bloom:'Apply → Evaluate',   method:'Role-play with observer feedback' },
+            { title:'Change Readiness Assessment',         hours:2,  type:'Procedural',  bloom:'Apply',              method:'Assessment tool practice' },
+            { title:'Consulting Skills in Practice',       hours:2,  type:'Affective',   bloom:'Apply',              method:'Full consultation simulation' },
+          ]
+        },
+      ]
+    },
+    eval:[
+      { n:1, name:'Reaction',         cls:'el1', timing:'Post-module', method:'5-item survey + NPS score', target:'≥ 4.0/5.0 satisfaction; NPS ≥ +30', metrics:['Overall satisfaction','Content relevance to role','Facilitation quality','Likelihood to apply','NPS'] },
+      { n:2, name:'Learning',          cls:'el2', timing:'Pre/post each module', method:'Knowledge assessment + skills simulation', target:'≥ 20% knowledge gain; ≥ 80% simulation pass rate', metrics:['Pre/post knowledge test delta','Simulation performance score','Objective-level mastery rate'] },
+      { n:3, name:'Behavior Transfer', cls:'el3', timing:'30, 60, 90 days post-training', method:'Manager observation checklist + KSAO re-assessment', target:'≥ 1.0 point proficiency gain on priority KSAOs at 90 days', metrics:['KSAO proficiency re-score','Manager-observed behavior frequency','Tool usage in analytics platform'] },
+      { n:4, name:'Business Results',  cls:'el4', timing:'6 months post-training', method:'Business case quality ratings + HRBP effectiveness survey', target:'Measurable improvement in HRBP advisory quality ratings', metrics:['Business case quality score','Time-to-advisory (days)','HRBP effectiveness rating (stakeholder survey)'] },
+    ]
+  }
+};
+
+let activeSynTab = 'tna';
+
+function renderSynthesis(roleKey) {
+  const panel = document.getElementById('synthesis-panel');
+  if (!panel) return;
+  if (!SYNTHESIS[roleKey]) { panel.innerHTML = ''; return; }
+
+  const s = SYNTHESIS[roleKey];
+  panel.innerHTML = `
+    <div class="syn-intro"><strong>Synthetic Example — ${JOB_ROLES[roleKey]?.title || roleKey}</strong>: The artifacts below represent a complete, populated output for a cohort of 24 HR Business Partners at a financial services firm. Use these as templates for your own program.</div>
+    <div class="syn-tabs">
+      ${[['tna','TNA Report'],['obj','Learning Objectives'],['curr','Curriculum Map'],['eval','Evaluation Framework']].map(([id,lbl])=>
+        `<button class="stab${activeSynTab===id?' sa':''}" onclick="setSynTab('${id}','${roleKey}')">${lbl}</button>`
+      ).join('')}
+    </div>
+    <div class="syn-body" id="syn-body"></div>`;
+
+  renderSynBody(roleKey, activeSynTab);
+}
+
+function setSynTab(tab, roleKey) {
+  activeSynTab = tab;
+  document.querySelectorAll('.stab').forEach(t => t.classList.toggle('sa', t.textContent.toLowerCase().includes(tab==='tna'?'tna':tab==='obj'?'objective':tab==='curr'?'curriculum':'evaluation')));
+  renderSynBody(roleKey, tab);
+}
+
+function renderSynBody(roleKey, tab) {
+  const el = document.getElementById('syn-body');
+  if (!el) return;
+  const s = SYNTHESIS[roleKey];
+
+  if (tab === 'tna') {
+    const taskRows = s.tna.tasks.map(t =>
+      `<tr><td>${t.cluster}</td><td style="text-align:center;color:${t.critical?'#f87171':'#64748b'}">${t.imp.toFixed(1)}</td><td style="text-align:center">${t.freq.toFixed(1)}</td><td style="text-align:center">${t.trainable.toFixed(1)}</td><td style="text-align:center"><span class="tag" style="${t.critical?'background:rgba(239,68,68,.12);color:#f87171':'background:rgba(71,85,105,.12);color:#475569'}">${t.critical?'Priority':'Monitor'}</span></td></tr>`
+    ).join('');
+    const gapRows = s.tna.person.gaps.map(g =>
+      `<tr><td>${g.ksao}</td><td style="text-align:center;color:#60a5fa">${g.req}</td><td style="text-align:center;color:#fb923c">${g.avg.toFixed(1)}</td><td style="text-align:center;color:#f87171">${g.pct}%</td></tr>`
+    ).join('');
+
+    el.innerHTML = `
+      <div class="syn-section-lbl">Organizational Analysis</div>
+      <div class="tna-3col">
+        <div class="tna-box tna-b1"><h5>Org Analysis</h5><p><strong style="color:#93c5fd;">Context:</strong> ${s.tna.org.context}</p><p style="margin-top:6px;"><strong style="color:#93c5fd;">Finding:</strong> ${s.tna.org.finding}</p></div>
+        <div class="tna-box tna-b2"><h5>Task Analysis — 6 Critical Task Clusters</h5>
+          <table class="tna-tbl"><thead><tr><th>Task Cluster</th><th>Imp.</th><th>Freq.</th><th>Train.</th><th>Flag</th></tr></thead><tbody>${taskRows}</tbody></table>
+        </div>
+        <div class="tna-box tna-b3"><h5>Person Analysis — n=24 HRBPs</h5>
+          <p style="font-size:.63rem;color:#64748b;margin-bottom:8px;">Method: ${s.tna.person.method} · Assessed: ${s.tna.person.date}</p>
+          <table class="tna-tbl"><thead><tr><th>KSAO</th><th>Req.</th><th>Avg.</th><th>% Below</th></tr></thead><tbody>${gapRows}</tbody></table>
+        </div>
+      </div>
+      <div class="tna-rec-box"><strong>Recommendation:</strong> ${s.tna.rec}</div>`;
+  }
+
+  else if (tab === 'obj') {
+    const bloomColors = {Analyze:'#34d399',Create:'#a78bfa',Understand:'#fb923c',Apply:'#facc15',Evaluate:'#60a5fa'};
+    el.innerHTML = s.objectives.map(o => `
+      <div class="obj-item">
+        <div class="obj-id-row">
+          <span class="obj-id" style="color:${o.color}">${o.id} — Module ${o.mod}</span>
+          <span class="tag" style="background:${(bloomColors[o.bloom]||'#94a3b8')}18;color:${bloomColors[o.bloom]||'#94a3b8'};border:1px solid ${(bloomColors[o.bloom]||'#94a3b8')}33">Bloom's: ${o.bloom}</span>
+          <span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)">${o.gagne}</span>
+          <span class="tag" style="background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)">${o.ktype}</span>
+        </div>
+        <div class="obj-text">"${o.text}"</div>
+      </div>`).join('');
+  }
+
+  else if (tab === 'curr') {
+    const typeColors = {Declarative:'#38bdf8',Procedural:'#c084fc',Affective:'#f472b6'};
+    el.innerHTML = `<div style="font-size:.72rem;color:#94a3b8;margin-bottom:12px;"><strong style="color:#e2e8f0;">${s.curriculum.title}</strong> · ${s.curriculum.total} total contact hours</div>` +
+      s.curriculum.modules.map(m => `
+        <div class="mod-block" style="border-color:${m.color}33">
+          <div class="mod-hdr" style="background:${m.color}0d" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+            <h5 style="color:${m.color}">${m.id}: ${m.title}</h5>
+            <span class="mod-meta">${m.hours}h · ${m.delivery}</span>
+          </div>
+          <div class="mod-body">
+            <div class="unit-hdr-row"><span>Unit</span><span>Hours</span><span>K-Type</span><span>Bloom's</span><span>Method</span></div>
+            ${m.units.map(u=>`<div class="unit-row"><span class="unit-name">${u.title}</span><span class="unit-hrs">${u.hours}h</span><span class="tag" style="background:${(typeColors[u.type]||'#94a3b8')}18;color:${typeColors[u.type]||'#94a3b8'};font-size:.58rem">${u.type}</span><span style="font-size:.62rem;color:#64748b">${u.bloom}</span><span style="font-size:.62rem;color:#475569">${u.method}</span></div>`).join('')}
+          </div>
+        </div>`).join('');
+  }
+
+  else if (tab === 'eval') {
+    el.innerHTML = s.eval.map(e => `
+      <div class="el-box ${e.cls}">
+        <div class="el-hd"><span class="el-n">L${e.n}</span><span class="el-title">${e.name}</span><span class="el-timing">${e.timing}</span></div>
+        <div class="el-row"><strong style="color:#e2e8f0">Method:</strong> ${e.method}</div>
+        <div class="el-target">Target: ${e.target}</div>
+        <div class="el-metrics">${e.metrics.map(m=>`<span class="el-m">${m}</span>`).join('')}</div>
+      </div>`).join('');
+  }
+}
+
+// ── HR Competency Ontology ────────────────────────────────────────────────────
+const HR_ONTOLOGY = [
+  { name:'Strategic HR', color:'#60a5fa',
+    comps:[
+      { name:'People Analytics', subs:[
+        { name:'Data Literacy',           ksaos:['Statistics basics (K)','Data interpretation (S)','Analytical reasoning (A)'] },
+        { name:'HRIS Proficiency',        ksaos:['Workday / SAP navigation (S)','Report building (S)','Data integrity standards (K)'] },
+        { name:'Insight Communication',   ksaos:['Data visualization (S)','Executive storytelling (S)','Data-to-action translation (A)'] },
+      ]},
+      { name:'Workforce Planning', subs:[
+        { name:'Demand Forecasting',      ksaos:['Labor market knowledge (K)','Strategy-to-headcount methods (S)','Quantitative modeling (S)'] },
+        { name:'Supply Analysis',         ksaos:['Internal talent data (S)','Attrition modeling (S)','Pipeline assessment (A)'] },
+        { name:'Gap & Sourcing Strategy', ksaos:['Build/buy/borrow frameworks (K)','Sourcing strategy design (S)','Business case writing (S)'] },
+      ]},
+      { name:'OD & Change', subs:[
+        { name:'Organizational Diagnosis', ksaos:['OD models (K)','Diagnostic instruments (S)','Systems thinking (A)'] },
+        { name:'Change Facilitation',      ksaos:['Change management models (K)','Stakeholder engagement (S)','Resilience / adaptability (O)'] },
+        { name:'Culture & Climate',        ksaos:['Survey design (S)','Culture assessment methods (K)','Organizational influence (O)'] },
+      ]},
+    ]
+  },
+  { name:'Operational HR', color:'#34d399',
+    comps:[
+      { name:'Employee Relations', subs:[
+        { name:'Labor Law & Compliance',  ksaos:['Employment law (K)','Policy interpretation (S)','Documentation standards (S)'] },
+        { name:'Conflict Resolution',     ksaos:['Mediation principles (K)','Active listening (S)','Impartiality (O)'] },
+        { name:'Workplace Investigations',ksaos:['Investigation process (K)','Evidence gathering (S)','Objectivity (O)'] },
+      ]},
+      { name:'Talent Management', subs:[
+        { name:'Job Analysis',            ksaos:['KSAO frameworks (K)','Task inventory methods (S)','Analytical precision (A)'] },
+        { name:'Selection & Assessment',  ksaos:['Assessment validity (K)','Structured interview design (S)','Adverse impact awareness (K)'] },
+        { name:'Succession Planning',     ksaos:['9-box methodology (K)','Talent review facilitation (S)','Confidentiality (O)'] },
+      ]},
+    ]
+  },
+  { name:'Business Partnering', color:'#f472b6',
+    comps:[
+      { name:'Business Acumen', subs:[
+        { name:'Financial Literacy',      ksaos:['P&L fundamentals (K)','Budget interpretation (S)','ROI calculation (S)'] },
+        { name:'Industry Knowledge',      ksaos:['Sector dynamics (K)','Competitive landscape (K)','Regulatory environment (K)'] },
+      ]},
+      { name:'Advisory & Consulting', subs:[
+        { name:'Consulting Process',      ksaos:['Problem diagnosis (S)','Hypothesis-driven analysis (A)','Recommendation framing (S)'] },
+        { name:'Executive Influence',     ksaos:['Executive presence (O)','Credibility building (O)','Difficult conversations (S)'] },
+      ]},
+    ]
+  },
+];
+
+function renderOntology() {
+  const el = document.getElementById('onto-container');
+  if (!el) return;
+  const typeColors = {K:'ok-K',S:'ok-S',A:'ok-A',O:'ok-O'};
+
+  el.innerHTML = HR_ONTOLOGY.map((dom, di) => `
+    <div class="onto-domain" style="border:1px solid ${dom.color}22;background:${dom.color}06">
+      <div class="onto-dom-hdr" onclick="toggleOnto('dom${di}')">
+        <h4 style="color:${dom.color}">${dom.name}</h4>
+        <span class="onto-dom-chevron" id="domchev${di}">›</span>
+      </div>
+      <div class="onto-dom-body" id="dom${di}">
+        ${dom.comps.map((comp, ci) => `
+          <div class="onto-comp">
+            <div class="onto-comp-hdr" onclick="toggleOnto('comp${di}_${ci}')">
+              <span class="onto-comp-name">${comp.name}</span>
+              <span class="onto-comp-chev" id="compchev${di}_${ci}">›</span>
+            </div>
+            <div class="onto-comp-body" id="comp${di}_${ci}">
+              ${comp.subs.map(sub => `
+                <div class="onto-sub">
+                  <div class="onto-sub-name">${sub.name}</div>
+                  <div class="onto-ksao-chips">
+                    ${sub.ksaos.map(k => {
+                      const t = k.match(/\(([KSAO])\)$/)?.[1]||'K';
+                      return `<span class="ok ${typeColors[t]||'ok-K'}">${k}</span>`;
+                    }).join('')}
+                  </div>
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleOnto(id) {
+  const el = document.getElementById(id);
+  const isComp = id.startsWith('comp');
+  const chevId = isComp ? 'compchev' + id.replace('comp','') : 'domchev' + id.replace('dom','');
+  const chev = document.getElementById(chevId);
+  if (!el) return;
+  const open = el.classList.toggle('open');
+  if (chev) chev.classList.toggle('open', open);
+}
+
+// ── Tools Inventory ───────────────────────────────────────────────────────────
+const TOOL_CATS = [
+  { cat:'HRIS / HCM',        tools:['Workday','SAP SuccessFactors','Oracle HCM','ADP Workforce Now','BambooHR','UKG Pro'] },
+  { cat:'People Analytics',  tools:['Excel (Advanced)','Power BI','Tableau','Python / R','Google Sheets','Visier'] },
+  { cat:'Talent Acquisition',tools:['Greenhouse','Lever','Taleo','iCIMS','LinkedIn Recruiter','LinkedIn Talent Insights'] },
+  { cat:'L&D / LMS',         tools:['Cornerstone','SuccessFactors LMS','Docebo','Workday Learning','Articulate 360','Adobe Captivate'] },
+  { cat:'Project Mgmt',      tools:['Jira','Asana','Monday.com','Microsoft Project','Smartsheet','Trello'] },
+  { cat:'Communication',     tools:['Microsoft Teams','Slack','Zoom','SharePoint','Confluence','Outlook'] },
+];
+
+const TOOL_KSAO = {
+  'Workday':            ['HRIS Navigation & Reporting (S)','Data Integrity Standards (K)'],
+  'SAP SuccessFactors': ['HRIS Navigation & Reporting (S)','Talent Module Proficiency (S)'],
+  'Oracle HCM':         ['HRIS Navigation & Reporting (S)'],
+  'ADP Workforce Now':  ['HRIS Navigation & Reporting (S)','Payroll Data Literacy (K)'],
+  'BambooHR':           ['HRIS Navigation & Reporting (S)'],
+  'UKG Pro':            ['HRIS Navigation & Reporting (S)','Workforce Scheduling Knowledge (K)'],
+  'Excel (Advanced)':   ['Data Analysis (S)','Quantitative Modeling (S)','Data Literacy (K)'],
+  'Power BI':           ['Data Visualization (S)','People Analytics (S)','Dashboard Design (S)'],
+  'Tableau':            ['Data Visualization (S)','People Analytics (S)'],
+  'Python / R':         ['Statistical Programming (S)','Data Analysis (A)','Advanced Analytics (S)'],
+  'Google Sheets':      ['Basic Data Analysis (S)'],
+  'Visier':             ['People Analytics (S)','Workforce Planning (S)'],
+  'Greenhouse':         ['ATS Proficiency (S)','Recruitment Process (K)'],
+  'Lever':              ['ATS Proficiency (S)','Recruitment Process (K)'],
+  'Taleo':              ['ATS Proficiency (S)'],
+  'iCIMS':              ['ATS Proficiency (S)'],
+  'LinkedIn Recruiter': ['Talent Sourcing (S)','Boolean Search (S)'],
+  'LinkedIn Talent Insights':['Labor Market Analysis (S)','Talent Intelligence (A)'],
+  'Cornerstone':        ['LMS Administration (S)','Learning Analytics (S)'],
+  'SuccessFactors LMS': ['LMS Administration (S)','Talent Development Integration (K)'],
+  'Docebo':             ['LMS Administration (S)'],
+  'Workday Learning':   ['LMS Administration (S)','HRIS Integration (K)'],
+  'Articulate 360':     ['eLearning Development (S)','ID Tools Proficiency (S)'],
+  'Adobe Captivate':    ['eLearning Development (S)'],
+  'Jira':               ['Agile / Scrum (K)','Project Tracking (S)'],
+  'Asana':              ['Project Management (S)','Work Planning (S)'],
+  'Monday.com':         ['Project Management (S)'],
+  'Microsoft Project':  ['Project Scheduling (S)','Resource Management (S)'],
+  'Smartsheet':         ['Project Scheduling (S)'],
+  'Trello':             ['Basic Task Management (S)'],
+  'Microsoft Teams':    ['Digital Collaboration (S)','Virtual Facilitation (S)'],
+  'Slack':              ['Digital Collaboration (S)'],
+  'Zoom':               ['Virtual Facilitation (S)'],
+  'SharePoint':         ['Knowledge Management (S)','Document Management (S)'],
+  'Confluence':         ['Knowledge Management (S)'],
+  'Outlook':            ['Professional Communication (S)'],
+};
+
+let selectedTools = new Set();
+
+function initTools() {
+  const el = document.getElementById('tools-content');
+  if (!el) return;
+  el.innerHTML = TOOL_CATS.map(cat => `
+    <div class="tool-cat">
+      <div class="tool-cat-lbl">${cat.cat}</div>
+      <div class="tool-chips-row">
+        ${cat.tools.map(t => `<button class="tchip${selectedTools.has(t)?' sel':''}" onclick="toggleTool('${t}')">${t}</button>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleTool(name) {
+  if (selectedTools.has(name)) selectedTools.delete(name);
+  else selectedTools.add(name);
+  initTools();
+  renderToolKSAOs();
+}
+
+function renderToolKSAOs() {
+  const el = document.getElementById('tools-ksao-out');
+  if (!el) return;
+  if (selectedTools.size === 0) { el.style.display = 'none'; return; }
+  const all = [];
+  selectedTools.forEach(t => { if (TOOL_KSAO[t]) all.push(...TOOL_KSAO[t]); });
+  const unique = [...new Set(all)];
+  el.style.display = '';
+  el.innerHTML = `<strong>KSAO Requirements surfaced from selected tools (${selectedTools.size} tools):</strong>${unique.map(k=>`<span class="tag" style="display:inline-block;margin:2px 4px 2px 0;font-size:.63rem;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#93c5fd">${k}</span>`).join('')}`;
 }
 
 // ── Benchmark Data ──────────────────────────────────────────────────────────
@@ -1846,9 +2573,9 @@ function loadRole(key) {
   gapData = JSON.parse(JSON.stringify(role.competencies));
   renderGapCalc();
   renderBenchmarks(key);
+  renderSynthesis(key);
   const badge = document.getElementById('current-role-badge');
   if (badge) badge.textContent = role.title;
-  // Auto-set workflow mode to match the recommendation
   const bm = BENCHMARKS[key];
   if (bm) setWorkflowMode(bm.modelRec);
 }
@@ -1860,6 +2587,10 @@ function setWorkflowMode(mode) {
   document.querySelectorAll('.wf-toggle-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === mode);
   });
+  const firstPhase = mode === 'addie' ? 'analyze' : 'prep';
+  activeGatePhase = firstPhase;
+  renderGateTabs(mode);
+  renderGateBody(mode, firstPhase);
 }
 
 // ── Section Collapsibility ──────────────────────────────────────────────────
@@ -1885,6 +2616,9 @@ function initCollapsible() {
 document.addEventListener('DOMContentLoaded', () => {
   initCollapsible();
   renderGapCalc();
+  initGates();
+  renderOntology();
+  initTools();
 });
 </script>
 
