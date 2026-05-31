@@ -1,10 +1,11 @@
 """
-Generates WIP-SRNA-001 v2.0
+Generates WIP-SRNA-001 v3.0
 Workforce Intelligence Platform — System Requirements & Notional Architecture
-Expands H2R-SRNA-001 v1.0 with ROAD framework, VUCA Prime design philosophy,
-Theory of Constraints (talent as product), program execution risk management,
-attrition classification by program impact, turnover contagion modelling,
-proactive action plans with return on impact, and three-tier ownership model.
+Supersedes v2.0. Adds enterprise scale architecture (50K FTEs, 12 functions,
+9 programmes, 3 portfolios), Functional / Program dual-view, four temporal
+dimensions (time in role / level / programme / acquisition lifecycle), resource
+allocation matrix (Function x Programme), phase experience gap analysis, and
+AI-integrated prompt library (280 diagnostic prompts).
 """
 
 from docx import Document
@@ -165,10 +166,10 @@ doc.add_paragraph()
 meta = doc.add_table(rows=5, cols=4)
 meta.style = 'Table Grid'
 meta_data = [
-    ['Organisation',  'AeroDefend Group (Illustrative)', 'Version', '2.0 — DRAFT'],
+    ['Organisation',  'AeroDefend Group (Illustrative)', 'Version', '3.0 — DRAFT'],
     ['Classification','Internal — Confidential',          'Status',  'Pending IT & CPO Review'],
-    ['Prepared by',   'HR Transformation Initiative',     'Prepared for', 'IT VP, HR VP & CPO'],
-    ['Document ref',  'WIP-SRNA-001',                     'Supersedes', 'WIP-SRNA-001 v1.0'],
+    ['Prepared by',   'HR Transformation Initiative',     'Prepared for', 'IT VP, HR VP, CPO & Programme Directors'],
+    ['Document ref',  'WIP-SRNA-001',                     'Supersedes', 'WIP-SRNA-001 v2.0'],
     ['Date',          '30 May 2026',                      'Base document', 'H2R-SRNA-001 v1.0'],
 ]
 for r, row_data in enumerate(meta_data):
@@ -219,6 +220,7 @@ simple_table(
     [
         ['1.0', '29/05/2026', 'HR Transformation Team', 'Initial draft — multi-horizon workforce planning and competency intelligence'],
         ['2.0', '30/05/2026', 'HR Transformation Team', 'Major revision — ROAD framework, VUCA Prime, Theory of Constraints, program execution risk as primary driver, attrition by program impact, turnover contagion, return on impact action plans, three-tier ownership model, flat-file phasing architecture'],
+        ['3.0', '30/05/2026', 'HR Transformation Team', 'Enterprise scale — 50K FTEs, 12 functional organisations, 9 programmes, 3 portfolios. Functional/Program dual-view with scope selector. Four temporal dimensions (time in role, time in level, time on programme, acquisition lifecycle experience). Resource allocation matrix (Function x Programme with headcount, FTE%, flight risk). Phase experience gap analysis. AI-integrated prompt library (280 diagnostic prompts). Updated synthetic data schema v2.'],
     ]
 )
 heading('1.1 Document Approvals Required', 2)
@@ -852,7 +854,7 @@ simple_table(
     ]
 )
 
-body('\nNext Steps — v2.0', bold=True)
+body('\nNext Steps — v2.0 (carried forward)', bold=True)
 bullet('1. HR VP and CPO to review the ROAD framework and VUCA Prime framing — confirm these are acceptable as the platform strategy (V2-ROAD-01).')
 bullet('2. HR VP to review the three-tier ownership model — confirm it maps to AeroDefend Group\'s HR operating model (V2-OWNER-01).')
 bullet('3. IT VP to answer V2-SAP-01 through V2-SAP-03 — clearance data, critical path data, and action log format. These BLOCK Phase 2 planning.')
@@ -860,9 +862,217 @@ bullet('4. Legal to review regrettability classification logic and turnover cont
 bullet('5. All: review open questions from v1.0 that remain open (WIP-OG-01, WIP-OG-02, WIP-SWP-01, WIP-SWP-02 are still critical).')
 bullet('6. Programme Directors: validate the five rights of talent framing and the programme delivery risk view — confirm this is the right lens for executive workforce reporting.')
 
+doc.add_page_break()
+
+# ══════════════════════════════════════════════════════════════════════════════
+# v3.0 NEW CONTENT
+# ══════════════════════════════════════════════════════════════════════════════
+
+heading('14. Enterprise Scale Architecture (NEW in v3.0)', 1)
+body(
+    'Version 3.0 introduces an enterprise-scale reference architecture representing a '
+    '50,000-employee defence and aerospace organisation. This replaces the small '
+    'synthetic dataset used in v1.0 and v2.0 with a representative sample of 274 '
+    'employees across 12 functional organisations, 9 active programmes, and 3 portfolios. '
+    'Scale factors allow every metric to be extrapolated to the full 54,500-FTE '
+    'organisation while maintaining manageable data volumes for the Phase 1 demonstration.'
+)
+
+heading('14.1 Enterprise Organisational Structure', 2)
+simple_table(
+    ['Portfolio', 'Programmes', 'Contract Value', 'Delivery Risk'],
+    [
+        ['Air Systems', 'Typhoon Modernisation Block 20, Future Combat Air System (FCAS), Eurofighter E-Scan Radar Upgrade', '£1,620M', 'High (avg 58)'],
+        ['Ground Defence & Missiles', 'Air Defence Command & Control, SKYSHIELD Ground Integration, SHORAD Missile Enhancement', '£1,620M', 'Medium (avg 42)'],
+        ['Cyber, EW & ISR', 'Cyber Mission System, Electronic Attack Platform, ISR Data Fusion Platform', '£980M', 'High (avg 68)'],
+    ]
+)
+
+heading('14.2 Functional Organisation Registry', 2)
+body(
+    'Each functional organisation is the supply side of the matrix. Functions own people, '
+    'develop capability, and allocate resources to programmes. The scale factor converts '
+    'sample employee counts to actual workforce size for extrapolated analytics.'
+)
+simple_table(
+    ['Function', 'Code', 'Actual FTEs', 'Sample Size', 'Scale Factor', 'Market Demand'],
+    [
+        ['Systems Engineering', 'SE', '9,200', '46', '200x', 'Very High'],
+        ['R&M Engineering', 'RM', '7,800', '39', '200x', 'High'],
+        ['Software Engineering', 'SW', '6,200', '31', '200x', 'Critical'],
+        ['Cybersecurity', 'CS', '3,800', '19', '200x', 'Critical'],
+        ['Mission Systems', 'MS', '5,400', '27', '200x', 'Very High'],
+        ['Systems Integration & Test', 'ST', '4,100', '21', '195x', 'High'],
+        ['Programme Management', 'PM', '4,600', '23', '200x', 'Medium'],
+        ['Quality & Safety', 'QS', '2,900', '15', '193x', 'Medium'],
+        ['Logistics & Supportability', 'LS', '3,200', '16', '200x', 'Medium'],
+        ['Finance & Commercial', 'FC', '2,100', '11', '191x', 'Low'],
+        ['Human Resources', 'HR', '1,800', '9', '200x', 'Low'],
+        ['IT & Digital Engineering', 'IT', '3,400', '17', '200x', 'High'],
+    ]
+)
+
+heading('14.3 Dual-View Platform Architecture (NEW in v3.0)', 2)
+body(
+    'Version 3.0 introduces a Functional View / Program View toggle as the primary '
+    'navigation paradigm. This directly reflects the matrix organisation model: functions '
+    'are the supply side (who owns people) and programmes are the demand side (who '
+    'defines the work). Users switch between views with a single toggle; a scope selector '
+    'drills into a specific function or programme. The intersection is the resource '
+    'allocation matrix.'
+)
+simple_table(
+    ['View', 'Primary User', 'Scope Selector', 'Primary Analytics', 'Default Drill-In'],
+    [
+        ['Functional View', 'Functional VP / HR Business Partner', 'Select one of 12 functions (or All)', 'ROAD health for the function, temporal dimensions, supply vs demand, subdiscipline breakdown', 'Temporal Analysis — time in role / level / programme / lifecycle'],
+        ['Program View', 'Programme Director / Portfolio Manager', 'Select one of 9 programmes (or portfolio)', 'Resource allocation, delivery risk, phase experience gaps, milestone status', 'Resource Allocation Matrix — Function x Programme'],
+        ['Enterprise / AI Workspace', 'HR VP / CPO / All users', 'Enterprise-wide or scoped', 'AI agent answers any question for any scope; prompt library; action plans', 'AI Workspace (default landing view)'],
+    ]
+)
+
+heading('15. Four Temporal Dimensions (NEW in v3.0)', 1)
+body(
+    'Version 3.0 introduces four temporal dimensions as primary analytical lenses. '
+    'These dimensions answer the question "are the right people in the right place at '
+    'the right time?" — not just for current state, but for trajectory. Each dimension '
+    'has defined thresholds that trigger action plan recommendations.'
+)
+
+simple_table(
+    ['Dimension', 'Definition', 'Optimal Range', 'Action Trigger', 'Platform Signal'],
+    [
+        ['Time in Role', 'How long the employee has been in their current position title', '1 – 3 years', '< 6 months (still ramping) or > 5 years (stale — rotation or career action needed)', 'Stale label + action plan if > 5yr and would be regrettable to lose'],
+        ['Time in Level', 'How long the employee has been at their current pay grade / career level', '1 – 4 years', '> 4 years — overdue for promotion review; leading indicator of departure intent', 'Overdue label + retention risk flag; linked to flight risk score'],
+        ['Time on Programme', 'How long the employee has been working on their primary programme', '1 – 4 years', '< 1 year (still ramping to programme knowledge) or > 5 years (rotation risk — knowledge hoarding)', 'Rotation risk label; informs programme knowledge continuity planning'],
+        ['Acquisition Lifecycle Experience', 'Which acquisition phases (MSA, TMRR, EMD, P&D, O&S) the employee has worked in previously', 'At least 2 phases including current', 'Employee has no prior experience in their current programme\'s phase — phase experience gap', 'Phase gap flag (red) or phase match (green) per employee; drives Develop action plans'],
+    ]
+)
+
+heading('15.1 Phase Experience Gap Analysis', 2)
+body(
+    'The phase experience gap is a new risk indicator introduced in v3.0. It measures '
+    'whether the people assigned to a programme have prior experience working in that '
+    'programme\'s current acquisition phase. A person assigned to an EMD-phase programme '
+    'with no prior EMD experience represents a capability gap that formal competency '
+    'scores may not capture — because the competency exists but the phase-specific '
+    'judgement does not.'
+)
+req_table([
+    ['FR-WIP-V3-TMP01', 'The system shall record and display four temporal dimensions for every employee: time_in_role_yrs, time_in_level_yrs, time_on_program_yrs, and acquisition_phases_experienced (list of phases worked in). All four shall be refreshed with each data pipeline run.', 'Must', 'Temporal dimensions are the primary new analytical capability in v3.0. They are not derivable from competency assessments and require dedicated data fields.'],
+    ['FR-WIP-V3-TMP02', 'The system shall calculate an acquisition_phase_match flag for each employee assigned to a programme: True if the employee has prior experience in the programme\'s current phase; False (phase gap) if not. Phase gap shall trigger a Develop action plan with recommended knowledge transfer approach.', 'Must', 'Phase experience gap is a leading indicator of delivery quality risk. Programmes in EMD phase staffed by people with only O&S experience will exhibit predictable quality issues at design reviews.'],
+    ['FR-WIP-V3-TMP03', 'The Temporal View shall display four distribution bar charts: time in role (ramping / optimal / consider rotation / stale), time in level (on track / promotion window / overdue), time on programme (new / building / deep knowledge / rotation risk), and acquisition lifecycle phase coverage (which phases the selected function\'s employees have worked in, with phase match rate for employees currently on programmes in each phase).', 'Must', 'Temporal distribution charts give functional VPs and HR Business Partners the workforce trajectory picture — not just current state, but where people are heading.'],
+    ['FR-WIP-V3-TMP04', 'The system shall generate a temporal risk table listing employees with at least one elevated temporal indicator (time_in_level > 4yr OR time_in_role > 5yr OR time_on_program > 5yr OR phase_match = False), sorted by combined risk score. This table is filterable by function and subdiscipline.', 'Must', 'The temporal risk table is the primary action list for functional VPs making rotation, promotion, and development decisions.'],
+])
+
+heading('16. Resource Allocation Matrix (NEW in v3.0)', 1)
+body(
+    'The Resource Allocation Matrix is the intersection model connecting functional supply '
+    'to programme demand. It shows, for every function-programme pair, the headcount '
+    'required, the percentage of the function allocated to that programme, the average '
+    'flight risk of allocated employees, and the phase experience gap count. '
+    'The matrix can be toggled between three views: Headcount, Percentage of Function, '
+    'and Flight Risk — allowing the user to switch between a volume view, a capacity '
+    'utilisation view, and a risk view without leaving the screen.'
+)
+req_table([
+    ['FR-WIP-V3-ALM01', 'The system shall maintain a resource allocation matrix: for every function-programme pair where the programme requires resources from that function, record headcount_required, pct_of_function (what share of the function is allocated to this programme), avg_flight_risk (average flight risk of employees on this allocation), and phase_experience_gap_count (number of employees on this allocation who lack experience in the programme\'s current phase).', 'Must', 'Resource allocation is the primary bridge between functional view and program view. Without it, functional VPs and programme directors cannot see the same data from their respective perspectives.'],
+    ['FR-WIP-V3-ALM02', 'The allocation matrix shall be colour-coded by criticality of the function-programme relationship: Critical (red), High (amber), Medium (blue), Low (grey). Criticality is defined by the programme team based on whether delivery would be compromised without this function\'s contribution.', 'Must', 'Criticality colouring directs management attention to the allocations that matter most. A high-flight-risk allocation in a Critical cell is a priority action; the same risk in a Low cell is not.'],
+    ['FR-WIP-V3-ALM03', 'The allocation matrix shall support three display modes toggled by the user: Headcount (FTEs required from each function per programme), Percentage of Function (what share of the function\'s total headcount is committed to this programme), and Flight Risk (average flight risk score of employees in each allocation cell).', 'Must', 'Different stakeholders need different views of the same allocation data. A functional VP wants to know capacity utilisation (% view). A programme director wants to know whether they have enough bodies (headcount view). HR BP wants to know retention risk (flight risk view).'],
+    ['FR-WIP-V3-ALM04', 'The allocation matrix shall be filterable by programme (showing all functions allocated to one programme) and by function (showing all programmes that function supplies to). These filters correspond to the Program View and Functional View respectively, providing the intersection model.', 'Must', 'Filter by programme = Program View. Filter by function = Functional View. This makes the allocation matrix the single intersection point between the two views.'],
+])
+
+heading('17. AI-Integrated Prompt Library (NEW in v3.0)', 1)
+body(
+    'Version 3.0 integrates a structured prompt library of 280 diagnostic workforce '
+    'intelligence prompts into the AI Workspace. The prompts are organised across five '
+    'capability domains and are scope-aware: the same prompt answered for "Cybersecurity '
+    'function" returns different data-grounded analysis than when answered for "FCAS '
+    'programme" or "enterprise-wide". The prompt library replaces the need for users to '
+    'know how to formulate analytical questions — it provides a curated set of questions '
+    'that the platform can answer from its data.'
+)
+simple_table(
+    ['Capability Domain', 'Prompt Count', 'Primary Users', 'Example Prompts'],
+    [
+        ['Diagnostic Skills', '68', 'HR BP, Workforce Planning Analyst', 'Audit our workforce data quality; assess AI readiness; prioritise use cases; build vs buy analysis'],
+        ['Workforce Planning', '72', 'HR VP, CPO, Workforce Planning Analyst', 'Demand forecasting; supply modelling; scenario planning; gap analysis'],
+        ['Skills & Capability', '72', 'HR BP, L&D, Competency SME', 'Skills taxonomy; capability assessment; reskilling roadmap; critical roles and succession'],
+        ['Org Design', '64', 'HR VP, Business Leaders', 'Structural alternatives; spans and layers; role clarity; effectiveness measurement'],
+        ['Transformation', '78', 'CHRO, HR VP, Change Lead', 'Change strategy; stakeholder mapping; communications; measurement framework'],
+    ]
+)
+
+req_table([
+    ['FR-WIP-V3-PL01', 'The AI Workspace shall include a prompt library panel displaying all 280 prompts organised by the five capability domains, with each domain expandable to show sub-categories and individual prompts. The panel shall include a search box to filter prompts by keyword across all domains.', 'Must', 'Prompt library discoverability is critical for adoption. HR Business Partners and Functional VPs are not data scientists — they need a curated question menu, not a blank chat interface.'],
+    ['FR-WIP-V3-PL02', 'Clicking any prompt in the library shall: (1) set the prompt text in the chat input, (2) scope the response to the currently selected function or programme, and (3) send the query to the AI analytical engine immediately. The response shall be data-grounded where the synthetic (or production) data can answer the question, and framework-based where it cannot.', 'Must', 'One-click prompt execution with automatic scope context removes the need for users to know how to formulate queries or remember to set context.'],
+    ['FR-WIP-V3-PL03', 'The full prompt library shall also be accessible as a standalone page with a search function and a "Run in Agent" button on every prompt. This provides a reference view for users who want to browse the full library before selecting a question.', 'Should', 'Some users prefer to browse before querying. The full-page view supports this while the inline panel supports the quick-query workflow.'],
+    ['FR-WIP-V3-PL04', 'Prompt responses shall be scoped to the AI agent scope selector: if scope is set to "Systems Engineering", all responses use only Systems Engineering employee data. If scope is "Enterprise", all responses use the full dataset. Scope shall be visible to the user at all times during the AI session.', 'Must', 'Scope awareness prevents misleading analysis. A Functional VP asking about flight risk should see their function\'s data, not enterprise-wide averages that mask their specific situation.'],
+])
+
+heading('18. Updated Synthetic Data Schema — v2 (v3.0 Data Dictionary)', 1)
+body(
+    'The synthetic data schema was extended in v3.0 to support the new temporal '
+    'dimensions, functional organisation structure, portfolio hierarchy, and resource '
+    'allocation matrix. The following tables define the canonical schemas for each '
+    'data asset. These schemas are the IT data requirements specification for Phase 2 '
+    'SAP integration — every field must be deliverable from SAP or a connected system.'
+)
+
+heading('18.1 Employee Record Schema (employees_v2.json)', 2)
+simple_table(
+    ['Field', 'Type', 'New in v3?', 'Description', 'Phase 2 SAP Source'],
+    [
+        ['function_id', 'String', 'Yes', 'Functional organisation code (e.g. FN-SE)', 'SAP Org Unit mapped to function registry'],
+        ['function_name', 'String', 'Yes', 'Full name of functional organisation', 'Derived from function_id lookup'],
+        ['subdiscipline', 'String', 'Yes', 'Specific technical area within function (e.g. Mission Systems Architecture)', 'Position description / job architecture field'],
+        ['time_in_role_yrs', 'Float', 'No (v2)', 'Years in current position title', 'Derived from SAP position start date'],
+        ['time_in_level_yrs', 'Float', 'Yes', 'Years at current pay grade (may differ from time_in_role)', 'Derived from SAP grade change date (Infotype 0008)'],
+        ['time_on_program_yrs', 'Float', 'No (v2)', 'Years on primary programme assignment', 'Derived from SAP PS project assignment date'],
+        ['acquisition_phase_current', 'Enum', 'Yes', 'Current phase of primary programme (MSA/TMRR/EMD/P&D/O&S)', 'Derived from programme registry (programs_v2.json)'],
+        ['acquisition_phases_experienced', 'Array', 'Yes', 'List of acquisition phases worked in historically', 'HR system field — requires new data capture process in Phase 2'],
+        ['acquisition_phase_match', 'Boolean', 'Yes', 'True if employee has prior experience in current programme phase', 'Calculated from acquisition_phases_experienced vs acquisition_phase_current'],
+    ]
+)
+
+heading('18.2 New Data Assets — v3.0', 2)
+simple_table(
+    ['Asset', 'File', 'Records', 'Description', 'Phase 2 Source'],
+    [
+        ['Portfolios', 'portfolios.json', '3', 'Portfolio hierarchy with programme linkage and delivery risk rollup', 'Programme management system / Portfolio Director input'],
+        ['Functions', 'functions.json', '12', 'Functional organisations with subdisciplines, headcount actuals, scale factors, and ROAD health scores', 'SAP Org Management + HR function registry'],
+        ['Programmes v2', 'programs_v2.json', '9', 'Programmes with portfolio_id, acquisition phase, function requirements, and criticality', 'Programme management system (SAP PS or equivalent)'],
+        ['Employees v2', 'employees_v2.json', '274', 'Extended employee schema with temporal dimensions and function/subdiscipline fields', 'SAP HCM/ECC + SuccessFactors + programme system'],
+        ['Allocation Matrix', 'allocation_matrix.json', '54', 'Function x Programme allocation data: headcount required, % of function, flight risk, phase gap count', 'Derived from programme requirements + employee allocation data'],
+    ]
+)
+
+heading('19. v3.0 Open Questions Register', 1)
+body('The following open questions are new in v3.0 and must be resolved before Phase 2 planning can proceed.')
+simple_table(
+    ['Ref', 'Question', 'Owner', 'Priority', 'Status'],
+    [
+        ['V3-FUNC-01', 'Does AeroDefend Group use a formal functional organisation model (Chief Engineer, Chief of R&M, etc.) that maps to the 12 functions defined in this document? If the names or structure differ, the function registry must be updated before Phase 2 data integration.', 'HR VP + Engineering Leadership', 'CRITICAL', 'Open'],
+        ['V3-FUNC-02', 'Who is the data owner for functional organisation assignment per employee? Is this field maintained in SAP Org Management, or does it require a new field in SuccessFactors?', 'IT VP + HR VP', 'CRITICAL', 'Open'],
+        ['V3-TEMP-01', 'What is the current data source for grade change date (time in level)? Is Infotype 0008 reliably populated with accurate change dates, or is this a data quality risk?', 'IT VP + HR Operations', 'HIGH', 'Open'],
+        ['V3-TEMP-02', 'Acquisition phases experienced (historical) is a new data field. How will this be captured? Options: (a) derive from historical programme assignments in SAP PS; (b) self-declaration by employee; (c) manager verification. Each has different accuracy and effort tradeoffs.', 'HR VP + IT VP', 'HIGH', 'Open'],
+        ['V3-PROG-01', 'What system is the authoritative source for programme phase (MSA/TMRR/EMD/P&D/O&S) and programme-to-employee assignment? Is this in SAP PS, a programme management tool (e.g. Primavera), or maintained manually?', 'IT VP + Programme Directors', 'CRITICAL', 'Open'],
+        ['V3-PORT-01', 'Is the portfolio hierarchy (3 portfolios, 9 programmes) as defined in this document an accurate representation of AeroDefend Group\'s programme portfolio? Portfolio Directors must validate before Phase 2.', 'CPO + Portfolio Directors', 'HIGH', 'Open'],
+        ['V3-ALLOC-01', 'Who maintains the resource allocation plan (Function x Programme headcount requirements)? Is this held in SAP PS, a resource management tool, or programme team spreadsheets? The allocation matrix cannot be automated without a structured data source.', 'IT VP + Programme Directors + Functional VPs', 'CRITICAL', 'Open'],
+        ['V3-PLIB-01', 'The 280-prompt library covers Diagnostic Skills, Workforce Planning, Skills & Capability, Org Design, and Transformation. Which of the five domains should be prioritised for the Phase 2 deployment with real data? Recommend: Workforce Planning and Skills & Capability first.', 'HR VP + CPO', 'MEDIUM', 'Open'],
+    ]
+)
+
+body('\nNext Steps — v3.0', bold=True)
+bullet('1. Portfolio Directors: validate the portfolio and programme structure (V3-PORT-01). This is a blocking dependency for Phase 2 resource allocation matrix.')
+bullet('2. Functional VPs: confirm the 12 functional organisation names and structure (V3-FUNC-01). If the org structure differs, the function registry needs updating before data integration.')
+bullet('3. IT VP: confirm data sources for (a) functional organisation assignment, (b) grade change date, (c) programme phase, and (d) programme-to-employee allocation (V3-FUNC-02, V3-TEMP-01, V3-PROG-01, V3-ALLOC-01).')
+bullet('4. HR VP + IT VP: decide on the approach for capturing acquisition lifecycle phase experience history (V3-TEMP-02). This is a new data field with no existing SAP source.')
+bullet('5. HR VP + CPO: prioritise which of the five prompt library domains to deploy first with real data in Phase 2 (V3-PLIB-01).')
+bullet('6. All v2.0 next steps remain open unless explicitly resolved. See Section 13.')
+
 # ══════════════════════════════════════════════════════════════════════════════
 # SAVE
 # ══════════════════════════════════════════════════════════════════════════════
-output_path = r'C:\Users\traft\Desktop\WIP-SRNA-001-v2.0.docx'
+output_path = r'C:\Users\traft\Desktop\WIP-SRNA-001-v3.0.docx'
 doc.save(output_path)
 print(f'Document saved: {output_path}')
