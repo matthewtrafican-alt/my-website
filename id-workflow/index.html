@@ -508,6 +508,46 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
 .gsl-name { color: #94a3b8; flex: 1; }
 .gsl-score { font-weight: 800; }
 
+/* ── Benchmark Panel ── */
+#benchmark-panel { margin-bottom: 14px; }
+.bm-panel { background: #0b1221; border: 1px solid #182035; border-radius: 12px; overflow: hidden; }
+.bm-sec-lbl { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #334155; margin-bottom: 8px; }
+.bm-overview { padding: 16px; border-bottom: 1px solid #0e1929; }
+.bm-overview p { font-size: .72rem; color: #94a3b8; line-height: 1.6; }
+.bm-ksao { padding: 16px; border-bottom: 1px solid #0e1929; overflow-x: auto; }
+.bm-table { width: 100%; border-collapse: collapse; min-width: 580px; }
+.bm-table th { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #334155; padding: 0 8px 8px; text-align: left; }
+.bm-table td { font-size: .68rem; padding: 6px 8px; border-bottom: 1px solid #080f1d; vertical-align: middle; color: #94a3b8; }
+.bm-table tr:last-child td { border-bottom: none; }
+.ksao-type-badge { font-size: .6rem; font-weight: 800; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.kld { width: 9px; height: 9px; border-radius: 50%; background: #0e1929; border: 1px solid #182035; display: inline-block; }
+.lvl-dots { display: flex; gap: 3px; align-items: center; }
+.bm-gtag { font-size: .6rem; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.bm-row3 { display: grid; grid-template-columns: 180px 1fr 1fr; border-bottom: 1px solid #0e1929; }
+.bm-mix { padding: 16px; border-right: 1px solid #0e1929; }
+.bm-emphasis { padding: 16px; border-right: 1px solid #0e1929; }
+.bm-modelrec { padding: 16px; }
+.mix-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.mix-lbl { font-size: .6rem; color: #475569; width: 70px; flex-shrink: 0; }
+.mix-track { flex: 1; height: 6px; background: #0e1929; border-radius: 3px; }
+.mix-fill { height: 6px; border-radius: 3px; transition: width .4s; }
+.mix-pct { font-size: .62rem; font-weight: 700; width: 28px; text-align: right; flex-shrink: 0; }
+.em-chip { font-size: .6rem; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #080f1d; border: 1px solid #182035; color: #334155; margin: 0 4px 4px 0; display: inline-block; }
+.em-chip.on { }
+.mrc-card { border-radius: 8px; padding: 14px; text-align: center; }
+.mrc-addie { background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2); }
+.mrc-sam { background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.2); }
+.mrc-name { font-size: 1.6rem; font-weight: 900; line-height: 1; margin-bottom: 3px; }
+.mrc-addie .mrc-name { color: #60a5fa; } .mrc-sam .mrc-name { color: #facc15; }
+.mrc-full { font-size: .6rem; color: #475569; margin-bottom: 8px; }
+.mrc-why { font-size: .64rem; color: #94a3b8; line-height: 1.45; }
+.bm-row4 { display: grid; grid-template-columns: 1fr 1fr; }
+.bm-assess { padding: 16px; border-right: 1px solid #0e1929; }
+.bm-flags { padding: 16px; }
+.bm-assess p { font-size: .69rem; color: #94a3b8; line-height: 1.55; }
+.tna-flag { font-size: .67rem; color: #94a3b8; padding: 7px 10px; background: #080f1d; border-radius: 6px; margin-bottom: 6px; line-height: 1.45; border-left: 2px solid #ef4444; }
+.tna-flag:last-child { margin-bottom: 0; }
+
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .addie-flow { grid-template-columns: 1fr 1fr; }
@@ -621,6 +661,8 @@ body { font-family: 'Inter', sans-serif; background: #060a16; color: #e2e8f0; mi
     </select>
     <span class="role-badge" id="current-role-badge">Custom / Any Field</span>
   </div>
+
+  <div id="benchmark-panel"></div>
 
   <div class="comp-intro">
     <strong>Competency models</strong> define the clusters of KSAOs (Knowledge, Skills, Abilities, Other characteristics) that distinguish superior from adequate performance in a given role. They serve as the anchor for every downstream decision: what to train, how to assess it, and how to evaluate transfer. This workflow builds or imports a competency model as the first analytical step — making the entire training design <strong>job-relevant and defensible</strong>.
@@ -1516,14 +1558,299 @@ function addComp() {
   renderGapCalc();
 }
 
+// ── Benchmark Data ──────────────────────────────────────────────────────────
+const BENCHMARKS = {
+  instructional_designer: {
+    overview: "IDs translate performance needs into evidence-based learning solutions. The role demands both analytical rigor (needs analysis, assessment design) and creative design. Most critical gaps appear in systematic methodology — practitioners often excel at content production but lack TNA discipline and consistent Bloom's coding.",
+    ksaos: [
+      { type:'K', name:'ID Theory & Models (ADDIE, SAM)',    req:4, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'K', name:'Adult Learning Principles',          req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'Training Needs Analysis',            req:5, gagne:'Intellectual Skills', bloom:'Analyze' },
+      { type:'S', name:"Learning Objective Writing",         req:5, gagne:'Intellectual Skills', bloom:'Create' },
+      { type:'S', name:'Assessment Design',                  req:4, gagne:'Intellectual Skills', bloom:'Analyze → Evaluate' },
+      { type:'A', name:'Analytical / Critical Thinking',     req:4, gagne:'Cognitive Strategies',bloom:'Evaluate' },
+      { type:'O', name:'SME & Stakeholder Collaboration',    req:3, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:30, procedural:55, affective:15 },
+    gagneEmphasis: ['Intellectual Skills','Cognitive Strategies'],
+    bloomTargets:  ['Apply','Analyze','Evaluate','Create'],
+    assessment: 'Portfolio review (design doc + prototype module) + Bloom\'s-coded objective writing sample. 360° feedback for stakeholder collaboration.',
+    modelRec: 'sam',
+    modelReason: 'ID work is inherently iterative. SAM\'s rapid prototyping mirrors the design process itself — the Savvy Start reflects best-practice ID.',
+    flags: [
+      'Gaps most common in TNA rigor, not content production quality',
+      "Bloom's coding is often inconsistent — high-frequency training need",
+      'SME management / knowledge extraction skills are routinely underdeveloped',
+    ]
+  },
+  data_analyst: {
+    overview: "Data analysts translate raw data into actionable business intelligence. Training is predominantly procedural (SQL, Python, visualization tools) with growing emphasis on statistical interpretation and data storytelling for non-technical stakeholders. Product knowledge training is almost always overweighted vs. the actual performance gap.",
+    ksaos: [
+      { type:'K', name:'Statistics & Probability Foundations', req:4, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'K', name:'Business Domain Knowledge',            req:3, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'SQL & Database Querying',              req:5, gagne:'Intellectual Skills', bloom:'Apply → Analyze' },
+      { type:'S', name:'Python / R Programming',               req:3, gagne:'Intellectual Skills', bloom:'Apply' },
+      { type:'S', name:'Data Visualization (Tableau/Power BI)',req:4, gagne:'Intellectual Skills', bloom:'Apply → Create' },
+      { type:'A', name:'Analytical Problem Solving',           req:5, gagne:'Cognitive Strategies',bloom:'Analyze → Evaluate' },
+      { type:'O', name:'Data Storytelling & Communication',    req:4, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:25, procedural:65, affective:10 },
+    gagneEmphasis: ['Intellectual Skills','Cognitive Strategies'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: 'Hands-on SQL/Python coding challenge + data visualization work sample. Business scenario case study for analytical reasoning.',
+    modelRec: 'addie',
+    modelReason: 'Well-defined technical tasks and clear correct/incorrect criteria map cleanly to ADDIE\'s systematic, criterion-referenced approach.',
+    flags: [
+      'Statistical interpretation is consistently weaker than data manipulation skills',
+      'Communication of findings to non-technical audiences is a frequent performance gap',
+      'Generic coding courses rarely transfer — Python/R training must be job-task-specific',
+    ]
+  },
+  project_manager: {
+    overview: "PMs coordinate resources, schedules, and stakeholders to deliver defined outcomes. The role blends procedural tools knowledge with cognitive strategy under uncertainty and high-stakes affective skills. Risk management and change management are the most common performance gaps — often tools are known but not consistently applied (affective gap).",
+    ksaos: [
+      { type:'K', name:'PM Methodology (PMI/PMBOK/Agile)',  req:4, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'K', name:'Risk & Issue Management Principles',req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'Project Scheduling & Planning',     req:5, gagne:'Intellectual Skills', bloom:'Apply' },
+      { type:'S', name:'Budget Tracking & Forecasting',     req:4, gagne:'Intellectual Skills', bloom:'Apply → Analyze' },
+      { type:'A', name:'Decision Making Under Uncertainty', req:4, gagne:'Cognitive Strategies',bloom:'Evaluate' },
+      { type:'O', name:'Stakeholder Influence & Communication',req:5,gagne:'Attitudes',         bloom:'Organization (Krathwohl)' },
+      { type:'O', name:'Team Leadership & Motivation',      req:4, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:20, procedural:50, affective:30 },
+    gagneEmphasis: ['Intellectual Skills','Cognitive Strategies','Attitudes'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: 'Scenario-based simulation (project case + stakeholder crisis). Risk register exercise. 360° feedback from team members and sponsors.',
+    modelRec: 'sam',
+    modelReason: 'PM training requires realistic scenario iteration and cross-functional stakeholder input. SAM\'s Savvy Start is ideal for aligning on what good PM behavior looks like.',
+    flags: [
+      'Change management is the most common performance gap — tools are known but rarely sustained',
+      'Stakeholder communication training must address real political dynamics, not generic skills',
+      'Risk discipline is an affective gap (Krathwohl: Valuing) — requires more than instructional content',
+    ]
+  },
+  software_engineer: {
+    overview: "Software engineers design, build, and maintain systems. Training is predominantly procedural with a growing emphasis on architectural thinking and cognitive strategy. Affective development around code review culture and documentation discipline is a consistent gap that instructional content alone will not close.",
+    ksaos: [
+      { type:'K', name:'CS Fundamentals & Design Patterns',  req:4, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'K', name:'Software Architecture Principles',   req:4, gagne:'Verbal Info',         bloom:'Apply → Analyze' },
+      { type:'S', name:'Software Development (primary lang)',req:5, gagne:'Intellectual Skills', bloom:'Apply → Create' },
+      { type:'S', name:'Debugging & Root Cause Analysis',    req:4, gagne:'Intellectual Skills', bloom:'Analyze' },
+      { type:'S', name:'Code Review & Refactoring',          req:4, gagne:'Intellectual Skills', bloom:'Evaluate' },
+      { type:'A', name:'Systems Thinking',                   req:4, gagne:'Cognitive Strategies',bloom:'Analyze → Evaluate' },
+      { type:'O', name:'Documentation Discipline',           req:3, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:20, procedural:70, affective:10 },
+    gagneEmphasis: ['Intellectual Skills','Cognitive Strategies'],
+    bloomTargets:  ['Apply','Analyze','Evaluate','Create'],
+    assessment: 'Coding exercise (work sample) + system design whiteboard challenge. Code review evaluation of submitted sample. Peer feedback for collaboration.',
+    modelRec: 'addie',
+    modelReason: 'Clear correct/incorrect criteria and well-defined procedural tasks make ADDIE\'s systematic, criterion-referenced design the right fit.',
+    flags: [
+      'Developers know the tools but not when/why to apply them — objectives must target Evaluate, not just Apply',
+      'Documentation and code review are affective gaps — cannot be closed with content alone',
+      'Architecture training at Apply level is insufficient — must reach Evaluate and Create to transfer to work',
+    ]
+  },
+  hr_business_partner: {
+    overview: "HRBPs bridge human capital strategy with business operations. The role is cognitively complex — workforce analytics, OD consultation, employee relations — with a high proportion of affective competencies. Data-driven decision making is the fastest-growing gap in this discipline as expectations for people analytics literacy rise sharply.",
+    ksaos: [
+      { type:'K', name:'Workforce Planning & Analytics',       req:4, gagne:'Verbal Info',         bloom:'Apply → Analyze' },
+      { type:'K', name:'Employment Law & Compliance',          req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'OD Consultation & Diagnosis',          req:4, gagne:'Intellectual Skills', bloom:'Analyze → Evaluate' },
+      { type:'S', name:'People Analytics (HRIS / Dashboards)', req:3, gagne:'Intellectual Skills', bloom:'Apply → Analyze' },
+      { type:'A', name:'Strategic Thinking',                   req:4, gagne:'Cognitive Strategies',bloom:'Evaluate' },
+      { type:'O', name:'Business Partner Credibility',         req:5, gagne:'Attitudes',           bloom:'Organization (Krathwohl)' },
+      { type:'O', name:'Conflict Resolution & Mediation',      req:4, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:25, procedural:40, affective:35 },
+    gagneEmphasis: ['Cognitive Strategies','Attitudes'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: '360° multi-rater feedback (essential for affective competencies). Business case simulation. People analytics scenario + recommendation exercise.',
+    modelRec: 'sam',
+    modelReason: 'HRBP development requires complex behavioral change and stakeholder alignment. SAM\'s iterative design ensures learning reflects real organizational dynamics.',
+    flags: [
+      'People analytics is the fastest-growing gap — often absent from legacy HRBP training programs',
+      'Strategic thinking is trained at Understand but required at Evaluate — objectives must be reset',
+      '"Business partner credibility" is an affective gap requiring Krathwohl design (Valuing → Organization)',
+    ]
+  },
+  healthcare_clinician: {
+    overview: "Healthcare clinicians carry the highest training stakes of any discipline — performance gaps directly affect patient safety. All three knowledge types are critical: declarative (clinical knowledge), procedural (clinical skills), and affective (patient communication, ethical practice). Motor skills represent a unique Gagné requirement not present in most other disciplines.",
+    ksaos: [
+      { type:'K', name:'Clinical Knowledge (pathophysiology)', req:5, gagne:'Verbal Info',         bloom:'Apply → Analyze' },
+      { type:'K', name:'Evidence-Based Practice Standards',    req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'Clinical Procedural Skills',           req:5, gagne:'Motor Skills',        bloom:'Apply (Psychomotor)' },
+      { type:'S', name:'Clinical Documentation (EHR)',         req:5, gagne:'Intellectual Skills', bloom:'Apply' },
+      { type:'A', name:'Clinical Judgment & Decision Making',  req:5, gagne:'Cognitive Strategies',bloom:'Analyze → Evaluate' },
+      { type:'O', name:'Patient Communication & Empathy',      req:5, gagne:'Attitudes',           bloom:'Characterizing (Krathwohl)' },
+      { type:'O', name:'Interprofessional Collaboration',      req:4, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:30, procedural:45, affective:25 },
+    gagneEmphasis: ['Motor Skills','Cognitive Strategies','Attitudes'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: 'OSCE (Objective Structured Clinical Examination) for procedural skills. Clinical scenario simulation for judgment. Standardized patient encounters for communication.',
+    modelRec: 'addie',
+    modelReason: 'Highly defined performance standards, regulatory documentation requirements, and stable task structures demand ADDIE\'s systematic rigor and audit trail.',
+    flags: [
+      'Motor skills require deliberate practice with feedback — content modules are categorically insufficient',
+      'Clinical judgment must reach Evaluate — training only at Remember/Apply is a patient safety risk',
+      'EHR documentation is taught at Remember level but gaps appear at Apply in real-world performance',
+    ]
+  },
+  operations_manager: {
+    overview: "Ops managers drive efficiency, quality, and team performance across complex systems. The role requires systematic procedural thinking (Lean/Six Sigma methodologies) plus leadership and data literacy. The most common pattern: improvement tools are known but not consistently applied — identifying this as an affective gap rather than a knowledge gap is critical to selecting the right intervention.",
+    ksaos: [
+      { type:'K', name:'Process Improvement (Lean/Six Sigma)', req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'K', name:'Supply Chain & Operations Principles', req:3, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'S', name:'Performance Metrics & KPI Management', req:4, gagne:'Intellectual Skills', bloom:'Analyze' },
+      { type:'S', name:'Process Mapping & Root Cause Analysis',req:5, gagne:'Intellectual Skills', bloom:'Apply → Analyze' },
+      { type:'A', name:'Systems Thinking',                     req:4, gagne:'Cognitive Strategies',bloom:'Analyze → Evaluate' },
+      { type:'O', name:'Team Coaching & Development',          req:4, gagne:'Attitudes',           bloom:'Organization (Krathwohl)' },
+      { type:'O', name:'Change Management & Adoption',         req:4, gagne:'Attitudes',           bloom:'Valuing (Krathwohl)' },
+    ],
+    mix: { declarative:20, procedural:55, affective:25 },
+    gagneEmphasis: ['Intellectual Skills','Cognitive Strategies','Attitudes'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: 'Process improvement simulation (current-state/future-state analysis). Leadership 360° feedback. KPI dashboard analysis exercise.',
+    modelRec: 'addie',
+    modelReason: 'Operations training centers on defined methodologies with measurable standards. ADDIE\'s systematic approach ensures full coverage of procedural and analytical skills.',
+    flags: [
+      'Process improvement tools are known but not consistently applied — this is a Krathwohl affective gap, not a knowledge gap',
+      'Coaching and development skills are acquired through experience, not content consumption — design for deliberate practice',
+      'Data-driven performance management is a rapidly growing gap as roles require increased analytics literacy',
+    ]
+  },
+  sales_professional: {
+    overview: "Sales professionals operate at the intersection of procedural skill (sales process, CRM) and high-stakes affective capability (relationship building, resilience, persuasion). Training is almost always over-indexed on product knowledge (declarative) and under-indexed on procedural sales technique and affective selling skills — the actual performance drivers.",
+    ksaos: [
+      { type:'K', name:'Product / Service Knowledge',         req:4, gagne:'Verbal Info',         bloom:'Understand → Apply' },
+      { type:'K', name:'Sales Methodology (SPIN/Challenger)', req:4, gagne:'Verbal Info',         bloom:'Apply' },
+      { type:'S', name:'Needs Discovery & Qualification',     req:5, gagne:'Intellectual Skills', bloom:'Analyze' },
+      { type:'S', name:'Objection Handling & Closing',        req:5, gagne:'Intellectual Skills', bloom:'Apply → Evaluate' },
+      { type:'S', name:'Pipeline Management (CRM)',           req:4, gagne:'Intellectual Skills', bloom:'Apply' },
+      { type:'A', name:'Strategic Account Thinking',          req:3, gagne:'Cognitive Strategies',bloom:'Analyze' },
+      { type:'O', name:'Customer Trust Building',             req:5, gagne:'Attitudes',           bloom:'Organization (Krathwohl)' },
+    ],
+    mix: { declarative:20, procedural:55, affective:25 },
+    gagneEmphasis: ['Intellectual Skills','Attitudes'],
+    bloomTargets:  ['Apply','Analyze','Evaluate'],
+    assessment: 'Role-play scenarios (live simulation with observer ratings). Pipeline review exercise. 360° from customers and managers for relationship quality.',
+    modelRec: 'sam',
+    modelReason: 'Sales training effectiveness depends on authentic practice scenarios that reflect real buyer interactions. SAM\'s rapid prototyping tests scenario authenticity early with experienced sellers.',
+    flags: [
+      'Product knowledge is consistently over-trained — rarely the root cause of win/loss performance gaps',
+      'Objection handling requires procedural deliberate practice — content consumption alone will not transfer',
+      'Customer trust-building is an affective gap requiring Krathwohl design up to Characterizing level',
+    ]
+  },
+};
+
+// ── Benchmark Renderer ──────────────────────────────────────────────────────
+const TYPE_COLOR = { K:'#60a5fa', S:'#34d399', A:'#a78bfa', O:'#f472b6' };
+const GAGNE_COLOR = {
+  'Verbal Info':'#60a5fa', 'Intellectual Skills':'#a78bfa',
+  'Cognitive Strategies':'#facc15', 'Motor Skills':'#34d399', 'Attitudes':'#f472b6'
+};
+const BLOOM_COLOR = {
+  Remember:'#f87171', Understand:'#fb923c', Apply:'#facc15',
+  Analyze:'#34d399', Evaluate:'#60a5fa', Create:'#a78bfa'
+};
+const ALL_GAGNE  = ['Verbal Info','Intellectual Skills','Cognitive Strategies','Motor Skills','Attitudes'];
+const ALL_BLOOMS = ['Remember','Understand','Apply','Analyze','Evaluate','Create'];
+
+function renderBenchmarks(key) {
+  const panel = document.getElementById('benchmark-panel');
+  if (!panel) return;
+  if (key === 'default' || !BENCHMARKS[key]) { panel.innerHTML = ''; return; }
+
+  const b = BENCHMARKS[key];
+  const ksaoRows = b.ksaos.map(k => {
+    const tc = TYPE_COLOR[k.type];
+    const gc = GAGNE_COLOR[k.gagne] || '#94a3b8';
+    const dots = [1,2,3,4,5].map(n =>
+      `<span class="kld" style="${n<=k.req?'background:'+tc+';border-color:'+tc+'99':''}"></span>`
+    ).join('');
+    return `<tr>
+      <td><span class="ksao-type-badge" style="background:${tc}18;color:${tc};border:1px solid ${tc}44;">${k.type}</span></td>
+      <td>${k.name}</td>
+      <td><div class="lvl-dots">${dots}</div></td>
+      <td><span class="bm-gtag" style="background:${gc}18;border:1px solid ${gc}44;color:${gc};">${k.gagne}</span></td>
+      <td style="font-size:.62rem;color:#64748b;">${k.bloom}</td>
+    </tr>`;
+  }).join('');
+
+  const gagneChips = ALL_GAGNE.map(g => {
+    const on = b.gagneEmphasis.includes(g);
+    const c = GAGNE_COLOR[g];
+    return `<span class="em-chip${on?' on':''}" style="${on?`background:${c}18;border-color:${c}44;color:${c}`:''}">${g}</span>`;
+  }).join('');
+
+  const bloomChips = ALL_BLOOMS.map(bl => {
+    const on = b.bloomTargets.includes(bl);
+    const c = BLOOM_COLOR[bl];
+    return `<span class="em-chip${on?' on':''}" style="${on?`background:${c}18;border-color:${c}44;color:${c}`:''}">${bl}</span>`;
+  }).join('');
+
+  panel.innerHTML = `<div class="bm-panel">
+    <div class="bm-overview">
+      <div class="bm-sec-lbl">Role Context &amp; Training Implications</div>
+      <p>${b.overview}</p>
+    </div>
+    <div class="bm-ksao">
+      <div class="bm-sec-lbl">KSAO Benchmarks — Required Proficiency Standards</div>
+      <table class="bm-table">
+        <thead><tr><th>Type</th><th>KSAO</th><th>Required (1–5)</th><th>Gagné Capability</th><th>Bloom's Target</th></tr></thead>
+        <tbody>${ksaoRows}</tbody>
+      </table>
+    </div>
+    <div class="bm-row3">
+      <div class="bm-mix">
+        <div class="bm-sec-lbl">Knowledge Mix</div>
+        <div class="mix-row"><span class="mix-lbl">Declarative</span><div class="mix-track"><div class="mix-fill" style="width:${b.mix.declarative}%;background:#38bdf8"></div></div><span class="mix-pct" style="color:#38bdf8">${b.mix.declarative}%</span></div>
+        <div class="mix-row"><span class="mix-lbl">Procedural</span><div class="mix-track"><div class="mix-fill" style="width:${b.mix.procedural}%;background:#c084fc"></div></div><span class="mix-pct" style="color:#c084fc">${b.mix.procedural}%</span></div>
+        <div class="mix-row"><span class="mix-lbl">Affective</span><div class="mix-track"><div class="mix-fill" style="width:${b.mix.affective}%;background:#f472b6"></div></div><span class="mix-pct" style="color:#f472b6">${b.mix.affective}%</span></div>
+      </div>
+      <div class="bm-emphasis">
+        <div class="bm-sec-lbl">Gagné Capability Focus</div>
+        <div style="margin-bottom:12px;">${gagneChips}</div>
+        <div class="bm-sec-lbl">Bloom's Target Levels</div>
+        <div>${bloomChips}</div>
+      </div>
+      <div class="bm-modelrec">
+        <div class="bm-sec-lbl">Recommended Design Model</div>
+        <div class="mrc-card mrc-${b.modelRec}">
+          <div class="mrc-name">${b.modelRec.toUpperCase()}</div>
+          <div class="mrc-full">${b.modelRec==='sam'?'Successive Approximation Model':'Systematic Design'}</div>
+          <div class="mrc-why">${b.modelReason}</div>
+        </div>
+      </div>
+    </div>
+    <div class="bm-row4">
+      <div class="bm-assess">
+        <div class="bm-sec-lbl">Assessment Approach</div>
+        <p>${b.assessment}</p>
+      </div>
+      <div class="bm-flags">
+        <div class="bm-sec-lbl">Common TNA Flags — Watch for These</div>
+        ${b.flags.map(f=>`<div class="tna-flag">${f}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
 // ── Role Selector ───────────────────────────────────────────────────────────
 function loadRole(key) {
   const role = JOB_ROLES[key];
   if (!role) return;
   gapData = JSON.parse(JSON.stringify(role.competencies));
   renderGapCalc();
+  renderBenchmarks(key);
   const badge = document.getElementById('current-role-badge');
   if (badge) badge.textContent = role.title;
+  // Auto-set workflow mode to match the recommendation
+  const bm = BENCHMARKS[key];
+  if (bm) setWorkflowMode(bm.modelRec);
 }
 
 // ── Workflow Toggle ─────────────────────────────────────────────────────────
