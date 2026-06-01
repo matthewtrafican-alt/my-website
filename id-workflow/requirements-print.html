@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PRD — HR Workforce Development Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Times New Roman',Times,serif;font-size:11pt;color:#1a1a1a;background:#fff;max-width:816px;margin:0 auto;padding:48px 60px;}
+@media print{
+  body{padding:0;max-width:100%;}
+  .no-print{display:none!important;}
+  section{page-break-inside:avoid;}
+  h1,h2,h3{page-break-after:avoid;}
+  .page-break{page-break-before:always;}
+}
+/* Print controls */
+.print-bar{background:#f0f4f8;border:1px solid #d0d7de;border-radius:6px;padding:10px 16px;margin-bottom:32px;display:flex;align-items:center;gap:12px;font-family:Arial,sans-serif;font-size:10pt;}
+.print-bar span{color:#57606a;flex:1;}
+.print-btn{font-size:10pt;padding:5px 14px;border-radius:4px;border:1px solid #0969da;background:#0969da;color:#fff;cursor:pointer;font-family:Arial,sans-serif;}
+.print-btn:hover{background:#0860ca;}
+.word-note{font-size:9pt;color:#57606a;font-style:italic;}
+
+/* Document header */
+.doc-cover{text-align:center;margin-bottom:40px;padding-bottom:24px;border-bottom:2px solid #1a1a1a;}
+.doc-cover h1{font-size:18pt;font-weight:bold;margin-bottom:6px;line-height:1.2;}
+.doc-cover h2{font-size:13pt;font-weight:normal;color:#444;margin-bottom:20px;}
+.doc-meta-table{width:60%;margin:0 auto;border-collapse:collapse;}
+.doc-meta-table td{padding:3px 8px;font-size:10pt;color:#444;border-bottom:1px solid #e0e0e0;}
+.doc-meta-table td:first-child{font-weight:bold;color:#1a1a1a;width:120px;}
+
+/* TOC */
+.toc-section{margin-bottom:40px;}
+.toc-section h2{font-size:13pt;font-weight:bold;margin-bottom:12px;padding-bottom:4px;border-bottom:1px solid #1a1a1a;}
+.toc-entry{display:flex;justify-content:space-between;padding:3px 0;font-size:10.5pt;border-bottom:1px dotted #ccc;}
+.toc-entry a{color:#1a1a1a;text-decoration:none;}
+.toc-entry a:hover{text-decoration:underline;}
+.toc-sub{padding-left:20px;}
+
+/* Sections */
+section{margin-bottom:36px;}
+h2.sh{font-size:13pt;font-weight:bold;margin-bottom:10px;padding:6px 0 6px 10px;border-left:4px solid #1a1a1a;background:#f7f7f7;}
+h3{font-size:11.5pt;font-weight:bold;margin-bottom:8px;margin-top:16px;}
+p{font-size:10.5pt;line-height:1.6;margin-bottom:8px;color:#2c2c2c;}
+ul{margin:0 0 10px 20px;}
+ul li{font-size:10.5pt;line-height:1.6;margin-bottom:3px;color:#2c2c2c;}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:10pt;}
+table th{background:#2c2c2c;color:#fff;padding:6px 10px;text-align:left;font-size:9.5pt;font-weight:bold;}
+table td{padding:6px 10px;border-bottom:1px solid #e0e0e0;vertical-align:top;line-height:1.45;color:#2c2c2c;}
+table tr:nth-child(even) td{background:#f9f9f9;}
+table td:first-child{font-weight:bold;color:#1a1a1a;}
+.tbl-hdr{font-size:9pt;font-weight:bold;text-transform:uppercase;letter-spacing:.04em;color:#555;margin-bottom:4px;}
+
+/* Requirement blocks */
+.req-block{margin-bottom:12px;border:1px solid #ddd;border-radius:4px;overflow:hidden;}
+.req-block-hdr{background:#2c2c2c;color:#fff;padding:5px 10px;font-size:9.5pt;font-weight:bold;}
+.req-item{display:grid;grid-template-columns:60px 1fr;gap:0;padding:6px 10px;border-bottom:1px solid #eee;font-size:10pt;}
+.req-item:last-child{border-bottom:none;}
+.req-id{color:#0969da;font-weight:bold;font-family:monospace;font-size:9.5pt;padding-top:1px;}
+.req-txt{color:#2c2c2c;line-height:1.5;}
+
+/* Proficiency table */
+.prof-tbl th:first-child{width:120px;background:#555;}
+.prof-tbl .tf{background:#7a3e00;text-align:center;}
+.prof-tbl .tp{background:#5a4a00;text-align:center;}
+.prof-tbl .te{background:#0c3057;text-align:center;}
+.prof-tbl .tm{background:#3d1a6e;text-align:center;}
+.prof-tbl td:first-child{font-weight:bold;background:#f5f5f5;}
+.prof-tbl td{text-align:left;font-size:9.5pt;}
+
+/* Code block */
+.code{background:#f5f5f5;border:1px solid #ddd;border-radius:4px;padding:10px 12px;font-family:monospace;font-size:9pt;color:#2c2c2c;line-height:1.6;white-space:pre-wrap;margin-bottom:10px;}
+
+/* Callout */
+.callout{background:#f0f6ff;border-left:3px solid #0969da;padding:10px 14px;margin-bottom:12px;border-radius:0 4px 4px 0;}
+.callout p{font-size:10pt;color:#2c2c2c;}
+
+.oos td:first-child{color:#b91c1c;}
+.oq td:first-child{color:#92400e;}
+.verdict{display:inline-block;font-size:9pt;font-weight:bold;padding:1px 6px;border-radius:3px;margin-left:6px;}
+.v-ready{background:#dcfce7;color:#166534;}
+.v-dev{background:#fef9c3;color:#713f12;}
+.v-not{background:#fee2e2;color:#991b1b;}
+</style>
+</head>
+<body>
+
+<!-- Print bar (hidden in print) -->
+<div class="print-bar no-print">
+  <span>Print or save as PDF using your browser's print function. To open in Word: File → Open → select this HTML file.</span>
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+  <span class="word-note">Or open in Microsoft Word: File → Open → this file</span>
+</div>
+
+<!-- Cover -->
+<div class="doc-cover">
+  <h1>HR Workforce Development &amp; Talent Review Platform</h1>
+  <h2>Product Requirements Document</h2>
+  <table class="doc-meta-table">
+    <tr><td>Version</td><td>1.0</td></tr>
+    <tr><td>Date</td><td>June 2026</td></tr>
+    <tr><td>Status</td><td>Draft</td></tr>
+    <tr><td>Author</td><td>Matthew Trafican</td></tr>
+    <tr><td>Classification</td><td>Internal — HR Function</td></tr>
+  </table>
+</div>
+
+<!-- TOC -->
+<div class="toc-section page-break">
+  <h2>Table of Contents</h2>
+  <div class="toc-entry"><a href="#s1">1. Executive Summary</a><span>3</span></div>
+  <div class="toc-entry"><a href="#s2">2. Problem Statement</a><span>3</span></div>
+  <div class="toc-entry"><a href="#s3">3. Design Principles</a><span>4</span></div>
+  <div class="toc-entry"><a href="#s4">4. User Roles</a><span>5</span></div>
+  <div class="toc-entry"><a href="#s5">5. Framework Assumptions</a><span>5</span></div>
+  <div class="toc-entry"><a href="#s6">6. Proficiency Framework</a><span>6</span></div>
+  <div class="toc-entry"><a href="#s7">7. Functional Requirements</a><span>7</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7a">7.1 Competency Ontology</a><span>7</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7b">7.2 Employee Profile</a><span>8</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7c">7.3 Training Architecture Plan</a><span>8</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7d">7.4 Onboarding &amp; 30/60/90</a><span>9</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7e">7.5 Status Reporting</a><span>9</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7f">7.6 Talent Review</a><span>10</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7g">7.7 Priority Actions</a><span>11</span></div>
+  <div class="toc-sub toc-entry"><a href="#s7h">7.8 Data Export &amp; Integration</a><span>11</span></div>
+  <div class="toc-entry"><a href="#s8">8. Non-Functional Requirements</a><span>12</span></div>
+  <div class="toc-entry"><a href="#s9">9. Data Model</a><span>12</span></div>
+  <div class="toc-entry"><a href="#s10">10. Out of Scope</a><span>13</span></div>
+  <div class="toc-entry"><a href="#s11">11. Integration Points</a><span>14</span></div>
+  <div class="toc-entry"><a href="#s12">12. Open Questions</a><span>14</span></div>
+</div>
+
+<!-- 1 -->
+<section id="s1" class="page-break">
+  <h2 class="sh">1. Executive Summary</h2>
+  <div class="callout"><p>This platform is a career-level workforce development and talent review system designed for HR functions. It connects individual competency development (OJT certification, arc tracking) with organizational talent review (calibration, promotion readiness, standing briefs) through a shared competency ontology. The system is grounded in a behaviorally-anchored competency model, a 36-month career arc framework, and matrix-aware organizational structure. It provides proactive signals — review calendar, leading indicators, ranked priority actions — rather than reactive reporting. All competency content, leveling guidelines, and org structures are configurable for any career field or organization.</p></div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2 class="sh">2. Problem Statement</h2>
+  <h3>Current State — Pain Points</h3>
+  <ul>
+    <li>Development tracking is role-level, not career-level — proficiency earned in one role is lost at transition</li>
+    <li>Talent reviews are reactive — data assembled on demand, inconsistent quality and preparation burden</li>
+    <li>Matrix org structures create visibility gaps — direct-line and dotted-line leaders hold different views of the same employee</li>
+    <li>Plan vs. actual development tracking does not exist in most HR technology stacks</li>
+    <li>Prescriptive guidance requires manual analysis that rarely happens at the required pace</li>
+    <li>Client perspectives on HRBP effectiveness are collected informally if at all</li>
+    <li>Leading indicators are not surfaced before they become lagging problems</li>
+  </ul>
+  <h3>Desired State — Outcomes</h3>
+  <ul>
+    <li>A single instrument tracking development arc across roles — prior proficiency carries forward with credit</li>
+    <li>Standing briefs always current from live data — talent reviews prepared proactively, not reactively</li>
+    <li>Matrix reporting relationships visible in every view; both lines inform the talent review</li>
+    <li>Plan vs. actual tracked from Day 1 with velocity and variance signals</li>
+    <li>Ranked priority actions surfaced automatically before review gates</li>
+    <li>Client brief available on demand; HR-entered or client-submitted</li>
+    <li>Leading indicators flagged 30/60/90 days before review gates — not after</li>
+  </ul>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2 class="sh">3. Design Principles</h2>
+  <p>The following principles are non-negotiable and embedded in the architecture. They cannot be overridden by configuration.</p>
+  <table>
+    <thead><tr><th>#</th><th>Principle</th><th>Implication</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>Individual-driven arc</strong></td><td>Employee owns the plan, initiates development, selects career track. Leader enables and certifies — does not own.</td></tr>
+      <tr><td>2</td><td><strong>Leader as enabler, not owner</strong></td><td>Leader's role: create opportunity, remove blockers, certify milestones, plan transitions.</td></tr>
+      <tr><td>3</td><td><strong>Demonstration-based progression</strong></td><td>Promotion triggered by demonstrated proficiency against leveling guidelines, not time in role.</td></tr>
+      <tr><td>4</td><td><strong>Profile carries across roles</strong></td><td>Arc is a career instrument. Proficiency transfers with credit at role transitions. History is preserved.</td></tr>
+      <tr><td>5</td><td><strong>Matrix org flexibility</strong></td><td>Tag-based, configurable. No fixed hierarchy. Any employee may carry direct-line and multiple dotted-line relationships.</td></tr>
+      <tr><td>6</td><td><strong>Talent pool designation is external</strong></td><td>Pool membership maintained in a separate system. Not stored in this tool.</td></tr>
+      <tr><td>7</td><td><strong>No 360-degree feedback</strong></td><td>Explicitly excluded. Expert/Master evidence uses named, gate-based inputs: OJT, leader review, results, client perspective.</td></tr>
+      <tr><td>8</td><td><strong>Plain language throughout</strong></td><td>No analytics jargon in user-facing text. Plain business language only.</td></tr>
+      <tr><td>9</td><td><strong>Proactive by design</strong></td><td>Surfaces upcoming reviews and preparation requirements 30/60/90 days before needed.</td></tr>
+      <tr><td>10</td><td><strong>Content is replaceable</strong></td><td>All competency content, leveling guidelines, and org labels are configurable. HR BP model is a reference implementation.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2 class="sh">4. User Roles</h2>
+  <table>
+    <thead><tr><th>Role</th><th>Primary Use</th><th>Review Authority</th></tr></thead>
+    <tbody>
+      <tr><td>Individual / Employee</td><td>Owns development arc, tracks OJT, selects career track, sets target role</td><td>Self-view only</td></tr>
+      <tr><td>Direct Leader</td><td>Enables development, certifies milestones, quarterly and annual reviews</td><td>Primary development review authority</td></tr>
+      <tr><td>Senior Leader (non-exec)</td><td>Annual and rotation gate reviews, cross-team calibration</td><td>Annual and gate reviews</td></tr>
+      <tr><td>Executive (CHRO / VP)</td><td>Semi-annual strategic review, promotion pipeline, enterprise capability</td><td>Semi-annual / annual</td></tr>
+      <tr><td>HR Client (business leader)</td><td>Client-requested review, results perspective input, client brief access</td><td>Client perspective only</td></tr>
+      <tr><td>L&amp;D / Talent Team</td><td>Program management, cohort reporting, LDP tracking</td><td>Function-level view</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2 class="sh">5. Framework Assumptions (Operating Model)</h2>
+  <p>All parameters are configurable defaults representing the agreed operating model for the HR Business Partner reference implementation.</p>
+  <table>
+    <thead><tr><th>Parameter</th><th>Default Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Planning horizon</td><td>36 months</td><td>Assumed role tenure</td></tr>
+      <tr><td>Rotation gate</td><td>18 months</td><td>Rotate vs. retain decision point</td></tr>
+      <tr><td>Foundation target</td><td>12 months</td><td>Initial entry baseline</td></tr>
+      <tr><td>Practitioner target</td><td>24 months from start</td><td></td></tr>
+      <tr><td>Expert / Peak</td><td>24–36 months</td><td></td></tr>
+      <tr><td>Sustain / Transfer phase</td><td>36+ months</td><td>Knowledge transfer priority</td></tr>
+      <tr><td>Lateral hire adjustment</td><td>6–8 months to Foundation</td><td>Adjusted from assessed entry proficiency</td></tr>
+    </tbody>
+  </table>
+  <h3>Four Movement Types (Proficiency Carries with Transfer Credit)</h3>
+  <ul>
+    <li><strong>Promotion</strong> — Vertical. Same domain, higher level. Prior proficiency transfers fully; new tier requirements are net new.</li>
+    <li><strong>Job scope advancement</strong> — Horizontal expansion within role. Existing proficiency holds; specific competencies extend.</li>
+    <li><strong>Lateral move</strong> — Cross-functional, same level. Partial transfer: domain-agnostic competencies carry fully; functional competencies partially reset.</li>
+    <li><strong>Next target role</strong> — Career aspiration that shapes what is prioritized in the current arc.</li>
+  </ul>
+  <h3>Two Career Tracks (Individual Selects; Diverge at Expert)</h3>
+  <ul>
+    <li><strong>Individual Contributor (IC)</strong> — Depth, domain authority, technical leadership, industry influence</li>
+    <li><strong>Leadership</strong> — Team/function management, organizational scope, people outcomes, enterprise strategy</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2 class="sh">6. Proficiency Framework</h2>
+  <p>Four tiers defined by six criteria. This rubric is the evaluation standard for all development reviews and promotion gate assessments.</p>
+  <table class="prof-tbl">
+    <thead>
+      <tr>
+        <th>Criteria</th>
+        <th class="tf">Foundation</th>
+        <th class="tp">Practitioner</th>
+        <th class="te">Expert</th>
+        <th class="tm">Master</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Depth of Knowledge</td><td>Key elements of role</td><td>All elements of role</td><td>New practices across all elements</td><td>New concepts and theories; credible resource in field</td></tr>
+      <tr><td>Consistency of Application</td><td>Routine situations</td><td>Variety of situations</td><td>Complex and ambiguous situations</td><td>Innovates; formulates strategies; teaches others</td></tr>
+      <tr><td>Thinking Challenge</td><td>Within established procedures</td><td>Wide variety of situations</td><td>Without established procedures</td><td>Novel frameworks and approaches</td></tr>
+      <tr><td>Scope</td><td>Specific functional area</td><td>Integration across related areas</td><td>Integration with org strategy</td><td>Enterprise and industry level</td></tr>
+      <tr><td>Impact on...</td><td>Specific workplace tasks</td><td>Specific workplace projects</td><td>Management and leadership decisions</td><td>Org practices and industry standards</td></tr>
+      <tr><td>Reach of Influence</td><td>Individuals</td><td>Teams and departments</td><td>Organization / Institution</td><td>Enterprise and industry</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 7 -->
+<section id="s7" class="page-break">
+  <h2 class="sh">7. Functional Requirements</h2>
+
+  <h3 id="s7a">7.1 Competency Ontology</h3>
+  <div class="req-block">
+    <div class="req-block-hdr">Structure and Evidence</div>
+    <div class="req-item"><span class="req-id">FR-01</span><span class="req-txt">System shall maintain a hierarchical competency model: <strong>Domain → Competency → Tier → Required Behaviors → Evidence Tasks</strong></span></div>
+    <div class="req-item"><span class="req-id">FR-02</span><span class="req-txt">Each tier shall include: tier label, Required Behaviors (2–4 statements), Impact Criterion, and evidence tasks list</span></div>
+    <div class="req-item"><span class="req-id">FR-03</span><span class="req-txt">Each evidence task shall carry: task number, statement, difficulty (1–3), behavior match flag, core/cert/optional designation, context flags (Standard / Deployment / Specialized), proficiency codes for all four career levels</span></div>
+    <div class="req-item"><span class="req-id">FR-04</span><span class="req-txt">Proficiency codes — A: Awareness · B: Guided performance · C: Independent · *: Standard required · –: Not applicable</span></div>
+    <div class="req-item"><span class="req-id">FR-05</span><span class="req-txt">Each evidence task shall support three-party OJT certification: Training Start, Training Complete, Trainee initials, Trainer initials, Certifier initials. Full certification requires all three initials</span></div>
+    <div class="req-item"><span class="req-id">FR-06</span><span class="req-txt">Competency areas shall declare Supporting Competency relationships (dependency links to other nodes)</span></div>
+    <div class="req-item"><span class="req-id">FR-07</span><span class="req-txt">All competency content shall be replaceable. HR Business Partner model is a reference implementation only</span></div>
+  </div>
+
+  <h3 id="s7b">7.2 Employee Profile</h3>
+  <div class="req-block"><div class="req-block-hdr">Profile Requirements</div>
+    <div class="req-item"><span class="req-id">FR-09</span><span class="req-txt">Profile shall include: name, role, function, BU, start date, days in role (calculated), pathway, career track (individual selects), target role, direct-line manager, dotted-line manager(s) with relationship type (business/functional)</span></div>
+    <div class="req-item"><span class="req-id">FR-10</span><span class="req-txt">LDP enrollment shall be recorded (program name or null)</span></div>
+    <div class="req-item"><span class="req-id">FR-11</span><span class="req-txt"><strong>Talent pool designation shall not be stored in this system.</strong> A note shall direct users to the external talent review system</span></div>
+    <div class="req-item"><span class="req-id">FR-12</span><span class="req-txt">On role transition, profile shall carry forward with prior role history, proficiency credit, and a new arc baseline adjusted for entering proficiency</span></div>
+  </div>
+
+  <h3 id="s7c">7.3 Training Architecture Plan</h3>
+  <div class="req-block"><div class="req-block-hdr">E&T Plan Requirements</div>
+    <div class="req-item"><span class="req-id">FR-13</span><span class="req-txt">System shall display career development architecture: Build → Growth → Peak → Sustain with organizational impact criteria per phase</span></div>
+    <div class="req-item"><span class="req-id">FR-14</span><span class="req-txt">System shall support two training pathways: Initial Entry (12-month Foundation baseline) and Lateral (6–8-month adjusted baseline)</span></div>
+    <div class="req-item"><span class="req-id">FR-15</span><span class="req-txt">System shall maintain a Course Objective List (COL) mapping tasks to: Formal Course, Structured OJT, or Self-Study. Gap between COL and task inventory shall be surfaced</span></div>
+    <div class="req-item"><span class="req-id">FR-16</span><span class="req-txt">System shall capture Resource Constraints: budget, time, course seat availability, SME access, technology</span></div>
+    <div class="req-item"><span class="req-id">FR-17</span><span class="req-txt">System shall display external credential pathway mapping professional certifications to proficiency tiers</span></div>
+  </div>
+
+  <h3 id="s7d">7.4 Onboarding &amp; 30/60/90 Framework</h3>
+  <div class="req-block"><div class="req-block-hdr">Onboarding Requirements</div>
+    <div class="req-item"><span class="req-id">FR-18</span><span class="req-txt">System shall anchor the development arc to a Day 1 start date per employee — plan baseline for all time-to-productivity calculations</span></div>
+    <div class="req-item"><span class="req-id">FR-19</span><span class="req-txt">System shall calculate and display a Time to Productivity timeline showing: plan %, actual %, today marker, milestone markers at Day 30/60/90, 6 months, and 12 months</span></div>
+    <div class="req-item"><span class="req-id">FR-20</span><span class="req-txt">System shall display a plan vs. actual variance label: Ahead / On Track / Behind</span></div>
+    <div class="req-item"><span class="req-id">FR-21</span><span class="req-txt">System shall provide three checkpoint cards (Day 30, Day 60, Day 90) each containing: theme, "How to Help" support activities, "How to Evaluate" criteria (rubric-referenced), expected %, actual %, and checkpoint rating (Met / Partial / Not Met)</span></div>
+    <div class="req-item"><span class="req-id">FR-22</span><span class="req-txt">Checkpoint ratings shall be persisted in browser storage</span></div>
+  </div>
+
+  <h3 id="s7e">7.5 Status Reporting</h3>
+  <div class="req-block"><div class="req-block-hdr">Reporting Requirements</div>
+    <div class="req-item"><span class="req-id">FR-23</span><span class="req-txt"><strong>Lagging:</strong> Foundation completion %, avg days to Foundation vs. plan, velocity (tasks/month), 90-day checkpoint pass rate. <strong>Leading:</strong> velocity trend direction, days since last certification, pending sign-off age, approaching milestone (14-day window). <strong>Predictive:</strong> projected Foundation completion date at current velocity</span></div>
+    <div class="req-item"><span class="req-id">FR-24</span><span class="req-txt">Status report shall support filtering by function and by program/pathway (Initial Entry vs. Lateral)</span></div>
+    <div class="req-item"><span class="req-id">FR-25</span><span class="req-txt">Employee status classification: Ahead / On Track / Behind / Stalled (Stalled = no activity in 21+ days)</span></div>
+    <div class="req-item"><span class="req-id">FR-26</span><span class="req-txt">System shall display a pending action queue: tasks with Training Complete but absent Certifier initials, with days waiting</span></div>
+    <div class="req-item"><span class="req-id">FR-27</span><span class="req-txt">All labels shall use plain business language. No analytics taxonomy in user-facing text</span></div>
+  </div>
+
+  <h3 id="s7f">7.6 Talent Review</h3>
+  <div class="req-block"><div class="req-block-hdr">Talent Review Requirements</div>
+    <div class="req-item"><span class="req-id">FR-28</span><span class="req-txt">System shall support matrix org — each employee may have one direct-line and one or more dotted-line managers with typed relationships (business / functional)</span></div>
+    <div class="req-item"><span class="req-id">FR-29</span><span class="req-txt">Talent review shall be organizable by three axes: org element, direct-line reporting chain, or dotted-line/matrix grouping</span></div>
+    <div class="req-item"><span class="req-id">FR-30</span><span class="req-txt">System shall calculate promotion readiness against configured leveling guidelines: Ready / Developing / Not Yet, with specific evidence gaps cited</span></div>
+    <div class="req-item"><span class="req-id">FR-31</span><span class="req-txt">System shall detect and flag misalignment when direct-line development assessment and dotted-line/client results assessment diverge materially — surfaced before review meetings</span></div>
+    <div class="req-item"><span class="req-id">FR-32</span><span class="req-txt">System shall maintain a review calendar for a 90-day horizon: Immediate (0–30d), Near-Term (30–60d), Planned (60–90d)</span></div>
+    <div class="req-item"><span class="req-id">FR-33</span><span class="req-txt">Review types: Direct Leader · Senior Leader · Executive · Client-Requested · Rotation Gate (18-month) · Annual Promotion Gate</span></div>
+    <div class="req-item"><span class="req-id">FR-34</span><span class="req-txt">Per upcoming review: title, type, employees on agenda, readiness %, and specific preparation actions</span></div>
+    <div class="req-item"><span class="req-id">FR-35</span><span class="req-txt">System shall maintain three standing brief formats always current from live data: Individual brief · Leader brief · Client brief</span></div>
+    <div class="req-item"><span class="req-id">FR-36</span><span class="req-txt">Client brief shall support two input modes: HR-entered and Client-submitted. Entry source recorded and displayed</span></div>
+    <div class="req-item"><span class="req-id">FR-37</span><span class="req-txt">Talent pool field shall note that pool data is maintained in an external system. No pool data shall be stored in this tool</span></div>
+  </div>
+
+  <h3 id="s7g">7.7 Priority Actions (Prescriptive)</h3>
+  <div class="req-block"><div class="req-block-hdr">Priority Action Requirements</div>
+    <div class="req-item"><span class="req-id">FR-38</span><span class="req-txt">System shall generate ranked top 3–5 priority actions for: upcoming reviews, at-risk employees, and function-level gaps</span></div>
+    <div class="req-item"><span class="req-id">FR-39</span><span class="req-txt">Each action shall include: what to do · who owns it · by when · why it matters · expected impact · underlying assumption</span></div>
+    <div class="req-item"><span class="req-id">FR-40</span><span class="req-txt">Actions shall be grouped: Immediate (this week) · Near-Term (this month) · Planned (60–90 days)</span></div>
+    <div class="req-item"><span class="req-id">FR-41</span><span class="req-txt">Each action card shall reference the review gate or development event it prepares for</span></div>
+    <div class="req-item"><span class="req-id">FR-42</span><span class="req-txt">Priority logic shall weight by: gap severity × competency criticality × employees affected × days until relevant gate</span></div>
+  </div>
+
+  <h3 id="s7h">7.8 Data Export &amp; Integration</h3>
+  <div class="req-block"><div class="req-block-hdr">Integration Requirements</div>
+    <div class="req-item"><span class="req-id">FR-43</span><span class="req-txt">System shall export all development data as structured JSON with a documented field schema</span></div>
+    <div class="req-item"><span class="req-id">FR-44</span><span class="req-txt">System shall export a talent review summary as CSV suitable for BOBJ or similar BI platforms</span></div>
+    <div class="req-item"><span class="req-id">FR-45</span><span class="req-txt">JSON schema shall document all fields to support BOBJ universe construction as a supplementary data source alongside HCM master data</span></div>
+    <div class="req-item"><span class="req-id">FR-46</span><span class="req-txt">System shall support CSV import of employee roster from HCM systems (SuccessFactors / Workday / SAP HCM)</span></div>
+    <div class="req-item"><span class="req-id">FR-47</span><span class="req-txt"><strong>Data responsibility separation:</strong> Employee master data sourced from HCM. Development data owned by this system</span></div>
+    <div class="req-item"><span class="req-id">FR-48</span><span class="req-txt">System shall display JSON schema on demand for integration configuration</span></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2 class="sh">8. Non-Functional Requirements</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Requirement</th></tr></thead>
+    <tbody>
+      <tr><td>NFR-01</td><td>System shall operate entirely client-side with no server dependency</td></tr>
+      <tr><td>NFR-02</td><td>All user-generated data shall be persisted in browser localStorage with JSON export/import for portability</td></tr>
+      <tr><td>NFR-03</td><td>System shall be deployable as a static site (GitHub Pages, Netlify, or equivalent) with no build process</td></tr>
+      <tr><td>NFR-04</td><td>Entire application shall be distributable as a set of HTML files plus a JSON data export</td></tr>
+      <tr><td>NFR-05</td><td>No analytics or data science terminology shall be visible to end users</td></tr>
+      <tr><td>NFR-06</td><td>All career field-specific content shall be modifiable without changes to core application logic</td></tr>
+      <tr><td>NFR-07</td><td>System shall not assume a fixed org hierarchy. Any employee shall support any combination of reporting relationships</td></tr>
+      <tr><td>NFR-08</td><td>Talent pool, succession slate, and compensation data shall not be stored or transmitted by this system</td></tr>
+      <tr><td>NFR-09</td><td>System shall function in current versions of Chrome, Firefox, Safari, and Edge</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2 class="sh">9. Data Model</h2>
+  <p><strong>Employee</strong></p>
+  <div class="code">id, name, role, businessUnit, orgElement, startDate, daysInRole (calculated),
+pathway (initial|lateral), track (ic|leadership), arcPhase,
+targetRole, ldpProgram, directLine {name, title},
+dottedLine [{name, title, type (business|functional)}],
+certPct, velocity, status (ahead|on|behind|stalled),
+promotionReadiness (ready|developing|not-yet),
+misalignment {type, description},
+lastReview {date, level, outcome}, nextReview {days, type}</div>
+
+  <p><strong>Competency Ontology Node</strong></p>
+  <div class="code">domainId, domainName, competencyId, competencyName, description,
+supportingCompetencies [],
+tier {
+  label (Foundation|Practitioner|Expert|Master),
+  requiredBehaviors [], impactCriterion,
+  tasks [{taskNum, statement, difficulty (1|2|3), behaviorMatch (bool),
+    coreCert (Core|Cert|Opt), contexts (S|D|X)[],
+    proficiencyCodes {foundation, journeyman, expert, master}}]
+}</div>
+
+  <p><strong>Supporting Records</strong></p>
+  <table>
+    <thead><tr><th>Record</th><th>Fields</th></tr></thead>
+    <tbody>
+      <tr><td>OJT Certification</td><td>taskNum, trainingStart, trainingComplete, traineeInitials, trainerInitials, certifierInitials, certifiedDate (calculated)</td></tr>
+      <tr><td>Review Calendar Entry</td><td>reviewId, type, daysUntil, title, employees[], readinessPct, prepActions[]</td></tr>
+      <tr><td>Client Brief</td><td>employeeId, text, source (hr|client), date</td></tr>
+      <tr><td>Checkpoint Rating</td><td>employeeId, checkpointDay (30|60|90), rating (Met|Partial|Not Met), date</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <h2 class="sh">10. Out of Scope</h2>
+  <table class="oos">
+    <thead><tr><th>Item</th><th>Reason / Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Talent pool &amp; succession slate data</td><td>Organizational sensitivity; maintained in external interfacing system</td></tr>
+      <tr><td>360-degree feedback surveys</td><td>Explicitly excluded by design principle</td></tr>
+      <tr><td>SPSS or statistical analysis integration</td><td>Evidence model is qualitative and behavioral; not required</td></tr>
+      <tr><td>Real-time database synchronization</td><td>Client-side architecture; file-based export/import used instead</td></tr>
+      <tr><td>Authentication &amp; role-based access control</td><td>Future requirement; not in initial scope</td></tr>
+      <tr><td>Payroll or compensation data</td><td>Different system of record; organizational sensitivity</td></tr>
+      <tr><td>Formal performance management ratings</td><td>Reside in HCM; this tool captures development evidence</td></tr>
+      <tr><td>Direct HCM API integration</td><td>File import/export only in current scope</td></tr>
+      <tr><td>Mobile-native application</td><td>Browser-based only; mobile responsiveness is a future enhancement</td></tr>
+      <tr><td>Causal analytics</td><td>Requires longitudinal data across multiple cohorts; future capability</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <h2 class="sh">11. Integration Points</h2>
+  <table>
+    <thead><tr><th>External System</th><th>Direction</th><th>Method</th><th>Data Exchanged</th></tr></thead>
+    <tbody>
+      <tr><td>HCM (SuccessFactors / Workday / SAP)</td><td>Inbound</td><td>CSV import</td><td>Employee master: name, role, function, BU, start date, manager</td></tr>
+      <tr><td>BOBJ / BI Platform</td><td>Outbound</td><td>JSON export → universe data source</td><td>Arc position, certification %, promotion readiness, review history</td></tr>
+      <tr><td>Talent Review System</td><td>Bidirectional (manual)</td><td>Export feeds calibration; designations returned manually</td><td>Development brief output; pool designation input (manual)</td></tr>
+      <tr><td>LDP Platform</td><td>Inbound (manual)</td><td>Manual entry</td><td>Program enrollment status</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <h2 class="sh">12. Open Questions &amp; Future Considerations</h2>
+  <table class="oq">
+    <thead><tr><th>Item</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Authentication and RBAC</td><td>Individual vs. leader vs. executive access control — future requirement</td></tr>
+      <tr><td>Multi-tenant deployment</td><td>Supporting multiple organizations from a single instance</td></tr>
+      <tr><td>Live HCM API integration</td><td>Real-time vs. periodic CSV refresh</td></tr>
+      <tr><td>Notification system</td><td>Email or in-app alerts for approaching gates and pending certifications</td></tr>
+      <tr><td>Causal analytics</td><td>Requires 3+ cohorts of longitudinal data before meaningful analysis</td></tr>
+      <tr><td>Mobile optimization</td><td>Current design is desktop-first</td></tr>
+      <tr><td>Automated misalignment thresholds</td><td>What delta between direct-line and client assessment triggers a flag?</td></tr>
+      <tr><td>Context flags for disruption events</td><td>Technology transitions, restructuring — velocity expectation adjustments</td></tr>
+      <tr><td>Leader access controls</td><td>Should leaders see peer team data?</td></tr>
+      <tr><td>Historical arc visualization</td><td>Full career timeline spanning multiple roles</td></tr>
+      <tr><td>Peer review for IC Expert/Master</td><td>Named, gate-based review by domain peers (not 360) — mechanism TBD</td></tr>
+      <tr><td>Next target role catalog</td><td>Library of defined next roles with required proficiency profiles</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div style="text-align:center;margin-top:48px;padding-top:16px;border-top:1px solid #ccc;font-size:9pt;color:#888;">
+  HR Workforce Development &amp; Talent Review Platform · PRD v1.0 · June 2026 · Matthew Trafican
+</div>
+
+</body>
+</html>
